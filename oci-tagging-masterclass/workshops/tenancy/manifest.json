@@ -4,7 +4,7 @@
     "tutorials": [
         {
             "title": "Introduction to tagging on OCI",
-            "filename": "../../1-tagging-basics/introduction-to-tagging.md"
+            "filename": "../../0-tagging-basics/introduction-to-tagging.md"
         },
         {
             "title": "Get Started",
