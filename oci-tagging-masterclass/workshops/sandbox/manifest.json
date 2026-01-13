@@ -1,26 +1,46 @@
 {
-    "workshoptitle": "Build Your Own AI Agent to Boost Productivity and Efficiency",
+    "workshoptitle": "OCI Tagging Masterclass",
     "help": "livelabs-help-oci_us@oracle.com",
     "tutorials": [
         {
-            "title": "Overview and Highlights",
-            "filename": "../../1-overview-and-highlights/overview-and-highlights-sandbox.md"
+            "title": "Introduction to tagging on OCI",
+            "filename": "../../1-tagging-basics/introduction-to-tagging.md"
         },
         {
             "title": "Get Started",
-            "filename": "https://oracle-livelabs.github.io/common/labs/cloud-login/cloud-login-livelabs2.md"
+            "filename": "https://oracle-livelabs.github.io/common/labs/cloud-login/cloud-login.md"
         },
         {
-            "title": "Lab 1: Create the Agent",
-            "filename": "../../4-create-the-agent/create-the-agent-sandbox.md"
+            "title": "Lab 1: Working with default tags",
+            "filename": "../../1-tag-defaults/working-with-tag-defaults.md"
         },
         {
-            "title": "Lab 2: Test the solution",
-            "filename": "../../5-test-the-solution/test-the-solution-sandbox.md"
+            "title": "Lab 2: Using tags to apply bulk changes",
+            "filename": "../../2-making-bulk-changes/bulk-changes-with-cli.md"
+        },
+        {
+            "title": "Lab 3: Cost management tags",
+            "filename": "../../3-cost-management/cost-management-tags.md"
+        },
+        {
+            "title": "Lab 4: Tag-based access control in IAM",
+            "filename": "../../4-tag-based-access-control/control-iam-access.md"
+        },
+        {
+            "title": "Lab 5: Automating resource updates",
+            "filename": "../../5-automated-resource-updates/automated-resource-updates.md"
+        },
+        {
+            "title": "Lab 6: Test the solution",
+            "filename": "../../6-advanced-resource-control/the-reaper.md"
+        },
+        {
+            "title": "Lab 7: Cleanup",
+            "filename": "../../7-cleanup/clean-up-resources.md"
         },
         {
             "title": "Need Help?",
-            "filename": "https://oracle-livelabs.github.io/common/labs/need-help/need-help-livelabs.md"
+            "filename": "https://oracle-livelabs.github.io/common/labs/need-help/need-help-freetier.md"
         }
     ]
 }
