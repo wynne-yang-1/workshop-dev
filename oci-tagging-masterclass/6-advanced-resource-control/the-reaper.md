@@ -3,7 +3,8 @@
 ## Introduction
 
 -- Implement automation with Events and Functions to stop / terminate resources that are not compliant with tagging policies
-
+-- Resources (remove before publishing the lab)
+    https://www.rtinsights.com/optimizing-cloud-resource-management-with-automated-cleanup-scripts-in-oci/
 
 
 **Estimated Time:** TBD minutes
@@ -123,6 +124,7 @@ You may now proceed to the next lab.
 
 - [OCI CLI bulk-edit reference](https://docs.oracle.com/en-us/iaas/tools/oci-cli/latest/oci_cli_docs/cmdref/iam/tag/bulk-edit.html)
 - [Invoking Functions automatically with Cloud Events](https://blogs.oracle.com/developers/oracle-functions-invoking-functions-automatically-with-cloud-events)
+
 
 ## Acknowledgements
 
