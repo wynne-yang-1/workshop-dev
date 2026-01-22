@@ -1,4 +1,4 @@
-# Lab 3a (Tech): Cost Management Strategies and Best Practices
+# Lab 3b (Business): Cost Management Strategies and Best Practices
 
 ## Introduction
 
