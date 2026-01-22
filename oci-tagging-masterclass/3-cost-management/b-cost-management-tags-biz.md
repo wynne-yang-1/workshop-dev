@@ -6,6 +6,7 @@
 -- Considerations for cost management in OCI
 -- How to manage chargebacks??
 -- Cost Analysis, Budgets, Usage Reports, Cost Estimator
+-- Discuss quota policies...not sure how deep to go since it's not directly related to tagging.
 
 **Estimated Time:** TBD minutes
 
@@ -37,4 +38,4 @@ You may now proceed to the next lab.
 
 - **Author** - 
 - **Contributors** - Daniel Hart, Deion Locklear, Eli Schilling, Wynne Yang
-- **Last Updated By/Date** - Published February, 2025
+- **Last Updated By/Date** - Published February, 2026

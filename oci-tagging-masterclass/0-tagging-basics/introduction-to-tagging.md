@@ -44,6 +44,7 @@ In this workshop, you will learn how to:
 
 - [Overview of tagging](https://docs.oracle.com/en-us/iaas/Content/Tagging/Concepts/taggingoverview.htm)
 - [Tagging best practices](https://www.ateam-oracle.com/oracle-cloud-infrastructure-tagging-best-practices-enable-mandatory-tagging-for-compartments)
+- [Tagging in Oracle Cloud Infrastructure](https://medium.com/@johnny.cree/tagging-in-oracle-cloud-infrastructure-c279c350f692)
 - [OCI Command Line Interface](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/cliconcepts.htm)
 - [OCI Budgets](https://docs.oracle.com/en-us/iaas/Content/Billing/Concepts/budgetsoverview.htm)
 - [OCI Events](https://docs.oracle.com/en-us/iaas/Content/Events/Concepts/eventsoverview.htm)
@@ -53,4 +54,4 @@ In this workshop, you will learn how to:
 
 - **Author** - Eli Schilling
 - **Contributors** - Daniel Hart, Deion Locklear, Wynne Yang
-- **Last Updated By/Date** - Published February, 2025
+- **Last Updated By/Date** - Published February, 2026
