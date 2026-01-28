@@ -33,11 +33,7 @@ In this workshop you will learn how to build APIs with Oracle Integration Cloud 
 
 ## Solution Architecture
 
-The following is a simplified solution architecture diagram for our API Management environment:
 
-![Solution Architecture](./images/architecture.png)
-
-As described in the diagram, our solution makes use of the following resources:
 
 - **Oracle Kubernetes Engine (OKE)** - ...:
     - Cluster Setup
