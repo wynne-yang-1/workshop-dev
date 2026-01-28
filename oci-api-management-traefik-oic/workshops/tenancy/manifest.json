@@ -1,0 +1,38 @@
+{
+    "workshoptitle": "Manage Oracle Integration Cloud APIs with Traefik Hub in OCI",
+    "help": "livelabs-help-oci_us@oracle.com",
+    "tutorials": [
+        {
+            "title": "Overview and Highlights",
+            "filename": "../../0-overview-and-highlights/overview-and-highlights-tenancy.md"
+        },
+        {
+            "title": "Get Started",
+            "filename": "https://oracle-livelabs.github.io/common/labs/cloud-login/cloud-login.md"
+        },
+        {
+            "title": "Lab 1: Initial setup",
+            "filename": "../../1-setup/setup-tenancy.md"
+        },
+        {
+            "title": "Lab 2: Setup the database",
+            "filename": "../../2-screate-api/create-new-api.md"
+        },
+        {
+            "title": "Lab 3: Create the Agent",
+            "filename": "../../3-deploy-api/deploy-api-oke.md"
+        },
+        {
+            "title": "Lab 4: Test the solution",
+            "filename": "../../4-test-the-solution/test-the-solution-tenancy.md"
+        },
+        {
+            "title": "Lab 5: Clean Up",
+            "filename": "../../5-cleanup/clean-up-resources.md"
+        },
+        {
+            "title": "Need Help?",
+            "filename": "https://oracle-livelabs.github.io/common/labs/need-help/need-help-freetier.md"
+        }
+    ]
+}
