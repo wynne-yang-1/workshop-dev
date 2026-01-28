@@ -16,7 +16,7 @@
         },
         {
             "title": "Lab 2: Create your first API",
-            "filename": "../../2-screate-api/create-new-api.md"
+            "filename": "../../2-create-api/create-new-api.md"
         },
         {
             "title": "Lab 3: Deploy the API to Traefik Hub",
