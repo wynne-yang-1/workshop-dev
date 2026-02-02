@@ -1,0 +1,35 @@
+{
+    "workshoptitle": "Configure Virtual Cloud Network Peering",
+    "help": "livelabs-help-oci_us@oracle.com",
+	"tutorials": [
+        {
+            "title": "Introduction",
+            "filename": "./../../intro/intro.md"
+        },
+        {
+            "title": "Get Started",
+            "filename": "https://oracle-livelabs.github.io/common/labs/cloud-login/cloud-login-livelabs2.md"
+        },
+        {
+            "title": "Lab 1: Generate SSH Key - Cloud Shell",
+            "filename": "https://oracle-livelabs.github.io/common/labs/generate-ssh-key-cloud-shell/generate-ssh-keys-cloud-shell.md"
+        },
+        {
+            "title": "Lab 2: Create two Virtual Cloud Networks",
+            "filename": "./../../configure-vcn-peering/create-two-vcns-plus-compute.md"
+        },
+        {
+            "title": "Lab 3: Configure VCN Peering",
+            "filename": "./../../configure-vcn-peering/configure-vcn-peering.md"
+        },
+        {
+            "title": "Lab 4: Clean up workshop resources",
+            "filename": "./../../configure-vcn-peering/cleanup-resources.md"
+        },
+        {
+            "title": "Need Help?",
+            "description": "Solutions to Common Problems and Directions for Receiving Live Help",
+            "filename": "https://oracle-livelabs.github.io/common/labs/need-help/need-help-livelabs.md"
+        }
+    ]
+}
