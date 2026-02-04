@@ -124,10 +124,11 @@ You may now proceed to the next lab.
 
 - [OCI CLI bulk-edit reference](https://docs.oracle.com/en-us/iaas/tools/oci-cli/latest/oci_cli_docs/cmdref/iam/tag/bulk-edit.html)
 - [Invoking Functions automatically with Cloud Events](https://blogs.oracle.com/developers/oracle-functions-invoking-functions-automatically-with-cloud-events)
+- [Using prebuilt functions to simplify budget enforcement](https://blogs.oracle.com/cloud-infrastructure/prebuilt-functions-make-enforcing-budgets-easier)
 
 
 ## Acknowledgements
 
-- **Author** - 
-- **Contributors** - Daniel Hart, Deion Locklear, Eli Schilling, Wynne Yang
+- **Author** - Eli Schilling
+- **Contributors** - Daniel Hart, Deion Locklear, Wynne Yang
 - **Last Updated By/Date** - Published February, 2026
