@@ -30,7 +30,7 @@ This lab assumes you have:
 
 - ... and stuff...
 
-## Task 3: Agent Execution
+## Task 3: Agent Execution -> Agent Loop (separate lab)
 
 - ... and stuff...
 
