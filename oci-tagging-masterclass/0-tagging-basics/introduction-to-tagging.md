@@ -1,54 +1,95 @@
-# Introduction to tagging
+# Introduction to Tagging in Oracle Cloud Infrastructure
 
-Tagging plays a crucial role in organizing and managing cloud resources. A tag is essentially a key value pair that can be added to cloud resources to enhance control. In Oracle Cloud Infrastructure (OCI), tagging is built into the Identity and Access Management (IAM) service, enabling users to systematically categorize and manage resources. The use of tagging further allows for activities such as cost tracking, resource discovery and management, filtering, and logical organization. 
+## The Challenge
 
-## Key Features
+As organizations scale their cloud footprint, the number of resources in a tenancy can grow rapidly. Without a structured approach to organization, teams often struggle to answer basic but critical questions: Who created this resource? Which project does it belong to? Is this instance still needed, or is it generating unnecessary cost? Which department should be billed for this storage bucket?
 
-- **Tag types:** OCI provides the ability to create both free-form tags and defined tags. A free-form tag includes just key and value and can be added to resources as necessary. Defined tags are created by the administrator, enabling a greater level of control and consistency. Defined tags include a tag namespace, a tag key, and a tag value. The tag value can be free-form or a pre-defined list of values.
-- **Cost tracking tags:** Cost tracking is a feature of defined tags. You can enable up to 10 tag key definitions to use for cost-tracking purposes. When assigned to a resource, the cost-tracking tags will appear in billing and cost management.
-- **Tag defaults:** Enables administrators to automatically apply tags to all resources in a compartment at the time of creation. This feature can be used to enforce tagging requirements throughout your OCI tenancy.
-- **Tag variables:** A variable can be assigned to the value of a defined tag. When a resource is tagged, the variable will resolve to a text value. For example `${iam.principal.name}` will resolve to the name of the user that applied the tag to the resource.
+These challenges are not unique to any one organization — they are a natural consequence of cloud adoption at scale. Left unaddressed, they lead to cost overruns, security blind spots, and operational inefficiency. A well-designed tagging strategy is one of the most effective tools available to solve these problems.
 
-When working with tags, there are a number of additional services that can be utilized to provide additional management and automation capabilities:
+## What is Tagging?
 
-- **Budgets:** A cost-management feature that enables administrators to set spending limits, track costs, and generate automated alerts to help prevent overspending.
-- **Cloud Events:** Enables administrators to create automation based on state chagnes of resources within the tenancy. 
-- **Functions:** A serverless, event-driven platform that can be used to automate simple tasks. Functions can be scheduled or triggered by the Events service. These light-weight, serverless programs can be used to maintain or destroy resources based on tags.
+A tag is a key-value pair that can be attached to a cloud resource. While simple in concept, tags unlock a broad range of capabilities when applied consistently. In Oracle Cloud Infrastructure (OCI), tagging is built directly into the Identity and Access Management (IAM) service, making it a foundational element of resource governance. By tagging resources systematically, organizations can enable cost tracking, resource discovery and filtering, access control, and automated lifecycle management — all from a single, unified framework.
 
-## About this Workshop
+## Key Concepts
 
-This workshop will provide a framework for understanding the array of capabilities enabled through the implemention of a comprehensive tagging strategy. It will explore a variety of use cases that can enable organizations to:
-- improve visibility of resources
-- reduce administrative overhead of managing large pools of resources
-- simplify cost management activities
-- control / mitigate overspending
-- provide additional flexibility in managaing access controls
+### Tag Types
 
-**Estimated Workshop Time:** 2 hours 15 minutes
+OCI supports two types of tags:
 
-## Objectives
+- **Free-form tags** are the simplest form. They consist of a key and a value and can be applied to any resource without any prior configuration. Free-form tags are flexible and easy to use, but they do not enforce consistency — any user can define any key-value combination.
 
-In this workshop, you will learn how to:
+- **Defined tags** are created and managed by an administrator. They provide a greater level of control by requiring a **tag namespace** (a logical container for related tag keys), a **tag key**, and a **tag value**. The tag value can be free-form text or constrained to a pre-defined list of acceptable values. This structure helps organizations enforce naming conventions and ensure data quality across the tenancy.
 
-- Create free form and defined tags.
-- Designate defined tags as cost tracking tags.
-- Define tag defaults in a compartment.
-- Utilize the OCI command line interface (CLI) to perform bulk changes to resources based on tags.
-- Implement cost management features using tags.
-- Leverage tags to define access control policies within IAM.
-- Provision serverless functions to update / manage tags on a scheduled basis.
-- Provision serverless functions to automatically stop / terminate resources based on tags.
+### Tag Namespace
 
+A tag namespace is a container for a set of related tag key definitions. Namespaces help organize tags logically — for example, an organization might create a namespace called `CostCenter` or `ProjectTracking`. Namespaces also serve as a boundary for IAM policy, allowing administrators to control who can create, apply, and manage specific sets of tags.
+
+### Cost Tracking Tags
+
+Cost tracking is a feature of defined tags. Administrators can enable up to 10 tag key definitions for cost-tracking purposes. When a cost-tracking tag is applied to a resource, the tag key and value will appear in billing reports and the Cost Analysis tool in the OCI Console. This allows organizations to attribute cloud spending to specific departments, projects, environments, or any other dimension that aligns with their financial reporting needs.
+
+### Tag Defaults
+
+Tag defaults enable administrators to automatically apply tags to all resources created within a specific compartment. When a user creates a resource in that compartment, the default tags are applied without any action required from the user. This is a powerful mechanism for enforcing tagging policies — for example, ensuring every resource in a production compartment is automatically tagged with `Environment: Production`.
+
+### Tag Variables
+
+Tag variables add dynamic behavior to tag defaults. Rather than assigning a static value, administrators can use a variable expression that resolves at the time the resource is created. For example, the variable `${iam.principal.name}` will resolve to the name of the user who created the resource. This enables automatic attribution without relying on users to manually tag their own resources. Other useful variables include `${iam.principal.type}` and `${oci.datetime}`.
+
+## Supporting OCI Services
+
+Tags become even more powerful when combined with other OCI services. This workshop will make use of the following:
+
+- **Budgets:** A cost management feature that enables administrators to set spending limits based on compartments or cost-tracking tags. Budgets can generate automated alerts when spending approaches or exceeds a defined threshold, helping to prevent unexpected overages.
+
+- **Events Service:** Enables administrators to create automation rules that are triggered by state changes to resources within the tenancy — for example, when a compute instance is launched or a tag is modified. Events can trigger notifications, functions, or streaming pipelines.
+
+- **Functions:** OCI Functions is a serverless, event-driven compute platform. Functions can be triggered by the Events service or executed on a schedule using the OCI Scheduler. In the context of tagging, functions can be used to enforce compliance — for example, by automatically stopping or terminating resources that are missing required tags.
+
+- **OCI Command Line Interface (CLI):** The OCI CLI provides programmatic access to OCI services from the command line. It is particularly useful for performing bulk operations on resources, such as applying or updating tags across a large number of instances simultaneously.
+
+## About This Workshop
+
+This workshop provides a hands-on framework for understanding the capabilities enabled through a comprehensive tagging strategy in OCI. Through a series of guided labs, you will move from foundational concepts — creating and applying tags — to advanced use cases like tag-based access control and serverless enforcement of tagging policies.
+
+By the end of this workshop, you will be equipped to:
+
+- Improve visibility into who owns and manages cloud resources.
+- Reduce the administrative overhead of managing large resource pools.
+- Simplify cost allocation and financial reporting.
+- Control and mitigate overspending through budgets and alerts.
+- Enforce governance standards through automated tagging and compliance checks.
+
+### Workshop Labs
+
+| Lab | Title | Estimated Time | Key Services |
+|-----|-------|---------------|-------------|
+| 1 | Working with Free-Form Tags, Defined Tags, and Tag Defaults | 20 minutes | IAM, Tagging |
+| 2 | Making Bulk Tag Changes with the OCI CLI | 20 minutes | OCI CLI, Tagging |
+| 3 | Cost Management with Tags and Budgets | 20 minutes | Budgets, Cost Analysis, Tagging |
+| 4 | Tag-Based Access Control with IAM Policies | 20 minutes | IAM Policies, Tagging |
+| 5 | Automated Resource Updates with OCI Functions | 25 minutes | Functions, Events, Tagging |
+| 6 | Enforcing Tagging Compliance with OCI Functions | 30 minutes | Functions, Events, Tagging |
+
+**Estimated Total Workshop Time:** 2 hours 15 minutes
+
+### Prerequisites
+
+- Access to an Oracle Cloud Infrastructure tenancy with administrator privileges (or a pre-configured LiveLabs sandbox environment).
+- Basic familiarity with the OCI Console, including navigation and compartment structure.
+- A compartment designated for workshop activities (the lab instructions will guide you through creating resources within this compartment).
+- Access to OCI Cloud Shell or a local terminal with the OCI CLI installed and configured.
+- No prior experience with OCI tagging is required — the workshop starts from the fundamentals.
 
 ## Learn More
 
-- [Overview of tagging](https://docs.oracle.com/en-us/iaas/Content/Tagging/Concepts/taggingoverview.htm)
-- [Tagging best practices](https://www.ateam-oracle.com/oracle-cloud-infrastructure-tagging-best-practices-enable-mandatory-tagging-for-compartments)
+- [Overview of Tagging](https://docs.oracle.com/en-us/iaas/Content/Tagging/Concepts/taggingoverview.htm)
+- [Tagging Best Practices](https://www.ateam-oracle.com/oracle-cloud-infrastructure-tagging-best-practices-enable-mandatory-tagging-for-compartments)
 - [Tagging in Oracle Cloud Infrastructure](https://medium.com/@johnny.cree/tagging-in-oracle-cloud-infrastructure-c279c350f692)
 - [OCI Command Line Interface](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/cliconcepts.htm)
 - [OCI Budgets](https://docs.oracle.com/en-us/iaas/Content/Billing/Concepts/budgetsoverview.htm)
 - [OCI Events](https://docs.oracle.com/en-us/iaas/Content/Events/Concepts/eventsoverview.htm)
-- [OCI Funtions](https://docs.oracle.com/en-us/iaas/Content/Functions/Concepts/functionsoverview.htm)
+- [OCI Functions](https://docs.oracle.com/en-us/iaas/Content/Functions/Concepts/functionsoverview.htm)
 
 ## Acknowledgements
 
