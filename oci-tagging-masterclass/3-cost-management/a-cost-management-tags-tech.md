@@ -1,4 +1,4 @@
-# Lab 3a (Tech): Working with Cost Management Tags
+# Lab 3a (Tech): Working with Cost Management and Tags
 
 ## Introduction
 
