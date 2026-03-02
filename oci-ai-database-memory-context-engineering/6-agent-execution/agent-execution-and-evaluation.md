@@ -4,13 +4,13 @@
 
 --------
 
-## Objective
+### Objective
 
 This is where everything comes together. You'll build the **turn-level agent harness** that integrates all memory types, context engineering, and tool calling — then run Atlas through realistic IT support scenarios and compare the engineered approach against a naive baseline.
 
 --------
 
-## Step 1: The Agent System Prompt
+## Task 1: The Agent System Prompt
 
 The system prompt tells Atlas how to use its memory systems and tools. Notice it establishes a **priority order** for memory types — this is critical for reliable behavior.
 
@@ -61,7 +61,7 @@ When answering:
 
 --------
 
-## Step 2: Tool Execution and OpenAI Chat Wrapper
+## Task 2: Tool Execution and OpenAI Chat Wrapper
 
 ```python
 def execute_tool(tool_name: str, tool_args: dict) -> str:
@@ -82,7 +82,7 @@ def call_openai_chat(messages: list, tools: list = None, model: str = "gpt-4o"):
 
 --------
 
-## Step 3: The Turn-Level Agent Harness
+## Task 3: The Turn-Level Agent Harness
 
 This is the core of Atlas. Each call to `call_agent()` represents one **agent run** (one user turn handled). Within a run, the **tool-call loop** repeats: model reasoning → optional tool calls → harness executes tools → model observes results → repeat until a final answer.
 
@@ -354,7 +354,7 @@ def call_agent(
 
 --------
 
-## Step 4: Run Atlas Through IT Support Scenarios
+## Task 4: Run Atlas Through IT Support Scenarios
 
 ### Scenario 1: Simple Ticket — "I can't log in"
 
@@ -421,7 +421,7 @@ else:
 
 --------
 
-## Step 5: Baseline — The Naive Agent (No Context Engineering)
+## Task 5: Baseline — The Naive Agent (No Context Engineering)
 
 To appreciate the impact of memory and context engineering, let's see what happens **without them**.
 
@@ -562,7 +562,7 @@ def call_agent_naive(
 
 --------
 
-## Step 6: Head-to-Head Comparison
+## Task 6: Head-to-Head Comparison
 
 Run both agents through the same progressive queries — five escalating IT support questions that build on each other. This tests memory continuity, context management, and resolution quality.
 

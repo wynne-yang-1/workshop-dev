@@ -4,7 +4,7 @@
 
 --------
 
-## Objective
+### Objective
 
 While memory engineering focuses on *what to store and retrieve*, context engineering focuses on *how to manage what's in the context window right now*. In this activity, you'll build the techniques that keep Atlas's context lean and effective, plus integrate web search so Atlas can find information beyond the internal knowledge base.
 
@@ -12,7 +12,7 @@ While memory engineering focuses on *what to store and retrieve*, context engine
 
 --------
 
-## What This Activity Covers
+### What This Activity Covers
 
 | Step | Function | Purpose |
 |------|----------|---------|
@@ -22,7 +22,7 @@ While memory engineering focuses on *what to store and retrieve*, context engine
 | **4. Just-in-Time Retrieval** | `expand_summary()` tool | Let Atlas expand summaries on demand |
 | **5. Web Search** | `search_tavily()` tool | External retrieval with automatic knowledge base persistence |
 
-## The Context Management Flow
+### The Context Management Flow
 
 ```
 Context built → Check usage % → Atlas may compact (summarize) → Store summary with ID
@@ -34,7 +34,7 @@ This approach keeps the context lean while giving Atlas access to full details w
 
 --------
 
-## Just-in-Time (JIT) Retrieval
+### Just-in-Time (JIT) Retrieval
 
 **Just-In-Time retrieval** is the process of fetching only the information needed at the exact moment the agent requires it, based on the current task or reasoning step. Instead of loading everything upfront, the system dynamically retrieves the minimal, most relevant data on demand.
 
@@ -47,7 +47,7 @@ For Atlas, this means:
 
 --------
 
-## Step 1: Context Window Usage Calculator
+## Task 1: Context Window Usage Calculator
 
 This simple utility estimates how much of the context window is being used. Atlas can check this to decide whether compaction is needed.
 
@@ -66,7 +66,7 @@ def calculate_context_usage(context: str, model: str = "gpt-4o") -> dict:
 
 --------
 
-## Step 2: Context Summarizer
+## Task 2: Context Summarizer
 
 When the context window grows large — after several tool calls, long conversations, or large search results — we can compress it into a summary. The full content is stored in Summary Memory, and the context window gets a compact pointer.
 
@@ -122,7 +122,7 @@ Context window content:
 
 --------
 
-## Step 3: Context Offloader
+## Task 3: Context Offloader
 
 This utility checks whether the context exceeds a threshold and, if so, automatically summarizes and replaces the content with a compact reference.
 
@@ -147,7 +147,7 @@ def offload_to_summary(
 
 --------
 
-## Step 4: Register Summary Tools for the Agent
+## Task 4: Register Summary Tools for the Agent
 
 These are **agent-triggered** tools — Atlas decides when to call them based on the current context. We register them with `augment=True` for better semantic retrieval.
 
@@ -222,7 +222,7 @@ def summarize_conversation(thread_id: str) -> str:
 
 --------
 
-## Step 5: Web Search with Tavily
+## Task 5: Web Search with Tavily
 
 Atlas needs to search external sources when the internal knowledge base doesn't have the answer — for example, looking up a new Kubernetes CVE, a vendor advisory, or an unfamiliar error message.
 

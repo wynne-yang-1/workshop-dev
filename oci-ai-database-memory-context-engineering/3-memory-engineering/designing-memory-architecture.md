@@ -4,7 +4,7 @@
 
 --------
 
-## Objective
+### Objective
 
 In this activity, you'll understand *why* Atlas needs six distinct memory types, learn the design principles behind each one, and create all the database tables and vector stores that will power the Memory Manager in Activity 3.
 
@@ -12,7 +12,7 @@ This is the **architecture** activity — we focus on design decisions before wr
 
 --------
 
-## Why Memory Engineering Matters
+### Why Memory Engineering Matters
 
 Without memory, an IT support agent like Atlas:
 - Forgets that the user already said they're on VPN
@@ -34,7 +34,7 @@ With proper memory engineering, Atlas can:
 
 --------
 
-## The Six Memory Types
+### The Six Memory Types
 
 Just like humans have different types of memory (short-term, long-term, procedural), AI agents benefit from specialized memory systems. Here's what we'll build for Atlas:
 
@@ -52,7 +52,7 @@ Just like humans have different types of memory (short-term, long-term, procedur
 
 --------
 
-## Programmatic vs. Agent-Triggered Operations
+### Programmatic vs. Agent-Triggered Operations
 
 A key design decision in memory engineering is deciding which operations run **programmatically** (always executed by the harness code) versus **agent-triggered** (the LLM chooses to invoke them during reasoning).
 

@@ -4,7 +4,7 @@
 
 --------
 
-## Objective
+### Objective
 
 In this activity, you'll implement the two core abstractions that power Atlas:
 
@@ -15,7 +15,7 @@ By the end, you'll be able to test individual memory operations: write a convers
 
 --------
 
-## Step 1: The MemoryManager Class
+## Task 1: The MemoryManager Class
 
 The `MemoryManager` is the central abstraction that unifies all memory operations. It provides a clean interface for reading and writing to different memory types, hiding the complexity of SQL queries and vector store operations.
 
@@ -482,7 +482,7 @@ If none: []'''
 
 --------
 
-## Step 2: Initialize the Memory Manager
+## Task 2: Initialize the Memory Manager
 
 ```python
 memory_manager = MemoryManager(
@@ -518,7 +518,7 @@ print(memory_manager.read_knowledge_base("VPN keeps disconnecting"))
 
 --------
 
-## Step 3: The Semantic Toolbox
+## Task 3: The Semantic Toolbox
 
 ### The Scalability Problem with Tools
 
@@ -746,7 +746,7 @@ class Toolbox:
 
 --------
 
-## Step 4: Initialize the Toolbox and Set Up API Keys
+## Task 4: Initialize the Toolbox and Set Up API Keys
 
 ```python
 import os
@@ -773,7 +773,7 @@ toolbox = Toolbox(memory_manager=memory_manager, llm_client=client)
 
 --------
 
-## Step 5: Test Tool Registration and Retrieval
+## Task 5: Test Tool Registration and Retrieval
 
 Let's register a simple diagnostic tool and verify semantic retrieval works:
 
