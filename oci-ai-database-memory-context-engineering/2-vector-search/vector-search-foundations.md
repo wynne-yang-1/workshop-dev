@@ -406,7 +406,7 @@ for doc in docs:
 
 --------
 
-## Activity 1 Recap
+## Lab 2 Recap
 
 You've now built the search foundation that Atlas will rely on:
 
@@ -419,3 +419,13 @@ You've now built the search foundation that Atlas will rely on:
 | Applied metadata filters | Narrow results by category, severity, or team |
 
 **Next up**: In Activity 2, we'll design the complete memory architecture that gives Atlas six distinct types of memory — each with a specific purpose and storage strategy.
+
+## Learn More
+
+- []()
+
+## Acknowledgements
+
+- **Author** - Richmond Alake
+- **Contributors** - Eli Schilling
+- **Last Updated By/Date** - Published February, 2026

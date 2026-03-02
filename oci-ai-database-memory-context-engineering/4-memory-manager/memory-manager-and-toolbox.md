@@ -804,7 +804,7 @@ pprint.pprint(retrieved_tools)
 
 --------
 
-## Activity 3 Recap
+## Lab 4 Recap
 
 | What You Built | Why It Matters |
 |---------------|----------------|
@@ -818,3 +818,13 @@ pprint.pprint(retrieved_tools)
 **Key Insight**: The Toolbox sits at the intersection of three disciplines: *memory engineering* (tools as procedural memory), *context engineering* (only relevant tools in context), and *prompt engineering* (role-setting for better docstring augmentation).
 
 **Next up**: In Activity 4, we'll build the context engineering layer — usage tracking, summarization, just-in-time retrieval — and integrate Tavily for web search.
+
+## Learn More
+
+- []()
+
+## Acknowledgements
+
+- **Author** - Richmond Alake
+- **Contributors** - Eli Schilling
+- **Last Updated By/Date** - Published February, 2026

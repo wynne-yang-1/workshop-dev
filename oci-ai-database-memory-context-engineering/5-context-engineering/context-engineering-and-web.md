@@ -298,7 +298,7 @@ pprint.pprint(retrieved_tools)
 
 --------
 
-## Activity 4 Recap
+## Lab 5 Recap
 
 | What You Built | Why It Matters |
 |---------------|----------------|
@@ -312,3 +312,13 @@ pprint.pprint(retrieved_tools)
 **Key Insight**: The search-and-store pattern means Atlas builds institutional knowledge over time. The first time a NovaTech employee asks about a specific error, Atlas searches externally. The second time, Atlas finds the answer in its own knowledge base — no external call needed, faster and cheaper.
 
 **Next up**: In Activity 5, we'll wire everything together into the `call_agent` harness, run Atlas through real IT support scenarios, and compare the engineered approach against a naive baseline.
+
+## Learn More
+
+- []()
+
+## Acknowledgements
+
+- **Author** - Richmond Alake
+- **Contributors** - Eli Schilling
+- **Last Updated By/Date** - Published February, 2026

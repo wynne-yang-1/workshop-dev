@@ -321,7 +321,7 @@ if "novatech_kb_articles" in globals() and novatech_kb_articles:
 
 --------
 
-## Activity 2 Recap
+## Lab 3 Recap
 
 You've designed and created the complete memory infrastructure for Atlas:
 
@@ -338,3 +338,13 @@ You've designed and created the complete memory infrastructure for Atlas:
 **Key Insight**: The `summary_id` column in conversational memory enables **log compaction** — a pattern borrowed from databases where old entries are compressed but not lost. Messages are *marked* as summarized, not deleted, preserving full audit history.
 
 **Next up**: In Activity 3, we'll implement the `MemoryManager` class that provides clean read/write interfaces for all these memory types, and build the semantic `Toolbox` for dynamic tool discovery.
+
+## Learn More
+
+- []()
+
+## Acknowledgements
+
+- **Author** - Richmond Alake
+- **Contributors** - Eli Schilling
+- **Last Updated By/Date** - Published February, 2026

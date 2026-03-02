@@ -675,10 +675,21 @@ You've built a complete memory-powered AI agent from the ground up:
 
 | Activity | What You Built |
 |----------|---------------|
-| **1** | Vector search foundations with OracleVS and NovaTech KB data |
-| **2** | Memory architecture — 6 types, SQL + vector stores, design principles |
-| **3** | MemoryManager class and semantic Toolbox with LLM augmentation |
-| **4** | Context engineering — usage tracking, summarization, JIT retrieval, web search |
-| **5** | Agent harness, IT support scenarios, and engineered vs. naive comparison |
+| **1** | Provision and prepare the Autonomous Oracle AI Database 26ai instance |
+| **2** | Vector search foundations with OracleVS and NovaTech KB data |
+| **3** | Memory architecture — 6 types, SQL + vector stores, design principles |
+| **4** | MemoryManager class and semantic Toolbox with LLM augmentation |
+| **5** | Context engineering — usage tracking, summarization, JIT retrieval, web search |
+| **6** | Agent harness, IT support scenarios, and engineered vs. naive comparison |
 
 Atlas now demonstrates how modern AI agents maintain context, learn from interactions, and manage information across sessions — all backed by Oracle AI Database 26ai as the converged storage layer for relational, vector, and semantic data.
+
+## Learn More
+
+- []()
+
+## Acknowledgements
+
+- **Author** - Richmond Alake
+- **Contributors** - Eli Schilling
+- **Last Updated By/Date** - Published February, 2026
