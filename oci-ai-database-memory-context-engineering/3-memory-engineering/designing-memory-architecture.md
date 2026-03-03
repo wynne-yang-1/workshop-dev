@@ -6,9 +6,9 @@
 
 ### Objective
 
-In this activity, you'll understand *why* Proteus needs six distinct memory types, learn the design principles behind each one, and create all the database tables and vector stores that will power the Memory Manager in Activity 3.
+In this lab, you'll understand *why* Proteus needs six distinct memory types, learn the design principles behind each one, and create all the database tables and vector stores that will power the Memory Manager in Lab 4.
 
-This is the **architecture** activity — we focus on design decisions before writing implementation code.
+This is the **architecture** lab — we focus on design decisions before writing implementation code.
 
 --------
 
@@ -118,7 +118,7 @@ vector_conn.commit()
 ```
 
 ```python
-# Model token limits (for context management in Activity 4)
+# Model token limits (for context management in Lab 5)
 MODEL_TOKEN_LIMITS = {
     "gpt-5": 256000,
     "gpt-5-mini": 128000,
@@ -297,7 +297,7 @@ print("✅ All indexes created!")
 
 ## Step 5: Seed the Knowledge Base with SeerGroup Data
 
-We'll reuse the SeerGroup KB articles from Activity 1 to populate the knowledge base memory. In production, this would be a continuous ingestion pipeline from your documentation systems.
+We'll reuse the SeerGroup KB articles from Lab 2 to populate the knowledge base memory. In production, this would be a continuous ingestion pipeline from your documentation systems.
 
 ```python
 # Seed knowledge base memory with SeerGroup KB articles
@@ -337,7 +337,7 @@ You've designed and created the complete memory infrastructure for Proteus:
 
 **Key Insight**: The `summary_id` column in conversational memory enables **log compaction** — a pattern borrowed from databases where old entries are compressed but not lost. Messages are *marked* as summarized, not deleted, preserving full audit history.
 
-**Next up**: In Activity 3, we'll implement the `MemoryManager` class that provides clean read/write interfaces for all these memory types, and build the semantic `Toolbox` for dynamic tool discovery.
+**Next up**: In Lab 4, we'll implement the `MemoryManager` class that provides clean read/write interfaces for all these memory types, and build the semantic `Toolbox` for dynamic tool discovery.
 
 ## Learn More
 

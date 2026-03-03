@@ -6,13 +6,13 @@
 
 ### Objective
 
-While memory engineering focuses on *what to store and retrieve*, context engineering focuses on *how to manage what's in the context window right now*. In this activity, you'll build the techniques that keep Proteus's context lean and effective, plus integrate web search so Proteus can find information beyond the internal knowledge base.
+While memory engineering focuses on *what to store and retrieve*, context engineering focuses on *how to manage what's in the context window right now*. In this lab, you'll build the techniques that keep Proteus's context lean and effective, plus integrate web search so Proteus can find information beyond the internal knowledge base.
 
 > **Context engineering** refers to the set of strategies for curating and maintaining the optimal set of tokens (information) during LLM inference, including all the other information that may land there outside of the prompts.
 
 --------
 
-### What This Activity Covers
+### What This Lab Covers
 
 | Step | Function | Purpose |
 |------|----------|---------|
@@ -311,7 +311,7 @@ pprint.pprint(retrieved_tools)
 
 **Key Insight**: The search-and-store pattern means Proteus builds institutional knowledge over time. The first time a SeerGroup employee asks about a specific error, Proteus searches externally. The second time, Proteus finds the answer in its own knowledge base — no external call needed, faster and cheaper.
 
-**Next up**: In Activity 5, we'll wire everything together into the `call_agent` harness, run Proteus through real IT support scenarios, and compare the engineered approach against a naive baseline.
+**Next up**: In Lab 6, we'll wire everything together into the `call_agent` harness, run Proteus through real IT support scenarios, and compare the engineered approach against a naive baseline.
 
 ## Learn More
 

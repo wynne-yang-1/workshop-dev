@@ -6,7 +6,7 @@
 
 ### Objectives
 
-In this activity, you'll learn how to store and search documents using **semantic similarity** — finding results based on meaning rather than exact keyword matches. This is the foundation that powers every memory type we'll build in later activities.
+In this lab, you'll learn how to store and search documents using **semantic similarity** — finding results based on meaning rather than exact keyword matches. This is the foundation that powers every memory type we'll build in later activities.
 
 You'll work with **SeerGroup Solutions' IT knowledge base**: internal documentation, runbooks, and incident reports that our AI support agent "Proteus" will use to resolve tickets.
 
@@ -418,7 +418,7 @@ You've now built the search foundation that Proteus will rely on:
 | Queried with natural language | "Users can't log in" finds AUTH-SVC articles without keyword matching |
 | Applied metadata filters | Narrow results by category, severity, or team |
 
-**Next up**: In Activity 2, we'll design the complete memory architecture that gives Proteus six distinct types of memory — each with a specific purpose and storage strategy.
+**Next up**: In Lab 3, we'll design the complete memory architecture that gives Proteus six distinct types of memory — each with a specific purpose and storage strategy.
 
 ## Learn More
 
