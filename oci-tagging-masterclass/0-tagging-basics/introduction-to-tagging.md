@@ -6,13 +6,13 @@ As organizations scale their cloud footprint, the number of resources in a tenan
 
 These challenges are not unique to any one organization — they are a natural consequence of cloud adoption at scale. Left unaddressed, they lead to cost overruns, security blind spots, and operational inefficiency. A well-designed tagging strategy is one of the most effective tools available to solve these problems.
 
-## What is Tagging?
+### What is Tagging?
 
 A tag is a key-value pair that can be attached to a cloud resource. While simple in concept, tags unlock a broad range of capabilities when applied consistently. In Oracle Cloud Infrastructure (OCI), tagging is built directly into the Identity and Access Management (IAM) service, making it a foundational element of resource governance. By tagging resources systematically, organizations can enable cost tracking, resource discovery and filtering, access control, and automated lifecycle management — all from a single, unified framework.
 
-## Key Concepts
+### Key Concepts
 
-### Tag Types
+#### Tag Types
 
 OCI supports two types of tags:
 
@@ -20,23 +20,23 @@ OCI supports two types of tags:
 
 - **Defined tags** are created and managed by an administrator. They provide a greater level of control by requiring a **tag namespace** (a logical container for related tag keys), a **tag key**, and a **tag value**. The tag value can be free-form text or constrained to a pre-defined list of acceptable values. This structure helps organizations enforce naming conventions and ensure data quality across the tenancy.
 
-### Tag Namespace
+#### Tag Namespace
 
 A tag namespace is a container for a set of related tag key definitions. Namespaces help organize tags logically — for example, an organization might create a namespace called `CostCenter` or `ProjectTracking`. Namespaces also serve as a boundary for IAM policy, allowing administrators to control who can create, apply, and manage specific sets of tags.
 
-### Cost Tracking Tags
+#### Cost Tracking Tags
 
 Cost tracking is a feature of defined tags. Administrators can enable up to 10 tag key definitions for cost-tracking purposes. When a cost-tracking tag is applied to a resource, the tag key and value will appear in billing reports and the Cost Analysis tool in the OCI Console. This allows organizations to attribute cloud spending to specific departments, projects, environments, or any other dimension that aligns with their financial reporting needs.
 
-### Tag Defaults
+#### Tag Defaults
 
 Tag defaults enable administrators to automatically apply tags to all resources created within a specific compartment. When a user creates a resource in that compartment, the default tags are applied without any action required from the user. This is a powerful mechanism for enforcing tagging policies — for example, ensuring every resource in a production compartment is automatically tagged with `Environment: Production`.
 
-### Tag Variables
+#### Tag Variables
 
 Tag variables add dynamic behavior to tag defaults. Rather than assigning a static value, administrators can use a variable expression that resolves at the time the resource is created. For example, the variable `${iam.principal.name}` will resolve to the name of the user who created the resource. This enables automatic attribution without relying on users to manually tag their own resources. Other useful variables include `${iam.principal.type}` and `${oci.datetime}`.
 
-## Supporting OCI Services
+### Supporting OCI Services
 
 Tags become even more powerful when combined with other OCI services. This workshop will make use of the following:
 
