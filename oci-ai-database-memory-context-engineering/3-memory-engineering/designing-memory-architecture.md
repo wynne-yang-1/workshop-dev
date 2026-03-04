@@ -89,6 +89,9 @@ In Proteus's design, the harness is intentionally opinionated: memory loading an
 Each memory type gets its own table. SQL tables for exact-match retrieval (conversational history, tool logs); vector-enabled SQL tables for semantic search (everything else).
 
 ```python
+<copy>
+%python
+
 # Table names for each memory type
 CONVERSATIONAL_TABLE   = "CONVERSATIONAL_MEMORY"   # Episodic memory
 KNOWLEDGE_BASE_TABLE   = "SEMANTIC_MEMORY"          # Semantic memory
@@ -115,9 +118,7 @@ for table in ALL_TABLES:
             print(f"  ✗ {table}: {e}")
 
 vector_conn.commit()
-```
 
-```python
 # Model token limits (for context management in Lab 5)
 MODEL_TOKEN_LIMITS = {
     "gpt-5": 256000,
@@ -127,6 +128,7 @@ MODEL_TOKEN_LIMITS = {
     "gpt-4": 8192,
     "gpt-3.5-turbo": 16385,
 }
+</copy>
 ```
 
 --------
@@ -138,6 +140,9 @@ Unlike semantic memories backed by vector stores, conversational memory uses a t
 The table includes a `summary_id` column — when older messages are summarized and compressed, they're marked (not deleted) with a reference to the summary that replaced them.
 
 ```python
+<copy>
+%python
+
 def create_conversational_history_table(conn, table_name: str = "CONVERSATIONAL_MEMORY"):
     """
     Create a table to store conversational history.
@@ -181,12 +186,11 @@ def create_conversational_history_table(conn, table_name: str = "CONVERSATIONAL_
     conn.commit()
     print(f"✅ Table {table_name} created with indexes (thread_id, timestamp)")
     return table_name
-```
 
-```python
 CONVERSATION_HISTORY_TABLE = create_conversational_history_table(
     vector_conn, CONVERSATIONAL_TABLE
 )
+</copy>
 ```
 
 --------
@@ -200,6 +204,9 @@ The `TOOL_LOG` table acts as an **experimental memory**: full tool outputs are p
 This is a form of **context offloading** — keeping the working memory lean while preserving full fidelity in durable storage.
 
 ```python
+<copy>
+%python
+
 def create_tool_log_table(conn, table_name: str = "TOOL_LOG"):
     """Create a table to log tool call outputs (experimental memory)."""
     with conn.cursor() as cur:
@@ -228,6 +235,7 @@ def create_tool_log_table(conn, table_name: str = "TOOL_LOG"):
 
 
 TOOL_LOG_TABLE_NAME = create_tool_log_table(vector_conn, TOOL_LOG_TABLE)
+</copy>
 ```
 
 --------
@@ -245,6 +253,9 @@ Here we create five separate OracleVS-backed vector stores — one for each sema
 | `summary_vs` | Compressed summaries for long troubleshooting sessions |
 
 ```python
+<copy>
+%python
+
 knowledge_base_vs = OracleVS(
     client=vector_conn,
     embedding_function=embedding_model,
@@ -279,11 +290,15 @@ summary_vs = OracleVS(
     table_name=SUMMARY_TABLE,
     distance_strategy=DistanceStrategy.COSINE,
 )
+</copy>
 ```
 
 ### Build HNSW Indexes for Each Vector Store
 
 ```python
+<copy>
+%python
+
 print("Creating vector indexes...")
 safe_create_index(vector_conn, knowledge_base_vs, "knowledge_base_vs_hnsw")
 safe_create_index(vector_conn, workflow_vs, "workflow_vs_hnsw")
@@ -291,6 +306,7 @@ safe_create_index(vector_conn, toolbox_vs, "toolbox_vs_hnsw")
 safe_create_index(vector_conn, entity_vs, "entity_vs_hnsw")
 safe_create_index(vector_conn, summary_vs, "summary_vs_hnsw")
 print("✅ All indexes created!")
+</copy>
 ```
 
 --------
@@ -300,6 +316,9 @@ print("✅ All indexes created!")
 We'll reuse the SeerGroup KB articles from Lab 2 to populate the knowledge base memory. In production, this would be a continuous ingestion pipeline from your documentation systems.
 
 ```python
+<copy>
+%python
+
 # Seed knowledge base memory with SeerGroup KB articles
 if "seergroup_kb_articles" in globals() and seergroup_kb_articles:
     kb_texts = [
@@ -317,6 +336,7 @@ if "seergroup_kb_articles" in globals() and seergroup_kb_articles:
     ]
     knowledge_base_vs.add_texts(kb_texts, kb_meta)
     print(f"✅ Seeded knowledge base memory with {len(kb_texts)} SeerGroup KB articles")
+</copy>
 ```
 
 --------

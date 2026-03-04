@@ -52,6 +52,9 @@ For Proteus, this means:
 This simple utility estimates how much of the context window is being used. Proteus can check this to decide whether compaction is needed.
 
 ```python
+<copy>
+%python
+
 def calculate_context_usage(context: str, model: str = "gpt-4o") -> dict:
     """Calculate context window usage as percentage."""
     estimated_tokens = len(context) // 4  # ~4 chars per token
@@ -62,6 +65,7 @@ def calculate_context_usage(context: str, model: str = "gpt-4o") -> dict:
         "max": max_tokens,
         "percent": round(percentage, 1),
     }
+</copy>
 ```
 
 --------
@@ -71,6 +75,9 @@ def calculate_context_usage(context: str, model: str = "gpt-4o") -> dict:
 When the context window grows large — after several tool calls, long conversations, or large search results — we can compress it into a summary. The full content is stored in Summary Memory, and the context window gets a compact pointer.
 
 ```python
+<copy>
+%python
+
 import uuid
 
 
@@ -118,6 +125,7 @@ Context window content:
     memory_manager.write_summary(summary_id, content, summary, description)
 
     return {"id": summary_id, "description": description, "summary": summary}
+</copy>
 ```
 
 --------
@@ -127,6 +135,9 @@ Context window content:
 This utility checks whether the context exceeds a threshold and, if so, automatically summarizes and replaces the content with a compact reference.
 
 ```python
+<copy>
+%python
+
 def offload_to_summary(
     context: str,
     memory_manager,
@@ -143,6 +154,7 @@ def offload_to_summary(
 
     compact = f"[Summary ID: {result['id']}] {result['description']}"
     return compact, [result]
+</copy>
 ```
 
 --------
@@ -176,6 +188,9 @@ Ticket thread has 50 messages → Context too large → summarize_conversation(t
 ```
 
 ```python
+<copy>
+%python
+
 @toolbox.register_tool(augment=True)
 def expand_summary(summary_id: str) -> str:
     """Expand a summary reference to full content, including the original conversation
@@ -218,6 +233,7 @@ def summarize_conversation(thread_id: str) -> str:
     memory_manager.mark_as_summarized(thread_id, result["id"], message_ids=message_ids)
 
     return f"Conversation summarized as [Summary ID: {result['id']}] {result['description']}"
+</copy>
 ```
 
 --------
@@ -245,13 +261,14 @@ Future tickets can retrieve this information without searching again
 This pattern means Proteus **learns** from its searches. Information discovered once becomes part of the agent's long-term memory.
 
 ```python
-set_env_securely("TAVILY_API_KEY", "Tavily API Key: ")
-```
+<copy>
+%python
 
-```python
 from tavily import TavilyClient
 
-tavily_client = TavilyClient(api_key=os.environ["TAVILY_API_KEY"])
+TAVILY_API_KEY
+
+tavily_client = TavilyClient(api_key=TAVILY_API_KEY)
 
 
 @toolbox.register_tool(augment=True)
@@ -282,7 +299,8 @@ def search_tavily(query: str, max_results: int = 5):
 
         memory_manager.write_knowledge_base(text, metadata)
 
-    return results
+    return 
+</copy>
 ```
 
 ### Verify Tool Retrieval
@@ -290,10 +308,14 @@ def search_tavily(query: str, max_results: int = 5):
 Let's confirm that Proteus can find the search tool when needed:
 
 ```python
+<copy>
+%python
+
 import pprint
 
 retrieved_tools = memory_manager.read_toolbox("Search the internet for vendor documentation")
 pprint.pprint(retrieved_tools)
+</copy>
 ```
 
 --------

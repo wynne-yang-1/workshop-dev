@@ -43,22 +43,46 @@ This lab assumes you have:
 
 3. In the top right corner, ensure **Jupyter** is selected.
 
-## Task 4: Connect to the database and create VECTOR user
+    SCREENSHOT
 
-1. Copy the following into the first paragraph field and click the ▷to run the code.
+4. Install required, additional libraries for the workshop. Copy the code and press ▷ button. 
 
     ```
-    <copy>python
+    <copy>
+    ====================================!!!!!!!!===============================
+
+    install langchain-oracledb sentence-transformers langchain-openai langchain tavily-python
+    <copy>
+    ```
+
+## Task 4: Connect to the database and create VECTOR user
+
+### Understanding the Dual-Connection Pattern
+
+Because we run this workshop inside an **Oracle Machine Learning (OML) Notebook** on Autonomous Database, we can leverage an implicit connection to the database via `import oml` — no credentials or wallet needed. We use `oml.cursor()` for direct SQL operations throughout the workshop.
+
+However, LangChain's `OracleVS` requires an **`oracledb.Connection`** object as its `client` parameter. Since `oml.cursor()` returns a `cx_Oracle` cursor (not an `oracledb` connection), we create a separate lightweight `oracledb` connection for LangChain.
+
+> **Why two connections?** The OML connection is implicit and powers `oml.cursor()`, `oml.push()`, `oml.sync()`, etc. The `oracledb` connection is only needed to satisfy LangChain's type requirement. Both connect to the same database schema.
+
+1. Copy the following into the first paragraph field and click the ▷ to run the code.
+
+    ```python
+    <copy>
     %python
 
     import oml
-    oml.isconnected()
+    import logging
 
+    # OML notebooks are pre-connected — verify it
+    print("OML connected:", oml.isconnected())
+
+    # Use oml.cursor() for direct SQL
     cr = oml.cursor()
-    cr.execute("select sysdate from dual")
-    rows = cr.fetchall()
-    for row in rows:
-        print(f"Current Sysdate: {row[0]}")
+    cr.execute("SELECT banner FROM v$version WHERE banner LIKE 'Oracle%'")
+    banner = cr.fetchone()[0]
+    print(f"\n{banner}")
+    cr.close()
     </copy>
     ```
 
@@ -72,23 +96,25 @@ This lab assumes you have:
 
     import oracledb
 
-    cs = '''your_dsn'''
+    # Store username, password, and DSN
+    adb_user = "admin"
+    adb_password = "WElcome123##"
+    adb_dsn = "your_dsn"
 
     try:
         connection = oracledb.connect(
-            user="admin",
-            password="WElcome123##",
-            dsn=cs
+            user=adb_user,
+            password=adb_password,
+            dsn=adb_dsn
         )
 
         print("Connection Successful")
 
         with connection.cursor() as cursor:
-            cursor.execute("Select sysdate from dual")
-            rows = cursor.fetchall()
-            for row in rows:
-                print(f"Current sysdate: {row[0]}")
-
+            cursor.execute("SELECT banner FROM v$version WHERE banner LIKE 'Oracle%'")
+            banner = cursor.fetchone()[0]
+            print(f"\n{banner}")
+            
     except oracledb.Error as error:
         print(f"Error connecting to the database: {error}")
 
@@ -103,16 +129,13 @@ This lab assumes you have:
 
     SCREENSHOT of successful output
 
-3. Create the VECTOR user. Make sure once more to replace `your_dsn` with the value copied earlier. 
+3. Create the VECTOR user.
 
     ```python
     <copy>
     %python
 
     def setup_oracle_adb(
-        cs="your_dsn",
-        adb_user="admin",
-        adb_password="WElcome123##",
         create_vector_user=True,
         vector_user="VECTOR",
         vector_password="MemoryContext_2026" 
@@ -150,7 +173,7 @@ This lab assumes you have:
             connection = oracledb.connect(
                 user=adb_user,
                 password=adb_password,
-                dsn=cs
+                dsn=adb_dsn
             )
             
             with connection.cursor() as cursor:
@@ -212,7 +235,7 @@ This lab assumes you have:
                 print(f"   ⚠️  Could not create user: {e.args[0].message}")
                 print("   💡 You may need DBA privileges to create users.")
         else:
-            print("\n[5/5] Skipping user creation (create_vector_user=False)")
+            print("\n[3/3] Skipping user creation (create_vector_user=False)")
         
         connection.close()
         
@@ -223,7 +246,7 @@ This lab assumes you have:
         
         print(f"""
     Connection Details:
-        Service: {cs}
+        Service: {adb_dsn}
         Admin User: {adb_user}
     """)
         

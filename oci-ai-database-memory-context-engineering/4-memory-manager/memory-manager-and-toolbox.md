@@ -45,6 +45,9 @@ For learning purposes, building your own memory manager (as we do here) gives yo
 ### The Implementation
 
 ```python
+<copy>
+%python
+
 import json as json_lib
 from datetime import datetime
 
@@ -478,6 +481,7 @@ If none: []'''
             {"id": rid, "role": role, "content": content, "timestamp": ts}
             for rid, role, content, ts in rows
         ]
+</copy>
 ```
 
 --------
@@ -485,6 +489,9 @@ If none: []'''
 ## Task 2: Initialize the Memory Manager
 
 ```python
+<copy>
+%python
+
 memory_manager = MemoryManager(
     conn=vector_conn,
     conversation_table=CONVERSATION_HISTORY_TABLE,
@@ -495,6 +502,7 @@ memory_manager = MemoryManager(
     summary_vs=summary_vs,
     tool_log_table=TOOL_LOG_TABLE_NAME,
 )
+</copy>
 ```
 
 ### Quick Smoke Test
@@ -502,6 +510,9 @@ memory_manager = MemoryManager(
 Let's verify the memory manager works by writing and reading a test conversation:
 
 ```python
+<copy>
+%python
+
 # Write a test conversation
 test_thread = "TICKET-TEST-001"
 memory_manager.write_conversational_memory("I can't log in to Jira this morning", "user", test_thread)
@@ -509,11 +520,10 @@ memory_manager.write_conversational_memory("Let me check AUTH-SVC status for you
 
 # Read it back
 print(memory_manager.read_conversational_memory(test_thread))
-```
 
-```python
 # Test knowledge base search
 print(memory_manager.read_knowledge_base("VPN keeps disconnecting"))
+</copy>
 ```
 
 --------
@@ -571,6 +581,9 @@ This means a simple docstring like `"Search the web"` becomes a rich description
 ### The Implementation
 
 ```python
+<copy>
+%python
+
 import inspect
 import uuid
 from typing import Callable, Optional, Union
@@ -742,6 +755,7 @@ class Toolbox:
         if func is None:
             return decorator
         return decorator(func)
+</copy>
 ```
 
 --------
@@ -749,26 +763,18 @@ class Toolbox:
 ## Task 4: Initialize the Toolbox and Set Up API Keys
 
 ```python
-import os
-import getpass
+<copy>
+%python
 
-
-def set_env_securely(var_name, prompt):
-    value = getpass.getpass(prompt)
-    os.environ[var_name] = value
-```
-
-```python
-set_env_securely("OPENAI_API_KEY", "OpenAI API Key: ")
-```
-
-```python
 from openai import OpenAI
+
+OPENAI_API_KEY="your_openai_key"
 
 client = OpenAI()
 
 # Initialize the Toolbox
 toolbox = Toolbox(memory_manager=memory_manager, llm_client=client)
+</copy>
 ```
 
 --------
@@ -778,6 +784,9 @@ toolbox = Toolbox(memory_manager=memory_manager, llm_client=client)
 Let's register a simple diagnostic tool and verify semantic retrieval works:
 
 ```python
+<copy>
+%python
+
 @toolbox.register_tool(augment=True)
 def check_service_status(service_name: str) -> str:
     """Check if a SeerGroup internal service is running and return its status."""
@@ -790,14 +799,13 @@ def check_service_status(service_name: str) -> str:
     return mock_statuses.get(
         service_name.lower(), f"❓ Unknown service: {service_name}"
     )
-```
 
-```python
 # Test semantic retrieval — does the toolbox find this tool for a related query?
 import pprint
 
 retrieved_tools = memory_manager.read_toolbox("is the authentication service down?")
 pprint.pprint(retrieved_tools)
+</copy>
 ```
 
 > **🔍 Try it**: Change the query to something different — "check if deploy-bot is working" or "what services are having issues" — and see if the tool is still retrieved. This is semantic retrieval in action.

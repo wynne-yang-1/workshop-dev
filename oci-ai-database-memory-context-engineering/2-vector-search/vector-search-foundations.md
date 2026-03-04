@@ -32,9 +32,12 @@ You'll work with **SeerGroup Solutions' IT knowledge base**: internal documentat
 
 ## Task 1: Connect to Oracle AI Database
 
-Your environment has been pre-configured with Oracle AI Database 26ai running locally. The `VECTOR` user and connection details are ready to use.
+Your environment has been pre-configured with Autonomous Oracle AI Database 26ai running in the cloud. The `VECTOR` user and connection details were created in Lab 1.
 
 ```python
+<copy>
+%python
+
 import oracledb
 import time
 import logging
@@ -43,12 +46,12 @@ def connect_to_oracle(
     max_retries=3,
     retry_delay=5,
     user="VECTOR",
-    password="VectorPwd_2025",
-    dsn="127.0.0.1:1521/FREEPDB1",
+    password="MemoryContext_2026",
+    dsn=adb_dsn,
     program="seergroup.proteus.workshop",
 ):
     """
-    Connect to Oracle database with retry logic and helpful error messages.
+    Connect to the Oracle database using VECTOR with retry logic and helpful error messages.
     """
     for attempt in range(1, max_retries + 1):
         try:
@@ -79,11 +82,10 @@ def connect_to_oracle(
                 raise
 
     raise ConnectionError("Failed to connect after all retries")
-```
 
-```python
 vector_conn = connect_to_oracle()
 print("Using user:", vector_conn.username)
+</copy>
 ```
 
 --------
@@ -92,34 +94,39 @@ print("Using user:", vector_conn.username)
 
 We'll use the `sentence-transformers/paraphrase-mpnet-base-v2` model to convert text into 768-dimensional vectors. OracleVS handles the table creation, embedding storage, and similarity search under the hood.
 
-```python
-from langchain_oracledb.vectorstores import OracleVS
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_oracledb.vectorstores.oraclevs import create_index
-from langchain_community.vectorstores.utils import DistanceStrategy
+    ```python
+    <copy>
+    %python
 
-# Suppress verbose logging from langchain_oracledb
-logging.getLogger("langchain_oracledb").setLevel(logging.CRITICAL)
+    from langchain_oracledb.vectorstores import OracleVS
+    from langchain_community.embeddings import HuggingFaceEmbeddings
+    from langchain_oracledb.vectorstores.oraclevs import create_index
+    from langchain_community.vectorstores.utils import DistanceStrategy
 
-# Initialize the embedding model
-embedding_model = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/paraphrase-mpnet-base-v2"
-)
+    # Suppress verbose logging from langchain_oracledb
+    logging.getLogger("langchain_oracledb").setLevel(logging.CRITICAL)
 
-# Create the vector-enabled SQL table via OracleVS
-vector_store = OracleVS(
-    client=vector_conn,
-    embedding_function=embedding_model,
-    table_name="VECTOR_SEARCH_DEMO",
-    distance_strategy=DistanceStrategy.COSINE,
-)
-```
+    # Initialize the embedding model
+    embedding_model = HuggingFaceEmbeddings(
+        model_name="sentence-transformers/paraphrase-mpnet-base-v2"
+    )
+
+    # Create the vector-enabled SQL table via OracleVS
+    vector_store = OracleVS(
+        client=vector_conn,
+        embedding_function=embedding_model,
+        table_name="VECTOR_SEARCH_DEMO",
+        distance_strategy=DistanceStrategy.COSINE,
+    )
+    <copy>
+    ```
 
 ### Create an HNSW Index
 
 HNSW (Hierarchical Navigable Small World) is a graph-based approximate nearest-neighbor index. It provides fast, accurate similarity search at scale — essential when your knowledge base grows to thousands or millions of documents.
 
 ```python
+<copy>
 def safe_create_index(conn, vs, idx_name):
     """Create index, skipping if it already exists."""
     try:
@@ -137,6 +144,7 @@ def safe_create_index(conn, vs, idx_name):
 
 
 safe_create_index(vector_conn, vector_store, "oravs_hnsw")
+<copy>
 ```
 
 --------

@@ -15,6 +15,9 @@ This is where everything comes together. You'll build the **turn-level agent har
 The system prompt tells Proteus how to use its memory systems and tools. Notice it establishes a **priority order** for memory types — this is critical for reliable behavior.
 
 ```python
+<copy>
+%python
+
 import json as json_lib
 from openai import OpenAI
 
@@ -57,6 +60,7 @@ When answering:
 4. Keep responses evidence-based and aligned with SeerGroup's internal documentation
 5. Always mention the relevant team to escalate to when appropriate
 """
+</copy>
 ```
 
 --------
@@ -64,6 +68,9 @@ When answering:
 ## Task 2: Tool Execution and OpenAI Chat Wrapper
 
 ```python
+<copy>
+%python
+
 def execute_tool(tool_name: str, tool_args: dict) -> str:
     """Execute a tool by looking it up in the toolbox."""
     if tool_name not in toolbox._tools_by_name:
@@ -78,6 +85,7 @@ def call_openai_chat(messages: list, tools: list = None, model: str = "gpt-4o"):
         kwargs["tools"] = tools
         kwargs["tool_choice"] = "auto"
     return client.chat.completions.create(**kwargs)
+</copy>
 ```
 
 --------
@@ -118,6 +126,9 @@ This is the core of Proteus. Each call to `call_agent()` represents one **agent 
 ```
 
 ```python
+<copy>
+%python
+
 import time
 
 
@@ -350,6 +361,7 @@ def call_agent(
 
     print("\n" + "=" * 50 + f"\n💬 ANSWER:\n{final_answer}\n" + "=" * 50)
     return final_answer
+</copy>
 ```
 
 --------
@@ -359,11 +371,15 @@ def call_agent(
 ### Scenario 1: Simple Ticket — "I can't log in"
 
 ```python
+<copy>
+%python
+
 call_agent(
     "Hi, I can't log in to any of our internal apps this morning. "
     "Jira, Confluence, everything is giving me an error.",
     thread_id="TICKET-2025-001",
 )
+</copy>
 ```
 
 ### Scenario 2: Follow-up on the Same Ticket
@@ -371,21 +387,29 @@ call_agent(
 Watch how Proteus uses conversational memory from the previous turn:
 
 ```python
+<copy>
+%python
+
 call_agent(
     "I tried restarting my browser and clearing cookies like you suggested, "
     "but it's still not working. My colleague on Floor 2 is having the same issue.",
     thread_id="TICKET-2025-001",
 )
+</copy>
 ```
 
 ### Scenario 3: Infrastructure Issue Requiring Web Search
 
 ```python
+<copy>
+%python
+
 call_agent(
     "Our deployment pipeline is failing with an error about a Kubernetes "
     "admission webhook timeout. This started after the cluster upgrade last night.",
     thread_id="TICKET-2025-002",
 )
+</copy>
 ```
 
 ### Scenario 4: Cross-Referencing Past Incidents
@@ -393,16 +417,23 @@ call_agent(
 Proteus should recognize the AUTH-SVC pattern from its knowledge base:
 
 ```python
+<copy>
+%python
+
 call_agent(
     "AUTH-SVC is showing CrashLoopBackOff again. Did this happen before? "
     "What did we do last time?",
     thread_id="TICKET-2025-003",
 )
+</copy>
 ```
 
 ### Visualize Context Window Growth
 
 ```python
+<copy>
+%python
+
 import matplotlib.pyplot as plt
 
 if context_size_history:
@@ -417,6 +448,7 @@ if context_size_history:
     plt.show()
 else:
     print("No iterations recorded — run call_agent() first.")
+</copy>
 ```
 
 --------
@@ -439,6 +471,9 @@ To appreciate the impact of memory and context engineering, let's see what happe
 In a real agent loop, the LLM is called **once per iteration** with the full `messages` list. Without offloading, every tool output ever produced sits in that list. After just 3 web searches, the context could grow by 10,000+ tokens — consuming budget that could be used for reasoning.
 
 ```python
+<copy>
+%python
+
 naive_context_size_history = []
 _naive_messages_by_thread = {}
 
@@ -558,6 +593,7 @@ def call_agent_naive(
         f"{len(messages)} messages in context)"
     )
     return final_answer
+</copy>
 ```
 
 --------
@@ -567,6 +603,9 @@ def call_agent_naive(
 Run both agents through the same progressive queries — five escalating IT support questions that build on each other. This tests memory continuity, context management, and resolution quality.
 
 ```python
+<copy>
+%python
+
 import uuid
 
 # Reset all trackers for a clean comparison
@@ -601,11 +640,15 @@ for i, q in enumerate(queries, 1):
     print("=" * 60)
     call_agent_naive(q, thread_id=naive_thread)
     print("\n")
+</copy>
 ```
 
 ### Visualize the Difference
 
 ```python
+<copy>
+%python
+
 import matplotlib.pyplot as plt
 
 eng_tokens = [t for _, _, t in context_size_history]
@@ -632,6 +675,7 @@ plt.title("Context Window Growth: Engineered vs Naive Agent")
 plt.legend()
 plt.tight_layout()
 plt.show()
+</copy>
 ```
 
 --------
@@ -675,7 +719,7 @@ You've built a complete memory-powered AI agent from the ground up:
 
 | Activity | What You Built |
 |----------|---------------|
-| **1** | Provision and prepare the Autonomous Oracle AI Database 26ai instance|
+| **1** | Explore the Autonomous Oracle AI Database 26ai instance and Oracle Machine Learning notebooks |
 | **2** | Vector search foundations with OracleVS and SeerGroup KB data |
 | **3** | Memory architecture — 6 types, SQL + vector stores, design principles |
 | **4** | MemoryManager class and semantic Toolbox with LLM augmentation |
