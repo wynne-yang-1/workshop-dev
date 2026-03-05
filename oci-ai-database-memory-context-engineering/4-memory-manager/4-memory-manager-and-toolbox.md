@@ -1,12 +1,12 @@
-# Activity 3: Building the Memory Manager & Toolbox
+# Lab 4: Building the Memory Manager & Toolbox
 
 ## The MemoryManager Class and Semantic Tool Discovery
 
 --------
 
-## Objective
+### Objective
 
-In this activity, you'll implement the two core abstractions that power Proteus:
+In this lab, you'll implement the two core abstractions that power Proteus:
 
 1. **MemoryManager** — a unified class with read/write methods for all six memory types
 2. **Toolbox** — a semantic tool registry where tools are discovered by meaning, not by name
@@ -804,7 +804,7 @@ pprint.pprint(retrieved_tools)
 
 --------
 
-## Activity 3 Recap
+## Lab 4 Recap
 
 | What You Built | Why It Matters |
 |---------------|----------------|
@@ -817,4 +817,14 @@ pprint.pprint(retrieved_tools)
 
 **Key Insight**: The Toolbox sits at the intersection of three disciplines: *memory engineering* (tools as procedural memory), *context engineering* (only relevant tools in context), and *prompt engineering* (role-setting for better docstring augmentation).
 
-**Next up**: In Activity 4, we'll build the context engineering layer — usage tracking, summarization, just-in-time retrieval — and integrate Tavily for web search.
+**Next up**: In Lab 5, we'll build the context engineering layer — usage tracking, summarization, just-in-time retrieval — and integrate Tavily for web search.
+
+## Learn More
+
+
+
+## Acknowledgements
+
+- **Author** - Richmond Alake
+- **Contributors** - Eli Schilling
+- **Last Updated By/Date** - Published February, 2026

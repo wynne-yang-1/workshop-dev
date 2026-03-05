@@ -1,4 +1,4 @@
-# Activity 5: Agent Execution & Evaluation
+# Lab 6: Agent Execution & Evaluation
 
 ## Running Proteus Through IT Support Scenarios
 
@@ -673,12 +673,23 @@ Strong agents are not just model prompts. They are **run + harness systems**, an
 
 You've built a complete memory-powered AI agent from the ground up:
 
-| Activity | What You Built |
+| Lab | What You Built |
 |----------|---------------|
-| **1** | Vector search foundations with OracleVS and SeerGroup KB data |
-| **2** | Memory architecture — 6 types, SQL + vector stores, design principles |
-| **3** | MemoryManager class and semantic Toolbox with LLM augmentation |
-| **4** | Context engineering — usage tracking, summarization, JIT retrieval, web search |
-| **5** | Agent harness, IT support scenarios, and engineered vs. naive comparison |
+| **1** | Set up your Jupyter environment in VS Code, connected to Oracle Database, and created a VECTOR user |
+| **2** | Vector search foundations with OracleVS and SeerGroup KB data |
+| **3** | Memory architecture — 6 types, SQL + vector stores, design principles |
+| **4** | MemoryManager class and semantic Toolbox with LLM augmentation |
+| **5** | Context engineering — usage tracking, summarization, JIT retrieval, web search |
+| **6** | Agent harness, IT support scenarios, and engineered vs. naive comparison |
 
 Proteus now demonstrates how modern AI agents maintain context, learn from interactions, and manage information across sessions — all backed by Oracle AI Database 26ai as the converged storage layer for relational, vector, and semantic data.
+
+## Learn More
+
+
+
+## Acknowledgements
+
+- **Author** - Richmond Alake
+- **Contributors** - Eli Schilling
+- **Last Updated By/Date** - Published February, 2026

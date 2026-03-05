@@ -1,18 +1,18 @@
-# Activity 4: Context Engineering & Web Integration
+# Lab 5: Context Engineering & Web Integration
 
 ## Context Window Management, Summarization, and Tavily Search
 
 --------
 
-## Objective
+### Objective
 
-While memory engineering focuses on *what to store and retrieve*, context engineering focuses on *how to manage what's in the context window right now*. In this activity, you'll build the techniques that keep Proteus's context lean and effective, plus integrate web search so Proteus can find information beyond the internal knowledge base.
+While memory engineering focuses on *what to store and retrieve*, context engineering focuses on *how to manage what's in the context window right now*. In this lab, you'll build the techniques that keep Proteus's context lean and effective, plus integrate web search so Proteus can find information beyond the internal knowledge base.
 
 > **Context engineering** refers to the set of strategies for curating and maintaining the optimal set of tokens (information) during LLM inference, including all the other information that may land there outside of the prompts.
 
 --------
 
-## What This Activity Covers
+### What This Lab Covers
 
 | Step | Function | Purpose |
 |------|----------|---------|
@@ -22,7 +22,7 @@ While memory engineering focuses on *what to store and retrieve*, context engine
 | **4. Just-in-Time Retrieval** | `expand_summary()` tool | Let Proteus expand summaries on demand |
 | **5. Web Search** | `search_tavily()` tool | External retrieval with automatic knowledge base persistence |
 
-## The Context Management Flow
+### The Context Management Flow
 
 ```
 Context built → Check usage % → Proteus may compact (summarize) → Store summary with ID
@@ -34,7 +34,7 @@ This approach keeps the context lean while giving Proteus access to full details
 
 --------
 
-## Just-in-Time (JIT) Retrieval
+### Just-in-Time (JIT) Retrieval
 
 **Just-In-Time retrieval** is the process of fetching only the information needed at the exact moment the agent requires it, based on the current task or reasoning step. Instead of loading everything upfront, the system dynamically retrieves the minimal, most relevant data on demand.
 
@@ -298,7 +298,7 @@ pprint.pprint(retrieved_tools)
 
 --------
 
-## Activity 4 Recap
+## Lab 5 Recap
 
 | What You Built | Why It Matters |
 |---------------|----------------|
@@ -311,4 +311,14 @@ pprint.pprint(retrieved_tools)
 
 **Key Insight**: The search-and-store pattern means Proteus builds institutional knowledge over time. The first time a SeerGroup employee asks about a specific error, Proteus searches externally. The second time, Proteus finds the answer in its own knowledge base — no external call needed, faster and cheaper.
 
-**Next up**: In Activity 5, we'll wire everything together into the `call_agent` harness, run Proteus through real IT support scenarios, and compare the engineered approach against a naive baseline.
+**Next up**: In Lab 6, we'll wire everything together into the `call_agent` harness, run Proteus through real IT support scenarios, and compare the engineered approach against a naive baseline.
+
+## Learn More
+
+
+
+## Acknowledgements
+
+- **Author** - Richmond Alake
+- **Contributors** - Eli Schilling
+- **Last Updated By/Date** - Published February, 2026

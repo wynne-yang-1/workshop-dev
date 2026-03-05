@@ -1,18 +1,16 @@
-# Activity 2: Designing the Memory Architecture
+# Lab 3: Designing the Memory Architecture
 
 ## Memory Types, Design Decisions, and Storage Setup
 
 --------
 
-## Objective
+### Objective
 
-In this activity, you'll understand *why* Proteus needs six distinct memory types, learn the design principles behind each one, and create all the database tables and vector stores that will power the Memory Manager in Activity 3.
+In this lab, you'll understand *why* Proteus needs six distinct memory types, learn the design principles behind each one, and create all the database tables and vector stores that will power the Memory Manager in Lab 4.
 
-This is the **architecture** activity — we focus on design decisions before writing implementation code.
+This is the **architecture** lab — we focus on design decisions before writing implementation code.
 
---------
-
-## Why Memory Engineering Matters
+### Why Memory Engineering Matters
 
 Without memory, an IT support agent like Proteus:
 - Forgets that the user already said they're on VPN
@@ -26,7 +24,7 @@ With proper memory engineering, Proteus can:
 - Track infrastructure entities and their relationships
 - Compress long conversations while preserving key details
 
-### Definitions
+#### Definitions
 
 **Agent Memory** is the exocortex that augments an LLM — capturing, encoding, storing, linking, and retrieving information beyond the model's parametric and contextual limits. It provides the persistence and structure required for long-horizon reasoning and reliable behaviour.
 
@@ -34,7 +32,7 @@ With proper memory engineering, Proteus can:
 
 --------
 
-## The Six Memory Types
+### The Six Memory Types
 
 Just like humans have different types of memory (short-term, long-term, procedural), AI agents benefit from specialized memory systems. Here's what we'll build for Proteus:
 
@@ -52,7 +50,7 @@ Just like humans have different types of memory (short-term, long-term, procedur
 
 --------
 
-## Programmatic vs. Agent-Triggered Operations
+### Programmatic vs. Agent-Triggered Operations
 
 A key design decision in memory engineering is deciding which operations run **programmatically** (always executed by the harness code) versus **agent-triggered** (the LLM chooses to invoke them during reasoning).
 
@@ -118,7 +116,7 @@ vector_conn.commit()
 ```
 
 ```python
-# Model token limits (for context management in Activity 4)
+# Model token limits (for context management in Lab 5)
 MODEL_TOKEN_LIMITS = {
     "gpt-5": 256000,
     "gpt-5-mini": 128000,
@@ -297,7 +295,7 @@ print("✅ All indexes created!")
 
 ## Step 5: Seed the Knowledge Base with SeerGroup Data
 
-We'll reuse the SeerGroup KB articles from Activity 1 to populate the knowledge base memory. In production, this would be a continuous ingestion pipeline from your documentation systems.
+We'll reuse the SeerGroup KB articles from Lab 2 to populate the knowledge base memory. In production, this would be a continuous ingestion pipeline from your documentation systems.
 
 ```python
 # Seed knowledge base memory with SeerGroup KB articles
@@ -321,7 +319,7 @@ if "seergroup_kb_articles" in globals() and seergroup_kb_articles:
 
 --------
 
-## Activity 2 Recap
+## Lab 3 Recap
 
 You've designed and created the complete memory infrastructure for Proteus:
 
@@ -337,4 +335,14 @@ You've designed and created the complete memory infrastructure for Proteus:
 
 **Key Insight**: The `summary_id` column in conversational memory enables **log compaction** — a pattern borrowed from databases where old entries are compressed but not lost. Messages are *marked* as summarized, not deleted, preserving full audit history.
 
-**Next up**: In Activity 3, we'll implement the `MemoryManager` class that provides clean read/write interfaces for all these memory types, and build the semantic `Toolbox` for dynamic tool discovery.
+**Next up**: In Lab 4, we'll implement the `MemoryManager` class that provides clean read/write interfaces for all these memory types, and build the semantic `Toolbox` for dynamic tool discovery.
+
+## Learn More
+
+
+
+## Acknowledgements
+
+- **Author** - Richmond Alake
+- **Contributors** - Eli Schilling
+- **Last Updated By/Date** - Published February, 2026
