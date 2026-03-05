@@ -40,10 +40,9 @@ In this workshop, you'll learn how to engineer memory systems that give AI agent
 ## Pre-requisites
 
 - Oracle Cloud Infrastructure (OCI) Tenancy
-- Capacity to deploy Oracle Autonomous AI Database
-- Capacity to deploy an OCI Compute Instance with 4 OCPU
-- [Optional] Capacity to deploy Oracle Kubernetes Engine (OKE)
-- Python 3.10+
+- Cloud Environment details provided by LiveLabs
+- Visual Studio Code (VS Code) Installed
+- Python 3.14+ installed
 - [OpenAI API Key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-openai-api-key)
 - [Tavily API Key](https://www.tavily.com/)
 

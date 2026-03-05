@@ -51,7 +51,18 @@ This lab assumes you have:
 
 For this lab, you will create a new `.ipynb` file and copy in the code to prep the database. in future labs, we've provided the `.ipynb` file to streamline these activities.
 
-1. Open VS Code and close any existing tabs. Press `Ctrl+Shift+P` and begin typing "Jupyter". It should auto-populate the option to `Create: New Jupyter Notebook`. Select this option.
+1. Open VS Code and close any existing tabs. 
+
+
+2. Create a new Workspace: **File** -> **Open Folder**
+
+3. Select an existing folder where you'd like to create your workspace, or create and select a new folder.
+
+    SCREENSHOT
+
+4. 
+
+Press `Ctrl+Shift+P` and begin typing "Jupyter". It should auto-populate the option to `Create: New Jupyter Notebook`. Select this option.
 
 2. Paste the following and press the Run arrow on the left side of the code block:
 
@@ -95,8 +106,11 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
 
     # Store username, password, and DSN
     adb_password = getpass.getpass("Database password: ")
+    vector_password = getpass.getpass("Enter password for VECTOR (e.g. MemoryContext_2026): ")
     adb_dsn = os.environ.get("DB_DSN", input("Database DSN copied earlier: "))
     adb_user = "ADMIN"
+    vector_user = "VECTOR"
+
 
     try:
         connection = oracledb.connect(
@@ -133,8 +147,8 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
 
     def setup_oracle_adb(
         create_vector_user=True,
-        vector_user="VECTOR",
-        vector_password="MemoryContext_2026" 
+        vector_user=vector_user,
+        vector_password=vector_password 
     ) -> bool:
         """
         Connect to Oracle Autonomous Database and create VECTOR user
@@ -252,7 +266,7 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
         User: {vector_user}
         Password: {vector_password}
     """)
-        
+
         return True
 
     setup_oracle_adb()

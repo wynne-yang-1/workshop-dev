@@ -14,7 +14,7 @@ Modern context engineering often categorizes AI memory into layers inspired by h
 
 --------
 
-## What You'll Build
+### What You'll Build
 
 You'll build **Proteus**, SeerGroup Solutions' AI-powered IT support agent. Proteus uses a complete memory system with seven distinct memory types — each serving a specific cognitive function:
 
@@ -30,7 +30,7 @@ You'll build **Proteus**, SeerGroup Solutions' AI-powered IT support agent. Prot
 
 --------
 
-## Workshop Flow
+### Workshop Flow
 
 | Activity | Focus | What You'll Do |
 | --- | --- | --- |
@@ -40,9 +40,7 @@ You'll build **Proteus**, SeerGroup Solutions' AI-powered IT support agent. Prot
 | **4. Context Engineering & Web Search** | Context window management | Implement token tracking, auto-summarization, just-in-time retrieval, and Tavily integration |
 | **5. Agent Execution & Evaluation** | End-to-end agent loop | Run Proteus through multi-turn IT support scenarios and evaluate performance |
 
---------
-
-## Key Concepts
+### Key Concepts
 
 - **Memory Engineering**: Design patterns for structuring and persisting agent memory across multiple specialized stores
 - **Context Engineering**: Techniques for optimizing what enters the LLM context window — and when
@@ -52,42 +50,32 @@ You'll build **Proteus**, SeerGroup Solutions' AI-powered IT support agent. Prot
 - **Entity Extraction**: LLM-powered recognition of servers, services, people, and teams from conversation text
 - **Log Compaction**: Marking old messages as summarized (not deleting them) to preserve audit history while keeping context lean
 
---------
-
-## Technology Stack
+### Technology Stack
 
 | Component | Role |
 | --- | --- |
 | **Oracle Autonomous AI Database** | Vector-enabled SQL tables with AI Vector Search |
-| **OML Notebooks** (Jupyter format) | Interactive development environment on Autonomous Database |
-| **OML4Py** | Implicit database connection and `oml.cursor()` for SQL operations |
 | **LangChain OracleVS** | Vector store abstraction for embedding storage and similarity search |
 | **HuggingFace Embeddings** | `sentence-transformers/paraphrase-mpnet-base-v2` for 768-dimensional vectors |
 | **OpenAI API** | LLM reasoning, entity extraction, and docstring augmentation |
 | **Tavily API** | Web search integration for real-time information retrieval |
 
---------
-
-## About this Workshop
+### About this Workshop
 
 In this workshop, you'll learn how to engineer memory systems that give AI agents the ability to remember, learn, and adapt across conversations. Moving beyond simple RAG, you'll implement a complete **MemoryManager** with seven distinct memory types — each serving a specific cognitive function — alongside a semantic **Toolbox** for dynamic tool discovery, a **context engineering layer** with token tracking and auto-summarization, and a **full agent execution loop** with evaluation scenarios.
 
 **Estimated Workshop Time:** 1 hour 30 minutes
 
---------
-
-## Prerequisites
+### Prerequisites
 
 - Oracle Cloud Infrastructure (OCI) Tenancy
-- Capacity to provision an Oracle Autonomous AI Database
-- Access to Oracle Machine Learning (OML) Notebooks
-- Python 3.10+
+- Cloud Environment details provided by LiveLabs
+- Visual Studio Code (VS Code) Installed
+- Python 3.14+ installed
 - [OpenAI API Key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-openai-api-key)
 - [Tavily API Key](https://www.tavily.com/)
 
---------
-
-## Objectives
+### Objectives
 
 By the end of this workshop you'll have a reusable `MemoryManager` class and agent loop that demonstrates how modern AI agents maintain context, learn from interactions, and manage information across sessions.
 
