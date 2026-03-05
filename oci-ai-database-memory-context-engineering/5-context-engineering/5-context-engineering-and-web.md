@@ -14,8 +14,6 @@ While memory engineering focuses on *what to store and retrieve*, context engine
 
 ### What This Lab Covers
 
-<div style="margin-left: 20px;">
-
 | Step | Function | Purpose |
 |------|----------|---------|
 | **1. Calculate Usage** | `calculate_context_usage()` | Monitor what % of the context window is used |
@@ -23,8 +21,6 @@ While memory engineering focuses on *what to store and retrieve*, context engine
 | **3. Compact** | `summarize_conversation()` / `summarize_and_store()` | Agent-triggered compaction when context gets long |
 | **4. Just-in-Time Retrieval** | `expand_summary()` tool | Let Proteus expand summaries on demand |
 | **5. Web Search** | `search_tavily()` tool | External retrieval with automatic knowledge base persistence |
-
-</div>
 
 ### The Context Management Flow
 
@@ -153,14 +149,10 @@ These are **agent-triggered** tools — Proteus decides when to call them based 
 
 When conversation history grows large, we need to reduce context. We chose to **mark messages as summarized** rather than delete them:
 
-<div style="margin-left: 20px;">
-
 | Approach | Pros | Cons |
 |----------|------|------|
 | **Delete summarized messages** | Simple, immediate space savings | Permanent data loss, can't audit or recover |
 | **Mark as summarized (our choice)** | Preserves history, reversible, auditable | Slightly more complex queries |
-
-</div>
 
 Memory should be *compressed* or *forgotten*, not *erased*. The original messages remain for auditing, debugging, or reprocessing.
 
@@ -298,8 +290,6 @@ Let's confirm that Proteus can find the search tool when needed:
 
 ## Lab 5 Recap
 
-<div style="margin-left: 20px;">
-
 | What You Built | Why It Matters |
 |---------------|----------------|
 | `calculate_context_usage()` | Monitor context consumption and trigger compaction proactively |
@@ -308,8 +298,6 @@ Let's confirm that Proteus can find the search tool when needed:
 | `expand_summary()` tool | JIT retrieval — Proteus expands only the summaries it needs |
 | `summarize_conversation()` tool | Log compaction for long troubleshooting threads |
 | `search_tavily()` tool | External search with automatic knowledge base persistence |
-
-</div>
 
 **Key Insight**: The search-and-store pattern means Proteus builds institutional knowledge over time. The first time a SeerGroup employee asks about a specific error, Proteus searches externally. The second time, Proteus finds the answer in its own knowledge base — no external call needed, faster and cheaper.
 

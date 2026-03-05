@@ -36,8 +36,6 @@ With proper memory engineering, Proteus can:
 
 Just like humans have different types of memory (short-term, long-term, procedural), AI agents benefit from specialized memory systems. Here's what we'll build for Proteus:
 
-<div style="margin-left: 20px;">
-
 | Memory Type | Human Analogy | SeerGroup Use Case | Storage |
 |-------------|---------------|-------------------|---------|
 | **Conversational** | Short-term memory | "The user said they're on Floor 2 with a MacBook" | SQL Table |
@@ -48,8 +46,6 @@ Just like humans have different types of memory (short-term, long-term, procedur
 | **Summary** | Compressed memory | "45-minute debug session condensed to 5 bullet points" | Vector-Enabled SQL Table |
 | **Tool Log** | Episodic memory | "Full kubectl output stored in DB, preview in context" | SQL Table |
 
-</div>
-
 > **Note on Tool Log:** Tool Log is a form of episodic memory — it records *what happened* during each tool execution. Beyond keeping the context window lean, tool logs can serve as a source from which **procedural memories** (workflow patterns) and **semantic memories** (knowledge base entries) can be distilled over time.
 
 --------
@@ -59,8 +55,6 @@ Just like humans have different types of memory (short-term, long-term, procedur
 A key design decision in memory engineering is deciding which operations run **programmatically** (always executed by the harness code) versus **agent-triggered** (the LLM chooses to invoke them during reasoning).
 
 In Proteus's design, the harness is intentionally opinionated: memory loading and persistence are automatic, while external retrieval and context compaction are chosen by the agent.
-
-<div style="margin-left: 20px;">
 
 | Operation | Programmatic | Agent-Triggered | Notes |
 |-----------|:------------:|:---------------:|-------|
@@ -79,8 +73,6 @@ In Proteus's design, the harness is intentionally opinionated: memory loading an
 | `expand_summary()` | ❌ | ✅ | Agent-triggered just-in-time summary expansion |
 | `summarize_and_store()` | ❌ | ✅ | Agent-triggered context compaction primitive |
 | `summarize_conversation()` | ❌ | ✅ | Agent-triggered conversation compaction for active thread |
-
-</div>
 
 ### Why This Split Works
 
@@ -236,8 +228,6 @@ This is a form of **context offloading** — keeping the working memory lean whi
 
 Here we create five separate OracleVS-backed vector stores — one for each semantic memory type. Each uses the same embedding model for consistency.
 
-<div style="margin-left: 20px;">
-
 | Vector Store Handle | Purpose |
 |---------------------|---------|
 | `knowledge_base_vs` | KB articles, runbooks, vendor docs, web search results |
@@ -245,8 +235,6 @@ Here we create five separate OracleVS-backed vector stores — one for each sema
 | `toolbox_vs` | Tool definitions for semantic tool discovery |
 | `entity_vs` | Extracted entities: servers, services, people, teams |
 | `summary_vs` | Compressed summaries for long troubleshooting sessions |
-
-</div>
 
     ```python
     knowledge_base_vs = OracleVS(
@@ -326,8 +314,6 @@ We'll reuse the SeerGroup KB articles from Lab 2 to populate the knowledge base 
 
 You've designed and created the complete memory infrastructure for Proteus:
 
-<div style="margin-left: 20px;">
-
 | What You Did | Why It Matters |
 |-------------|----------------|
 | Defined 6 memory types with clear purposes | Each memory serves a distinct cognitive function |
@@ -337,8 +323,6 @@ You've designed and created the complete memory infrastructure for Proteus:
 | Created tool log table | Context offloading for lean working memory |
 | Created 5 vector-enabled tables | Semantic search across knowledge, workflows, tools, entities, summaries |
 | Seeded the knowledge base | SeerGroup KB articles ready for Proteus to search |
-
-</div>
 
 **Key Insight**: The `summary_id` column in conversational memory enables **log compaction** — a pattern borrowed from databases where old entries are compressed but not lost. Messages are *marked* as summarized, not deleted, preserving full audit history.
 

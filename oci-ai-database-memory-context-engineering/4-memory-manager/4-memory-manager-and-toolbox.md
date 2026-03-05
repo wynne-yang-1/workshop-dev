@@ -31,16 +31,12 @@ The `MemoryManager` is the central abstraction that unifies all memory operation
 
 There are existing frameworks that abstract memory management for AI agents:
 
-<div style="margin-left: 20px;">
-
 | Framework | Description |
 |-----------|-------------|
 | **LangChain Memory** | Built-in memory classes (ConversationBufferMemory, VectorStoreRetrieverMemory) |
 | **Mem0** | Dedicated memory layer for AI agents with automatic memory management |
 | **LlamaIndex** | Document-based memory with various storage backends |
 | **Zep** | Long-term memory service for AI assistants |
-
-</div>
 
 For learning purposes, building your own memory manager (as we do here) gives you a deep understanding of how memory engineering works. For production, you might consider using or extending an existing framework. Note that this workshop only illustrates reads and writes — a production system would also need deletion, updates, and TTL-based expiry.
 
@@ -524,16 +520,12 @@ Let's verify the memory manager works by writing and reading a test conversation
 
 As your AI system grows, you might have **hundreds of tools** available — diagnostic scripts, API calls, database queries, search endpoints. Passing all tools to the LLM at inference time creates serious problems:
 
-<div style="margin-left: 20px;">
-
 | Problem | Impact |
 |---------|--------|
 | **Context bloat** | Tool definitions consume tokens, leaving less room for actual content |
 | **Tool selection failure** | LLMs struggle to choose the right tool when presented with too many options |
 | **Increased latency** | More tokens = slower inference |
 | **Higher costs** | More tokens = higher API costs |
-
-</div>
 
 Model providers typically recommend limiting tools to 10-20 max for reliable selection.
 
@@ -563,16 +555,12 @@ This means a simple docstring like `"Search the web"` becomes a rich description
 
 ### Three Engineering Disciplines in One
 
-<div style="margin-left: 20px;">
-
 | Discipline | Technique Used | How It Helps |
 |------------|----------------|--------------|
 | **Memory Engineering** | Toolbox as procedural memory | Tools are stored and retrieved like learned skills |
 | **Memory Engineering** | Docstring augmentation | LLM improves descriptions for better retrieval |
 | **Context Engineering** | Selective tool retrieval | Only relevant tools enter the context window |
 | **Prompt Engineering** | Role setting | "You are a technical writer" improves docstring quality |
-
-</div>
 
 ### The Implementation
 
@@ -806,8 +794,6 @@ Let's register a simple diagnostic tool and verify semantic retrieval works:
 
 ## Lab 4 Recap
 
-<div style="margin-left: 20px;">
-
 | What You Built | Why It Matters |
 |---------------|----------------|
 | `MemoryManager` class with 7 memory types | Unified read/write interface hiding SQL and vector complexity |
@@ -816,8 +802,6 @@ Let's register a simple diagnostic tool and verify semantic retrieval works:
 | Entity extraction via LLM | Automatic recognition of servers, services, people from conversation |
 | `Toolbox` class with semantic retrieval | Scale to hundreds of tools while LLM only sees relevant ones |
 | LLM-augmented tool registration | Better retrieval through enhanced descriptions and synthetic queries |
-
-</div>
 
 **Key Insight**: The Toolbox sits at the intersection of three disciplines: *memory engineering* (tools as procedural memory), *context engineering* (only relevant tools in context), and *prompt engineering* (role-setting for better docstring augmentation).
 

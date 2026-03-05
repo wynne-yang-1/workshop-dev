@@ -12,8 +12,6 @@ You'll work with **SeerGroup Solutions' IT knowledge base**: internal documentat
 
 #### What You'll Learn
 
-<div style="margin-left: 20px;">
-
 | Step | Description |
 |------|-------------|
 | **1. Initialize Embeddings** | Load a HuggingFace embedding model to convert text into vectors |
@@ -22,8 +20,6 @@ You'll work with **SeerGroup Solutions' IT knowledge base**: internal documentat
 | **4. Add Documents** | Store SeerGroup IT knowledge base articles with metadata |
 | **5. Query** | Search for similar documents using natural language |
 | **6. Filter Results** | Use metadata filters to narrow down search results |
-
-</div>
 
 #### Key Components
 
@@ -413,8 +409,6 @@ In a real IT support system, Proteus needs to narrow results by category, severi
 
 You've now built the search foundation that Proteus will rely on:
 
-<div style="margin-left: 20px;">
-
 | What You Did | Why It Matters |
 |-------------|----------------|
 | Created a vector-enabled SQL table | Documents stored with embeddings for semantic retrieval |
@@ -422,8 +416,6 @@ You've now built the search foundation that Proteus will rely on:
 | Ingested SeerGroup KB articles | Real IT support data with rich metadata |
 | Queried with natural language | "Users can't log in" finds AUTH-SVC articles without keyword matching |
 | Applied metadata filters | Narrow results by category, severity, or team |
-
-</div>
 
 **Next up**: In Lab 3, we'll design the complete memory architecture that gives Proteus six distinct types of memory — each with a specific purpose and storage strategy.
 

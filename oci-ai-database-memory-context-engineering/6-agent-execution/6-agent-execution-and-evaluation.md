@@ -418,16 +418,12 @@ To appreciate the impact of memory and context engineering, let's see what happe
 
 `call_agent_naive` deliberately removes three key optimizations:
 
-<div style="margin-left: 20px;">
-
 | Technique Removed | What Happens Instead | Effect on Context Window |
 |---|---|---|
 | **Tool output offloading** (`write_tool_log`) | Full raw tool outputs stay in messages | Each tool call adds thousands of tokens |
 | **Summarization tools** | Excluded from tool list — agent can't compact context | Context only grows, never shrinks |
 | **Context refresh after search** | No rebuild from memory after tool calls | Stale + bloated context persists |
 | **Memory-backed context rebuild** | Messages persist as one flat list | Everything accumulates indefinitely |
-
-</div>
 
 ### Why This Matters
 
@@ -643,8 +639,6 @@ An **agent harness** is the runtime scaffolding around that loop. In this worksh
 
 ### What Makes the Difference
 
-<div style="margin-left: 20px;">
-
 | Aspect | Naive Agent | Proteus (Engineered) |
 |--------|-------------|-------------------|
 | **Context growth** | Unbounded — every tool output accumulates | Managed — tool outputs offloaded, conversations compacted |
@@ -652,8 +646,6 @@ An **agent harness** is the runtime scaffolding around that loop. In this worksh
 | **Tool discovery** | All tools all the time | Semantic retrieval of relevant tools per query |
 | **Knowledge retention** | Lost between sessions | Persistent across tickets and sessions |
 | **Resolution patterns** | Rediscovered every time | Learned workflows reused automatically |
-
-</div>
 
 ### The Practical Takeaway
 
@@ -668,8 +660,6 @@ Strong agents are not just model prompts. They are **run + harness systems**, an
 
 You've built a complete memory-powered AI agent from the ground up:
 
-<div style="margin-left: 20px;">
-
 | Lab | What You Built |
 |----------|---------------|
 | **1** | Set up your Jupyter environment in VS Code, connected to Oracle Database, and created a VECTOR user |
@@ -678,8 +668,6 @@ You've built a complete memory-powered AI agent from the ground up:
 | **4** | MemoryManager class and semantic Toolbox with LLM augmentation |
 | **5** | Context engineering — usage tracking, summarization, JIT retrieval, web search |
 | **6** | Agent harness, IT support scenarios, and engineered vs. naive comparison |
-
-</div>
 
 Proteus now demonstrates how modern AI agents maintain context, learn from interactions, and manage information across sessions — all backed by Oracle AI Database 26ai as the converged storage layer for relational, vector, and semantic data.
 
