@@ -1,18 +1,18 @@
-# Lab 3: Designing the Memory Architecture
+# Activity 2: Designing the Memory Architecture
 
 ## Memory Types, Design Decisions, and Storage Setup
 
 --------
 
-### Objective
+## Objective
 
-In this lab, you'll understand *why* Proteus needs six distinct memory types, learn the design principles behind each one, and create all the database tables and vector stores that will power the Memory Manager in Lab 4.
+In this activity, you'll understand *why* Proteus needs six distinct memory types, learn the design principles behind each one, and create all the database tables and vector stores that will power the Memory Manager in Activity 3.
 
-This is the **architecture** lab — we focus on design decisions before writing implementation code.
+This is the **architecture** activity — we focus on design decisions before writing implementation code.
 
 --------
 
-### Why Memory Engineering Matters
+## Why Memory Engineering Matters
 
 Without memory, an IT support agent like Proteus:
 - Forgets that the user already said they're on VPN
@@ -34,7 +34,7 @@ With proper memory engineering, Proteus can:
 
 --------
 
-### The Six Memory Types
+## The Six Memory Types
 
 Just like humans have different types of memory (short-term, long-term, procedural), AI agents benefit from specialized memory systems. Here's what we'll build for Proteus:
 
@@ -52,7 +52,7 @@ Just like humans have different types of memory (short-term, long-term, procedur
 
 --------
 
-### Programmatic vs. Agent-Triggered Operations
+## Programmatic vs. Agent-Triggered Operations
 
 A key design decision in memory engineering is deciding which operations run **programmatically** (always executed by the harness code) versus **agent-triggered** (the LLM chooses to invoke them during reasoning).
 
@@ -89,9 +89,6 @@ In Proteus's design, the harness is intentionally opinionated: memory loading an
 Each memory type gets its own table. SQL tables for exact-match retrieval (conversational history, tool logs); vector-enabled SQL tables for semantic search (everything else).
 
 ```python
-<copy>
-%python
-
 # Table names for each memory type
 CONVERSATIONAL_TABLE   = "CONVERSATIONAL_MEMORY"   # Episodic memory
 KNOWLEDGE_BASE_TABLE   = "SEMANTIC_MEMORY"          # Semantic memory
@@ -118,8 +115,10 @@ for table in ALL_TABLES:
             print(f"  ✗ {table}: {e}")
 
 vector_conn.commit()
+```
 
-# Model token limits (for context management in Lab 5)
+```python
+# Model token limits (for context management in Activity 4)
 MODEL_TOKEN_LIMITS = {
     "gpt-5": 256000,
     "gpt-5-mini": 128000,
@@ -128,7 +127,6 @@ MODEL_TOKEN_LIMITS = {
     "gpt-4": 8192,
     "gpt-3.5-turbo": 16385,
 }
-</copy>
 ```
 
 --------
@@ -140,9 +138,6 @@ Unlike semantic memories backed by vector stores, conversational memory uses a t
 The table includes a `summary_id` column — when older messages are summarized and compressed, they're marked (not deleted) with a reference to the summary that replaced them.
 
 ```python
-<copy>
-%python
-
 def create_conversational_history_table(conn, table_name: str = "CONVERSATIONAL_MEMORY"):
     """
     Create a table to store conversational history.
@@ -186,11 +181,12 @@ def create_conversational_history_table(conn, table_name: str = "CONVERSATIONAL_
     conn.commit()
     print(f"✅ Table {table_name} created with indexes (thread_id, timestamp)")
     return table_name
+```
 
+```python
 CONVERSATION_HISTORY_TABLE = create_conversational_history_table(
     vector_conn, CONVERSATIONAL_TABLE
 )
-</copy>
 ```
 
 --------
@@ -204,9 +200,6 @@ The `TOOL_LOG` table acts as an **experimental memory**: full tool outputs are p
 This is a form of **context offloading** — keeping the working memory lean while preserving full fidelity in durable storage.
 
 ```python
-<copy>
-%python
-
 def create_tool_log_table(conn, table_name: str = "TOOL_LOG"):
     """Create a table to log tool call outputs (experimental memory)."""
     with conn.cursor() as cur:
@@ -235,7 +228,6 @@ def create_tool_log_table(conn, table_name: str = "TOOL_LOG"):
 
 
 TOOL_LOG_TABLE_NAME = create_tool_log_table(vector_conn, TOOL_LOG_TABLE)
-</copy>
 ```
 
 --------
@@ -253,9 +245,6 @@ Here we create five separate OracleVS-backed vector stores — one for each sema
 | `summary_vs` | Compressed summaries for long troubleshooting sessions |
 
 ```python
-<copy>
-%python
-
 knowledge_base_vs = OracleVS(
     client=vector_conn,
     embedding_function=embedding_model,
@@ -290,15 +279,11 @@ summary_vs = OracleVS(
     table_name=SUMMARY_TABLE,
     distance_strategy=DistanceStrategy.COSINE,
 )
-</copy>
 ```
 
 ### Build HNSW Indexes for Each Vector Store
 
 ```python
-<copy>
-%python
-
 print("Creating vector indexes...")
 safe_create_index(vector_conn, knowledge_base_vs, "knowledge_base_vs_hnsw")
 safe_create_index(vector_conn, workflow_vs, "workflow_vs_hnsw")
@@ -306,19 +291,15 @@ safe_create_index(vector_conn, toolbox_vs, "toolbox_vs_hnsw")
 safe_create_index(vector_conn, entity_vs, "entity_vs_hnsw")
 safe_create_index(vector_conn, summary_vs, "summary_vs_hnsw")
 print("✅ All indexes created!")
-</copy>
 ```
 
 --------
 
 ## Step 5: Seed the Knowledge Base with SeerGroup Data
 
-We'll reuse the SeerGroup KB articles from Lab 2 to populate the knowledge base memory. In production, this would be a continuous ingestion pipeline from your documentation systems.
+We'll reuse the SeerGroup KB articles from Activity 1 to populate the knowledge base memory. In production, this would be a continuous ingestion pipeline from your documentation systems.
 
 ```python
-<copy>
-%python
-
 # Seed knowledge base memory with SeerGroup KB articles
 if "seergroup_kb_articles" in globals() and seergroup_kb_articles:
     kb_texts = [
@@ -336,12 +317,11 @@ if "seergroup_kb_articles" in globals() and seergroup_kb_articles:
     ]
     knowledge_base_vs.add_texts(kb_texts, kb_meta)
     print(f"✅ Seeded knowledge base memory with {len(kb_texts)} SeerGroup KB articles")
-</copy>
 ```
 
 --------
 
-## Lab 3 Recap
+## Activity 2 Recap
 
 You've designed and created the complete memory infrastructure for Proteus:
 
@@ -357,14 +337,4 @@ You've designed and created the complete memory infrastructure for Proteus:
 
 **Key Insight**: The `summary_id` column in conversational memory enables **log compaction** — a pattern borrowed from databases where old entries are compressed but not lost. Messages are *marked* as summarized, not deleted, preserving full audit history.
 
-**Next up**: In Lab 4, we'll implement the `MemoryManager` class that provides clean read/write interfaces for all these memory types, and build the semantic `Toolbox` for dynamic tool discovery.
-
-## Learn More
-
-- []()
-
-## Acknowledgements
-
-- **Author** - Richmond Alake
-- **Contributors** - Eli Schilling
-- **Last Updated By/Date** - Published February, 2026
+**Next up**: In Activity 3, we'll implement the `MemoryManager` class that provides clean read/write interfaces for all these memory types, and build the semantic `Toolbox` for dynamic tool discovery.

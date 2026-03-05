@@ -1,18 +1,18 @@
-# Lab 5: Context Engineering & Web Integration
+# Activity 4: Context Engineering & Web Integration
 
 ## Context Window Management, Summarization, and Tavily Search
 
 --------
 
-### Objective
+## Objective
 
-While memory engineering focuses on *what to store and retrieve*, context engineering focuses on *how to manage what's in the context window right now*. In this lab, you'll build the techniques that keep Proteus's context lean and effective, plus integrate web search so Proteus can find information beyond the internal knowledge base.
+While memory engineering focuses on *what to store and retrieve*, context engineering focuses on *how to manage what's in the context window right now*. In this activity, you'll build the techniques that keep Proteus's context lean and effective, plus integrate web search so Proteus can find information beyond the internal knowledge base.
 
 > **Context engineering** refers to the set of strategies for curating and maintaining the optimal set of tokens (information) during LLM inference, including all the other information that may land there outside of the prompts.
 
 --------
 
-### What This Lab Covers
+## What This Activity Covers
 
 | Step | Function | Purpose |
 |------|----------|---------|
@@ -22,7 +22,7 @@ While memory engineering focuses on *what to store and retrieve*, context engine
 | **4. Just-in-Time Retrieval** | `expand_summary()` tool | Let Proteus expand summaries on demand |
 | **5. Web Search** | `search_tavily()` tool | External retrieval with automatic knowledge base persistence |
 
-### The Context Management Flow
+## The Context Management Flow
 
 ```
 Context built → Check usage % → Proteus may compact (summarize) → Store summary with ID
@@ -34,7 +34,7 @@ This approach keeps the context lean while giving Proteus access to full details
 
 --------
 
-### Just-in-Time (JIT) Retrieval
+## Just-in-Time (JIT) Retrieval
 
 **Just-In-Time retrieval** is the process of fetching only the information needed at the exact moment the agent requires it, based on the current task or reasoning step. Instead of loading everything upfront, the system dynamically retrieves the minimal, most relevant data on demand.
 
@@ -47,14 +47,11 @@ For Proteus, this means:
 
 --------
 
-## Task 1: Context Window Usage Calculator
+## Step 1: Context Window Usage Calculator
 
 This simple utility estimates how much of the context window is being used. Proteus can check this to decide whether compaction is needed.
 
 ```python
-<copy>
-%python
-
 def calculate_context_usage(context: str, model: str = "gpt-4o") -> dict:
     """Calculate context window usage as percentage."""
     estimated_tokens = len(context) // 4  # ~4 chars per token
@@ -65,19 +62,15 @@ def calculate_context_usage(context: str, model: str = "gpt-4o") -> dict:
         "max": max_tokens,
         "percent": round(percentage, 1),
     }
-</copy>
 ```
 
 --------
 
-## Task 2: Context Summarizer
+## Step 2: Context Summarizer
 
 When the context window grows large — after several tool calls, long conversations, or large search results — we can compress it into a summary. The full content is stored in Summary Memory, and the context window gets a compact pointer.
 
 ```python
-<copy>
-%python
-
 import uuid
 
 
@@ -125,19 +118,15 @@ Context window content:
     memory_manager.write_summary(summary_id, content, summary, description)
 
     return {"id": summary_id, "description": description, "summary": summary}
-</copy>
 ```
 
 --------
 
-## Task 3: Context Offloader
+## Step 3: Context Offloader
 
 This utility checks whether the context exceeds a threshold and, if so, automatically summarizes and replaces the content with a compact reference.
 
 ```python
-<copy>
-%python
-
 def offload_to_summary(
     context: str,
     memory_manager,
@@ -154,12 +143,11 @@ def offload_to_summary(
 
     compact = f"[Summary ID: {result['id']}] {result['description']}"
     return compact, [result]
-</copy>
 ```
 
 --------
 
-## Task 4: Register Summary Tools for the Agent
+## Step 4: Register Summary Tools for the Agent
 
 These are **agent-triggered** tools — Proteus decides when to call them based on the current context. We register them with `augment=True` for better semantic retrieval.
 
@@ -188,9 +176,6 @@ Ticket thread has 50 messages → Context too large → summarize_conversation(t
 ```
 
 ```python
-<copy>
-%python
-
 @toolbox.register_tool(augment=True)
 def expand_summary(summary_id: str) -> str:
     """Expand a summary reference to full content, including the original conversation
@@ -233,12 +218,11 @@ def summarize_conversation(thread_id: str) -> str:
     memory_manager.mark_as_summarized(thread_id, result["id"], message_ids=message_ids)
 
     return f"Conversation summarized as [Summary ID: {result['id']}] {result['description']}"
-</copy>
 ```
 
 --------
 
-## Task 5: Web Search with Tavily
+## Step 5: Web Search with Tavily
 
 Proteus needs to search external sources when the internal knowledge base doesn't have the answer — for example, looking up a new Kubernetes CVE, a vendor advisory, or an unfamiliar error message.
 
@@ -261,14 +245,13 @@ Future tickets can retrieve this information without searching again
 This pattern means Proteus **learns** from its searches. Information discovered once becomes part of the agent's long-term memory.
 
 ```python
-<copy>
-%python
+set_env_securely("TAVILY_API_KEY", "Tavily API Key: ")
+```
 
+```python
 from tavily import TavilyClient
 
-TAVILY_API_KEY
-
-tavily_client = TavilyClient(api_key=TAVILY_API_KEY)
+tavily_client = TavilyClient(api_key=os.environ["TAVILY_API_KEY"])
 
 
 @toolbox.register_tool(augment=True)
@@ -299,8 +282,7 @@ def search_tavily(query: str, max_results: int = 5):
 
         memory_manager.write_knowledge_base(text, metadata)
 
-    return 
-</copy>
+    return results
 ```
 
 ### Verify Tool Retrieval
@@ -308,19 +290,15 @@ def search_tavily(query: str, max_results: int = 5):
 Let's confirm that Proteus can find the search tool when needed:
 
 ```python
-<copy>
-%python
-
 import pprint
 
 retrieved_tools = memory_manager.read_toolbox("Search the internet for vendor documentation")
 pprint.pprint(retrieved_tools)
-</copy>
 ```
 
 --------
 
-## Lab 5 Recap
+## Activity 4 Recap
 
 | What You Built | Why It Matters |
 |---------------|----------------|
@@ -333,14 +311,4 @@ pprint.pprint(retrieved_tools)
 
 **Key Insight**: The search-and-store pattern means Proteus builds institutional knowledge over time. The first time a SeerGroup employee asks about a specific error, Proteus searches externally. The second time, Proteus finds the answer in its own knowledge base — no external call needed, faster and cheaper.
 
-**Next up**: In Lab 6, we'll wire everything together into the `call_agent` harness, run Proteus through real IT support scenarios, and compare the engineered approach against a naive baseline.
-
-## Learn More
-
-- []()
-
-## Acknowledgements
-
-- **Author** - Richmond Alake
-- **Contributors** - Eli Schilling
-- **Last Updated By/Date** - Published February, 2026
+**Next up**: In Activity 5, we'll wire everything together into the `call_agent` harness, run Proteus through real IT support scenarios, and compare the engineered approach against a naive baseline.

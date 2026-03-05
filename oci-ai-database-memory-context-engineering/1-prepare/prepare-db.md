@@ -2,16 +2,18 @@
 
 ## Introduction
 
-As part of the Sandbox environment, an Autonomous Database running Oracle AI Database 26ai has already been provisioned for you. We'll be doing all of the workshop activities inside the Oracle Machine Learning (OML) notebook environment. In this section you'll get acclimated with the Autonomous database instance and the OML environment, then create a VECTOR user for use in the subsequent labs.
+As part of the Sandbox environment, an Autonomous Database running Oracle AI Database 26ai has already been provisioned for you. You'll need Microsoft Visual Studio Code installed on your own laptop / PC to complete the workshop.
 
-**Estimated Time:** 0 minutes
+In this section you'll get your IDE prepared, connect to the Oracle Autonomous Database, then create a VECTOR user for use in the subsequent labs.
+
+**Estimated Time:** 15 minutes
 
 ### Objectives
 
 In this lab, you will:
 
 1. Log into the provided OCI tenancy
-2. Review the Autonomous Database that was provisioned for you
+2. Review and connect to the Autonomous Database that was provisioned for you
 3. Create a dedicated user for vector operations
 
 ### Prerequisites
@@ -20,86 +22,81 @@ This lab assumes you have:
 
 - Provisioned the Workshop using the LiveLabs Sandbox
 - Retrieved your account credentials from the LiveLabs UI
+- Installed Microsoft VS Code Community Edition
 
 ## Task 1: Log into the OCI Tenancy
 
+... 
+    DO WE HAVE: existing instructions we can pull to show how to 
+    retrieve credentials in LiveLabs and log into the tenancy?
 ...
 
 ## Task 2: Locate and review the Oracle AI Database 26ai instance
 
-1. From the Database Connection screen, copy the full connection string for the TNS name that corresponds with `medium`. (Paste in a note pad for future reference)
-
-
-
-## Task 3: Open the OML Workbench
-
-1. From the Database instance screen, click **[Database actions]** and select **View all database actions**.
+1. Update ACL to include your IP (click the slide button) and save.
 
     SCREENSHOT
 
-2. When the `Database Actions | Launchpad` tab opens, locate **Machine Learning** from the left nav menu within the **Development** section.
+2. Update mTLS - not required
 
     SCREENSHOT
 
-3. In the top right corner, ensure **Jupyter** is selected.
+3. Click the **[Database connection]** button at the top of the screen. Locate and copy the full **Connection string** for the TNS name that corresponds with `medium`. (Paste in a note pad for future reference)
 
     SCREENSHOT
 
-4. Install required, additional libraries for the workshop. Copy the code and press ▷ button. 
+4. Time to set up VS Code
+
+## Task 3: Open VS Code and Create Jupyter environment
+
+For this lab, you will create a new `.ipynb` file and copy in the code to prep the database. in future labs, we've provided the `.ipynb` file to streamline these activities.
+
+1. Open VS Code and close any existing tabs. Press `Ctrl+Shift+P` and begin typing "Jupyter". It should auto-populate the option to `Create: New Jupyter Notebook`. Select this option.
+
+2. Paste the following and press the Run arrow on the left side of the code block:
 
     ```
     <copy>
-    ====================================!!!!!!!!===============================
-
-    install langchain-oracledb sentence-transformers langchain-openai langchain tavily-python
-    <copy>
-    ```
-
-## Task 4: Connect to the database and create VECTOR user
-
-### Understanding the Dual-Connection Pattern
-
-Because we run this workshop inside an **Oracle Machine Learning (OML) Notebook** on Autonomous Database, we can leverage an implicit connection to the database via `import oml` — no credentials or wallet needed. We use `oml.cursor()` for direct SQL operations throughout the workshop.
-
-However, LangChain's `OracleVS` requires an **`oracledb.Connection`** object as its `client` parameter. Since `oml.cursor()` returns a `cx_Oracle` cursor (not an `oracledb` connection), we create a separate lightweight `oracledb` connection for LangChain.
-
-> **Why two connections?** The OML connection is implicit and powers `oml.cursor()`, `oml.push()`, `oml.sync()`, etc. The `oracledb` connection is only needed to satisfy LangChain's type requirement. Both connect to the same database schema.
-
-1. Copy the following into the first paragraph field and click the ▷ to run the code.
-
-    ```python
-    <copy>
-    %python
-
-    import oml
-    import logging
-
-    # OML notebooks are pre-connected — verify it
-    print("OML connected:", oml.isconnected())
-
-    # Use oml.cursor() for direct SQL
-    cr = oml.cursor()
-    cr.execute("SELECT banner FROM v$version WHERE banner LIKE 'Oracle%'")
-    banner = cr.fetchone()[0]
-    print(f"\n{banner}")
-    cr.close()
+    pip install --upgrade pip
     </copy>
     ```
 
-    SCREENSHOT
+3. Press the **[+ Code]** button at the top of the notebookt add a new Code block. Paste the following and run the code block:
 
-2. Now test the connection using the OracleDB driver for Python. Paste the following code and be sure to replace the `your_dsn` text with the value you copied in Task 2.
+    ```
+    <copy>
+    pip install -qU oracledb langchain-oracledb langchain langchain-openai langchain-huggingface ipywidgets tavily-python sentence-transformers
+    </copy>
+    ```
+
+    >NOTE: This will perform a quiet install that takes 3-5 minutes. No output will be diplayed until it completes.
+
+4. Test to make sure the Python modules were installed properly. Create a new code block, then paste and run the following:
+
+    ```
+    from openai import OpenAI
+    from langchain_huggingface import HuggingFaceEmbeddings
+    import oracledb
+    ```
+
+    >NOTE: No output is displayed unless there are errors. If you see a green check mark, all is well!
+
+
+## Task 4: Connect to the database and create VECTOR user
+
+1. Now test the connection using the OracleDB driver for Python. Paste the following code and be sure to replace the `your_dsn` text with the value you copied in Task 2.
 
     ```python
     <copy>
-    %python
 
     import oracledb
+    import os
+    import getpass
 
     # Store username, password, and DSN
-    adb_user = "admin"
-    adb_password = "WElcome123##"
-    adb_dsn = "your_dsn"
+    adb_password = getpass.getpass("Database password: ")
+    adb_dsn = os.environ.get("DB_DSN", input("Database DSN copied earlier: "))
+    adb_user = "ADMIN"
 
     try:
         connection = oracledb.connect(
@@ -125,7 +122,7 @@ However, LangChain's `OracleVS` requires an **`oracledb.Connection`** object as 
     </copy>
     ```
 
-    SCREENSHOT with full DSN
+    SCREENSHOT with full DSN - censor pieces of the service name for privacy.
 
     SCREENSHOT of successful output
 
@@ -133,7 +130,6 @@ However, LangChain's `OracleVS` requires an **`oracledb.Connection`** object as 
 
     ```python
     <copy>
-    %python
 
     def setup_oracle_adb(
         create_vector_user=True,

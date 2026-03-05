@@ -1,18 +1,18 @@
-# Lab 2: Vector Search Foundations
+# Lab 1: Vector Search Foundations
 
 ## with Oracle AI Database 26ai and LangChain OracleVS
 
 --------
 
-### Objectives
+## Objective
 
-In this lab, you'll learn how to store and search documents using **semantic similarity** — finding results based on meaning rather than exact keyword matches. This is the foundation that powers every memory type we'll build in later activities.
+In this activity, you'll learn how to store and search documents using **semantic similarity** — finding results based on meaning rather than exact keyword matches. This is the foundation that powers every memory type we'll build in later activities.
 
 You'll work with **SeerGroup Solutions' IT knowledge base**: internal documentation, runbooks, and incident reports that our AI support agent "Proteus" will use to resolve tickets.
 
 ### What You'll Learn
 
-| Task | Description |
+| Step | Description |
 |------|-------------|
 | **1. Initialize Embeddings** | Load a HuggingFace embedding model to convert text into vectors |
 | **2. Create Vector-Enabled Table** | Set up an Oracle-backed vector store with cosine distance via `OracleVS` |
@@ -30,14 +30,11 @@ You'll work with **SeerGroup Solutions' IT knowledge base**: internal documentat
 
 --------
 
-## Task 1: Connect to Oracle AI Database
+## Step 1: Connect to Oracle AI Database
 
-Your environment has been pre-configured with Autonomous Oracle AI Database 26ai running in the cloud. The `VECTOR` user and connection details were created in Lab 1.
+Your environment has been pre-configured with Oracle AI Database 26ai running locally. The `VECTOR` user and connection details are ready to use.
 
 ```python
-<copy>
-%python
-
 import oracledb
 import time
 import logging
@@ -51,7 +48,7 @@ def connect_to_oracle(
     program="seergroup.proteus.workshop",
 ):
     """
-    Connect to the Oracle database using VECTOR with retry logic and helpful error messages.
+    Connect to Oracle database with retry logic and helpful error messages.
     """
     for attempt in range(1, max_retries + 1):
         try:
@@ -85,48 +82,42 @@ def connect_to_oracle(
 
 vector_conn = connect_to_oracle()
 print("Using user:", vector_conn.username)
-</copy>
 ```
 
 --------
 
-## Task 2: Initialize Embeddings and Create a Vector-Enabled Table
+## Step 2: Initialize Embeddings and Create a Vector-Enabled Table
 
 We'll use the `sentence-transformers/paraphrase-mpnet-base-v2` model to convert text into 768-dimensional vectors. OracleVS handles the table creation, embedding storage, and similarity search under the hood.
 
-    ```python
-    <copy>
-    %python
+```python
+from langchain_oracledb.vectorstores import OracleVS
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_oracledb.vectorstores.oraclevs import create_index
+from langchain_community.vectorstores.utils import DistanceStrategy
 
-    from langchain_oracledb.vectorstores import OracleVS
-    from langchain_community.embeddings import HuggingFaceEmbeddings
-    from langchain_oracledb.vectorstores.oraclevs import create_index
-    from langchain_community.vectorstores.utils import DistanceStrategy
+# Suppress verbose logging from langchain_oracledb
+logging.getLogger("langchain_oracledb").setLevel(logging.CRITICAL)
 
-    # Suppress verbose logging from langchain_oracledb
-    logging.getLogger("langchain_oracledb").setLevel(logging.CRITICAL)
+# Initialize the embedding model
+embedding_model = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/paraphrase-mpnet-base-v2"
+)
 
-    # Initialize the embedding model
-    embedding_model = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/paraphrase-mpnet-base-v2"
-    )
-
-    # Create the vector-enabled SQL table via OracleVS
-    vector_store = OracleVS(
-        client=vector_conn,
-        embedding_function=embedding_model,
-        table_name="VECTOR_SEARCH_DEMO",
-        distance_strategy=DistanceStrategy.COSINE,
-    )
-    <copy>
-    ```
+# Create the vector-enabled SQL table via OracleVS
+vector_store = OracleVS(
+    client=vector_conn,
+    embedding_function=embedding_model,
+    table_name="VECTOR_SEARCH_DEMO",
+    distance_strategy=DistanceStrategy.COSINE,
+)
+```
 
 ### Create an HNSW Index
 
 HNSW (Hierarchical Navigable Small World) is a graph-based approximate nearest-neighbor index. It provides fast, accurate similarity search at scale — essential when your knowledge base grows to thousands or millions of documents.
 
 ```python
-<copy>
 def safe_create_index(conn, vs, idx_name):
     """Create index, skipping if it already exists."""
     try:
@@ -144,12 +135,11 @@ def safe_create_index(conn, vs, idx_name):
 
 
 safe_create_index(vector_conn, vector_store, "oravs_hnsw")
-<copy>
 ```
 
 --------
 
-## Task 3: Ingest SeerGroup IT Knowledge Base
+## Step 3: Ingest SeerGroup IT Knowledge Base
 
 In a real deployment, this data would come from Confluence, ServiceNow, or internal wikis. Here we'll seed the knowledge base with representative IT support articles that Proteus will use to resolve tickets.
 
@@ -317,7 +307,7 @@ print(f"✅ Ingested {len(texts)} SeerGroup KB articles into VECTOR_SEARCH_DEMO"
 
 --------
 
-## Task 4: Querying with Natural Language
+## Step 4: Querying with Natural Language
 
 Now let's see the power of semantic search. Unlike keyword search, vector similarity finds documents based on *meaning*. A query about "login problems" will match articles about AUTH-SVC and SSO — even if those exact words don't appear in the query.
 
@@ -356,7 +346,7 @@ for doc, score in results:
 
 --------
 
-## Task 5: Filtered Search with Metadata
+## Step 5: Filtered Search with Metadata
 
 In a real IT support system, Proteus needs to narrow results by category, severity, or owning team. OracleVS supports metadata filters that combine with vector similarity.
 
@@ -414,7 +404,7 @@ for doc in docs:
 
 --------
 
-## Lab 2 Recap
+## Activity 1 Recap
 
 You've now built the search foundation that Proteus will rely on:
 
@@ -426,14 +416,4 @@ You've now built the search foundation that Proteus will rely on:
 | Queried with natural language | "Users can't log in" finds AUTH-SVC articles without keyword matching |
 | Applied metadata filters | Narrow results by category, severity, or team |
 
-**Next up**: In Lab 3, we'll design the complete memory architecture that gives Proteus six distinct types of memory — each with a specific purpose and storage strategy.
-
-## Learn More
-
-- []()
-
-## Acknowledgements
-
-- **Author** - Richmond Alake
-- **Contributors** - Eli Schilling
-- **Last Updated By/Date** - Published February, 2026
+**Next up**: In Activity 2, we'll design the complete memory architecture that gives Proteus six distinct types of memory — each with a specific purpose and storage strategy.

@@ -1,12 +1,12 @@
-# Lab 4: Building the Memory Manager & Toolbox
+# Activity 3: Building the Memory Manager & Toolbox
 
 ## The MemoryManager Class and Semantic Tool Discovery
 
 --------
 
-### Objective
+## Objective
 
-In this lab, you'll implement the two core abstractions that power Proteus:
+In this activity, you'll implement the two core abstractions that power Proteus:
 
 1. **MemoryManager** — a unified class with read/write methods for all six memory types
 2. **Toolbox** — a semantic tool registry where tools are discovered by meaning, not by name
@@ -15,7 +15,7 @@ By the end, you'll be able to test individual memory operations: write a convers
 
 --------
 
-## Task 1: The MemoryManager Class
+## Step 1: The MemoryManager Class
 
 The `MemoryManager` is the central abstraction that unifies all memory operations. It provides a clean interface for reading and writing to different memory types, hiding the complexity of SQL queries and vector store operations.
 
@@ -45,9 +45,6 @@ For learning purposes, building your own memory manager (as we do here) gives yo
 ### The Implementation
 
 ```python
-<copy>
-%python
-
 import json as json_lib
 from datetime import datetime
 
@@ -481,17 +478,13 @@ If none: []'''
             {"id": rid, "role": role, "content": content, "timestamp": ts}
             for rid, role, content, ts in rows
         ]
-</copy>
 ```
 
 --------
 
-## Task 2: Initialize the Memory Manager
+## Step 2: Initialize the Memory Manager
 
 ```python
-<copy>
-%python
-
 memory_manager = MemoryManager(
     conn=vector_conn,
     conversation_table=CONVERSATION_HISTORY_TABLE,
@@ -502,7 +495,6 @@ memory_manager = MemoryManager(
     summary_vs=summary_vs,
     tool_log_table=TOOL_LOG_TABLE_NAME,
 )
-</copy>
 ```
 
 ### Quick Smoke Test
@@ -510,9 +502,6 @@ memory_manager = MemoryManager(
 Let's verify the memory manager works by writing and reading a test conversation:
 
 ```python
-<copy>
-%python
-
 # Write a test conversation
 test_thread = "TICKET-TEST-001"
 memory_manager.write_conversational_memory("I can't log in to Jira this morning", "user", test_thread)
@@ -520,15 +509,16 @@ memory_manager.write_conversational_memory("Let me check AUTH-SVC status for you
 
 # Read it back
 print(memory_manager.read_conversational_memory(test_thread))
+```
 
+```python
 # Test knowledge base search
 print(memory_manager.read_knowledge_base("VPN keeps disconnecting"))
-</copy>
 ```
 
 --------
 
-## Task 3: The Semantic Toolbox
+## Step 3: The Semantic Toolbox
 
 ### The Scalability Problem with Tools
 
@@ -581,9 +571,6 @@ This means a simple docstring like `"Search the web"` becomes a rich description
 ### The Implementation
 
 ```python
-<copy>
-%python
-
 import inspect
 import uuid
 from typing import Callable, Optional, Union
@@ -755,38 +742,42 @@ class Toolbox:
         if func is None:
             return decorator
         return decorator(func)
-</copy>
 ```
 
 --------
 
-## Task 4: Initialize the Toolbox and Set Up API Keys
+## Step 4: Initialize the Toolbox and Set Up API Keys
 
 ```python
-<copy>
-%python
+import os
+import getpass
 
+
+def set_env_securely(var_name, prompt):
+    value = getpass.getpass(prompt)
+    os.environ[var_name] = value
+```
+
+```python
+set_env_securely("OPENAI_API_KEY", "OpenAI API Key: ")
+```
+
+```python
 from openai import OpenAI
-
-OPENAI_API_KEY="your_openai_key"
 
 client = OpenAI()
 
 # Initialize the Toolbox
 toolbox = Toolbox(memory_manager=memory_manager, llm_client=client)
-</copy>
 ```
 
 --------
 
-## Task 5: Test Tool Registration and Retrieval
+## Step 5: Test Tool Registration and Retrieval
 
 Let's register a simple diagnostic tool and verify semantic retrieval works:
 
 ```python
-<copy>
-%python
-
 @toolbox.register_tool(augment=True)
 def check_service_status(service_name: str) -> str:
     """Check if a SeerGroup internal service is running and return its status."""
@@ -799,20 +790,21 @@ def check_service_status(service_name: str) -> str:
     return mock_statuses.get(
         service_name.lower(), f"❓ Unknown service: {service_name}"
     )
+```
 
+```python
 # Test semantic retrieval — does the toolbox find this tool for a related query?
 import pprint
 
 retrieved_tools = memory_manager.read_toolbox("is the authentication service down?")
 pprint.pprint(retrieved_tools)
-</copy>
 ```
 
 > **🔍 Try it**: Change the query to something different — "check if deploy-bot is working" or "what services are having issues" — and see if the tool is still retrieved. This is semantic retrieval in action.
 
 --------
 
-## Lab 4 Recap
+## Activity 3 Recap
 
 | What You Built | Why It Matters |
 |---------------|----------------|
@@ -825,14 +817,4 @@ pprint.pprint(retrieved_tools)
 
 **Key Insight**: The Toolbox sits at the intersection of three disciplines: *memory engineering* (tools as procedural memory), *context engineering* (only relevant tools in context), and *prompt engineering* (role-setting for better docstring augmentation).
 
-**Next up**: In Lab 5, we'll build the context engineering layer — usage tracking, summarization, just-in-time retrieval — and integrate Tavily for web search.
-
-## Learn More
-
-- []()
-
-## Acknowledgements
-
-- **Author** - Richmond Alake
-- **Contributors** - Eli Schilling
-- **Last Updated By/Date** - Published February, 2026
+**Next up**: In Activity 4, we'll build the context engineering layer — usage tracking, summarization, just-in-time retrieval — and integrate Tavily for web search.
