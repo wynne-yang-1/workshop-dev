@@ -101,7 +101,7 @@ We'll use the `sentence-transformers/paraphrase-mpnet-base-v2` model to convert 
 
     ```python
     from langchain_oracledb.vectorstores import OracleVS
-    from langchain_community.embeddings import HuggingFaceEmbeddings
+    from langchain_huggingface import HuggingFaceEmbeddings
     from langchain_oracledb.vectorstores.oraclevs import create_index
     from langchain_community.vectorstores.utils import DistanceStrategy
 
