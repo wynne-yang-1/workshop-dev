@@ -6,7 +6,9 @@
 
 ---
 
-## oci_core_vcn
+## Expand required resource type for details
+
+## oci\_core\_vcn
 
 Creates a Virtual Cloud Network (VCN).
 
