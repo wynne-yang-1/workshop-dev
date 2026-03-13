@@ -1,16 +1,15 @@
 # Overview and Highlights
 
-Without engineered context, AI systems can suffer from **context poisoning** (repeatedly referencing a hallucination) or **context distraction** (irrelevant data confusing the model's logic). Proper engineering transforms a reactive chatbot into a proactive, reliable collaborator that understands project-wide dependencies.
+Without engineered context, AI systems can suffer from **context poisoning** (repeatedly referencing a hallucination) or **context confusion** (irrelevant data confusing the model's logic). Proper engineering transforms a reactive chatbot into a proactive, reliable collaborator that understands project-wide dependencies.
 
-**Memory context engineering** is the structured discipline of designing systems that dynamically manage what an AI model "sees" and "remembers" to ensure reliable, personalized, and efficient performance. It represents a shift from **prompt engineering** (crafting a single message) to **system design** (managing the entire lifecycle of data entering and exiting the context window).
+**Memory Engineering** is the discipline of designing the scaffolding and control harness that moves information optimally into, through, and across all components of an AI system. It ensures data is captured, transformed, organised, and retrieved in the right way at the right time so agents can behave reliably, believably, and capably.
 
-Modern context engineering often categorizes AI memory into layers inspired by human cognitive architecture:
+**Context Engineering** is the discipline of curating and maintaining the optimal set of information during LLM inference. While memory engineering focuses on what to store and retrieve, context engineering focuses on how to manage what is in the context window right now, including monitoring usage, compressing information, and providing just-in-time access to details when the agent needs them. This represents a broader shift from **prompt engineering** (crafting a single message) to **system design** (managing the entire lifecycle of data entering and exiting the context window).
 
-- **Short-Term Memory** (Session Memory): Maintains the current conversation thread. It acts as a "scratchpad" for the AI to track its reasoning and intermediate steps during a single task.
-- **Long-Term Memory**: Persists across different sessions. This stores durable facts (e.g., "the user prefers Python") and episodic events (e.g., "the last deployment failed due to a specific flag").
-- **Semantic vs. Episodic**:
-    - **Semantic Memory**: Durable, general facts and procedures.
-    - **Episodic Memory**: Recalling specific past interactions or events to maintain continuity.
+Modern memory engineering often categorizes AI memory into layers inspired by human cognitive architecture:
+
+- **Short-Term Memory**: Maintains the current conversation thread. It acts as a "scratchpad" for the AI to track its reasoning and intermediate steps during a single task. Examples: session memory, semantic cache, LLM context window, essentially working memory etc.
+- **Long-Term Memory**: Persists across different sessions. This stores durable facts (e.g., "the user prefers Python") and episodic events (e.g., "the last deployment failed due to a specific flag"). For example, procedural, semantic, episodic.
 
 --------
 
@@ -23,9 +22,9 @@ You'll build **Proteus**, SeerGroup Solutions' AI-powered IT support agent. Prot
 | **Conversational** | Chat history per support ticket thread | SQL Table |
 | **Knowledge Base** | Searchable documents, runbooks, & KB articles | Vector-Enabled SQL Table |
 | **Workflow** | Learned resolution patterns from past tickets | Vector-Enabled SQL Table |
-| **Toolbox** | Dynamic tool definitions with semantic retrieval | Vector-Enabled SQL Table |
+| **Procedural memory** | Dynamic tool definitions with semantic retrieval | Vector-Enabled SQL Table |
 | **Entity** | People, places, and systems extracted from context | Vector-Enabled SQL Table |
-| **Summary** | Compressed context for long conversations | Vector-Enabled SQL Table |
+| **Episodic Memory** | Compressed context for long conversations | Vector-Enabled SQL Table |
 | **Tool Log** | Offloaded tool outputs for lean context windows | SQL Table |
 
 --------

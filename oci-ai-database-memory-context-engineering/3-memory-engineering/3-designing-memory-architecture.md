@@ -26,9 +26,9 @@ With proper memory engineering, Proteus can:
 
 #### Definitions
 
-**Agent Memory** is the exocortex that augments an LLM — capturing, encoding, storing, linking, and retrieving information beyond the model's parametric and contextual limits. It provides the persistence and structure required for long-horizon reasoning and reliable behaviour.
+**Agent Memory** is a computational exocortex that encapsulates the systems that enable an AI Agent to adapt and remember, systems such as the LLM, embedding model, database, or any external store.
 
-**Memory Engineering** is the scaffolding and control harness that we design to move information optimally and efficiently into, through, and across all components of an AI system (databases, LLMs, applications, etc). It ensures that data is captured, transformed, organized, and retrieved in the right way at the right time — so agents can behave reliably, believably, and capably.
+**Memory Engineering** is the discipline of designing the scaffolding and control harness that moves information optimally into, through, and across all components of an AI system. It ensures data is captured, transformed, organised, and retrieved in the right way at the right time so agents can behave reliably, believably, and capably.
 
 --------
 
@@ -41,9 +41,9 @@ Just like humans have different types of memory (short-term, long-term, procedur
 | **Conversational** | Short-term memory | "The user said they're on Floor 2 with a MacBook" | SQL Table |
 | **Knowledge Base** | Long-term semantic memory | KB articles, runbooks, vendor docs, search results | Vector-Enabled SQL Table |
 | **Workflow** | Procedural memory | "Last time AUTH-SVC crashed, we ran these 3 steps" | Vector-Enabled SQL Table |
-| **Toolbox** | Skill memory | Available diagnostic tools, search APIs, scripts | Vector-Enabled SQL Table |
+| **Toolbox** | Procedural memory | Available diagnostic tools, search APIs, scripts | Vector-Enabled SQL Table |
 | **Entity** | Episodic memory | "AUTH-SVC runs on prod-cluster-3, owned by Marcus Rivera" | Vector-Enabled SQL Table |
-| **Summary** | Compressed memory | "45-minute debug session condensed to 5 bullet points" | Vector-Enabled SQL Table |
+| **Summary** | Episodic Memory | "45-minute debug session condensed to 5 bullet points" | Vector-Enabled SQL Table |
 | **Tool Log** | Episodic memory | "Full kubectl output stored in DB, preview in context" | SQL Table |
 
 > **Note on Tool Log:** Tool Log is a form of episodic memory — it records *what happened* during each tool execution. Beyond keeping the context window lean, tool logs can serve as a source from which **procedural memories** (workflow patterns) and **semantic memories** (knowledge base entries) can be distilled over time.
