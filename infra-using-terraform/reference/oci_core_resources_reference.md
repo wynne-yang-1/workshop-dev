@@ -8,7 +8,7 @@
 
 ## Expand required resource type for details
 
-## oci\_core\_vcn
+## oci_core_vcn
 
 Creates a Virtual Cloud Network (VCN).
 
@@ -31,7 +31,7 @@ Creates a Virtual Cloud Network (VCN).
 
 ---
 
-## oci\_core\_subnet
+## oci_core_subnet
 
 Creates a subnet in a VCN.
 
@@ -56,7 +56,7 @@ Creates a subnet in a VCN.
 
 ---
 
-## oci\_core\_instance
+## oci_core_instance
 
 Creates a compute instance.
 
@@ -143,7 +143,7 @@ Creates a compute instance.
 
 ---
 
-## oci\_core\_volume
+## oci_core_volume
 
 Creates a block volume.
 
@@ -173,7 +173,7 @@ Creates a block volume.
 
 ---
 
-## oci\_core\_boot\_volume
+## oci_core_boot_volume
 
 Creates a boot volume.
 
@@ -199,7 +199,7 @@ Creates a boot volume.
 
 ---
 
-## oci\_core\_volume\_group
+## oci_core_volume_group
 
 Creates a volume group.
 
@@ -224,7 +224,7 @@ Creates a volume group.
 
 ---
 
-## oci\_core\_volume\_backup\_policy
+## oci_core_volume_backup_policy
 
 Creates a user-defined volume backup policy.
 
@@ -249,7 +249,7 @@ Creates a user-defined volume backup policy.
 
 ---
 
-## oci\_core\_internet\_gateway
+## oci_core_internet_gateway
 
 Creates an internet gateway for a VCN.
 
@@ -265,7 +265,7 @@ Creates an internet gateway for a VCN.
 
 ---
 
-## oci\_core\_nat\_gateway
+## oci_core_nat_gateway
 
 Creates a NAT gateway for a VCN.
 
@@ -282,7 +282,7 @@ Creates a NAT gateway for a VCN.
 
 ---
 
-## oci\_core\_service\_gateway
+## oci_core_service_gateway
 
 Creates a service gateway for a VCN.
 
@@ -299,7 +299,7 @@ Creates a service gateway for a VCN.
 
 ---
 
-## oci\_core\_route\_table
+## oci_core_route_table
 
 Creates a route table for a VCN.
 
@@ -318,7 +318,7 @@ Creates a route table for a VCN.
 
 ---
 
-## oci\_core\_security\_list
+## oci_core_security_list
 
 Creates a security list for a VCN.
 
@@ -348,7 +348,7 @@ Creates a security list for a VCN.
 
 ---
 
-## oci\_core\_network\_security\_group
+## oci_core_network_security_group
 
 Creates a network security group (NSG) for a VCN.
 
@@ -362,7 +362,7 @@ Creates a network security group (NSG) for a VCN.
 
 ---
 
-## oci\_core\_network\_security\_group\_security\_rule
+## oci_core_network_security_group_security_rule
 
 Creates a security rule within an NSG.
 
@@ -385,7 +385,7 @@ Creates a security rule within an NSG.
 
 ---
 
-## oci\_core\_dhcp\_options
+## oci_core_dhcp_options
 
 Creates DHCP options for a VCN.
 
@@ -404,7 +404,7 @@ Creates DHCP options for a VCN.
 
 ---
 
-## oci\_core\_drg
+## oci_core_drg
 
 Creates a Dynamic Routing Gateway (DRG).
 
@@ -417,7 +417,7 @@ Creates a Dynamic Routing Gateway (DRG).
 
 ---
 
-## oci\_core\_drg\_attachment
+## oci_core_drg_attachment
 
 Creates a DRG attachment to a VCN.
 
@@ -436,7 +436,7 @@ Creates a DRG attachment to a VCN.
 
 ---
 
-## oci\_core\_local\_peering\_gateway
+## oci_core_local_peering_gateway
 
 Creates a local peering gateway (LPG) for VCN peering within a region.
 
@@ -452,7 +452,7 @@ Creates a local peering gateway (LPG) for VCN peering within a region.
 
 ---
 
-## oci\_core\_remote\_peering\_connection
+## oci_core_remote_peering_connection
 
 Creates a remote peering connection for cross-region VCN peering.
 
@@ -468,7 +468,7 @@ Creates a remote peering connection for cross-region VCN peering.
 
 ---
 
-## oci\_core\_cpe
+## oci_core_cpe
 
 Creates a Customer-Premises Equipment (CPE) object for VPN.
 
@@ -484,7 +484,7 @@ Creates a Customer-Premises Equipment (CPE) object for VPN.
 
 ---
 
-## oci\_core\_ipsec
+## oci_core_ipsec
 
 Creates an IPSec VPN connection.
 
@@ -502,7 +502,7 @@ Creates an IPSec VPN connection.
 
 ---
 
-## oci\_core\_public\_ip
+## oci_core_public_ip
 
 Creates a reserved or ephemeral public IP.
 
@@ -518,7 +518,7 @@ Creates a reserved or ephemeral public IP.
 
 ---
 
-## oci\_core\_private\_ip
+## oci_core_private_ip
 
 Creates a secondary private IP on a VNIC.
 
@@ -534,7 +534,7 @@ Creates a secondary private IP on a VNIC.
 
 ---
 
-## oci\_core\_vnic\_attachment
+## oci_core_vnic_attachment
 
 Creates a secondary VNIC attachment on an instance.
 
@@ -557,7 +557,7 @@ Creates a secondary VNIC attachment on an instance.
 
 ---
 
-## oci\_core\_volume\_attachment
+## oci_core_volume_attachment
 
 Attaches a block volume to an instance.
 
@@ -577,7 +577,7 @@ Attaches a block volume to an instance.
 
 ---
 
-## oci\_core\_boot\_volume\_attachment
+## oci_core_boot_volume_attachment
 
 Attaches a boot volume to an instance.
 
@@ -590,7 +590,7 @@ Attaches a boot volume to an instance.
 
 ---
 
-## oci\_core\_image
+## oci_core_image
 
 Creates a custom image from an instance or imports an image.
 
@@ -607,7 +607,7 @@ Creates a custom image from an instance or imports an image.
 
 ---
 
-## oci\_core\_instance\_configuration
+## oci_core_instance_configuration
 
 Creates an instance configuration template.
 
@@ -623,7 +623,7 @@ Creates an instance configuration template.
 
 ---
 
-## oci\_core\_instance\_pool
+## oci_core_instance_pool
 
 Creates an instance pool.
 
@@ -640,7 +640,7 @@ Creates an instance pool.
 
 ---
 
-## oci\_core\_cluster\_network
+## oci_core_cluster_network
 
 Creates a cluster network.
 
@@ -658,7 +658,7 @@ Creates a cluster network.
 
 ---
 
-## oci\_core\_dedicated\_vm\_host
+## oci_core_dedicated_vm_host
 
 Creates a dedicated VM host.
 
@@ -674,7 +674,7 @@ Creates a dedicated VM host.
 
 ---
 
-## oci\_core\_vlan
+## oci_core_vlan
 
 Creates a VLAN in a VCN.
 
@@ -693,7 +693,7 @@ Creates a VLAN in a VCN.
 
 ---
 
-## oci\_core\_capture\_filter
+## oci_core_capture_filter
 
 Creates a capture filter for VTAPs.
 
@@ -709,7 +709,7 @@ Creates a capture filter for VTAPs.
 
 ---
 
-## oci\_core\_cross\_connect
+## oci_core_cross_connect
 
 Creates a cross-connect (FastConnect physical port).
 
@@ -728,7 +728,7 @@ Creates a cross-connect (FastConnect physical port).
 
 ---
 
-## oci\_core\_cross\_connect\_group
+## oci_core_cross_connect_group
 
 Creates a cross-connect group (LAG for FastConnect).
 
@@ -741,7 +741,7 @@ Creates a cross-connect group (LAG for FastConnect).
 
 ---
 
-## oci\_core\_virtual\_circuit
+## oci_core_virtual_circuit
 
 Creates a virtual circuit (FastConnect logical connection).
 
