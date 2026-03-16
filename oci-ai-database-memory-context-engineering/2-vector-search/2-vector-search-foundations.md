@@ -1,12 +1,24 @@
 # Lab 2: Vector Search Foundations
 
+## Introduction
+
 Using Oracle AI Database 26ai and LangChain OracleVS
 
-## Objective
+**Estimated Time:** 15 minutes
 
-In this activity, you'll learn how to store and search documents using **semantic similarity** — finding results based on meaning rather than exact keyword matches. This is the foundation that powers every memory type we'll build in later activities.
+### Objectives
+
+In this lab, you'll learn how to store and search documents using **semantic similarity** — finding results based on meaning rather than exact keyword matches. This is the foundation that powers every memory type we'll build in later activities.
 
 You'll work with **SeerGroup's research paper collection**: a curated set of academic papers spanning AI, physics, mathematics, and more. Our AI research assistant "Proteus" will use this collection to help analysts navigate the flood of academic literature.
+
+### Prerequisites
+
+This lab assumes you have:
+
+- Provisioned the Workshop using the LiveLabs Sandbox
+- Retrieved your account credentials from the LiveLabs UI
+- Have Microsoft VS Code installed on your computer
 
 ### What You'll Learn
 
@@ -25,6 +37,7 @@ You'll work with **SeerGroup's research paper collection**: a curated set of aca
 - **`HuggingFaceEmbeddings`**: Converts text to 768-dimensional vectors
 - **`DistanceStrategy.COSINE`**: Measures vector similarity using cosine distance
 - **HNSW Index**: Graph-based ANN index for fast and accurate nearest-neighbor retrieval
+
 
 ## Task 1: Connect to Oracle AI Database
 

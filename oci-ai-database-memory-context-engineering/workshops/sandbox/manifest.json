@@ -19,15 +19,15 @@
             "filename": "../../2-vector-search/2-vector-search-foundations.md"
         },
         {
-            "title": "Lab 3: Memory Engineering & Agent Memory",
+            "title": "Lab 3: Designing the Memory Architecture",
             "filename": "../../3-memory-engineering/3-designing-memory-architecture.md"
         },
         {
-            "title": "Lab 4: Memory Manager and Toolbox",
+            "title": "Lab 4: Building Memory Manager and Toolbox",
             "filename": "../../4-memory-manager/4-memory-manager-and-toolbox.md"
         },
         {
-            "title": "Lab 5: Context Engineering and Web",
+            "title": "Lab 5: Context Engineering and Web Integration",
             "filename": "../../5-context-engineering/5-context-engineering-and-web.md"
         },
         {
