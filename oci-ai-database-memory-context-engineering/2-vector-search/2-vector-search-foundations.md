@@ -2,9 +2,7 @@
 
 Using Oracle AI Database 26ai and LangChain OracleVS
 
---------
-
-### Objective
+## Objective
 
 In this activity, you'll learn how to store and search documents using **semantic similarity** — finding results based on meaning rather than exact keyword matches. This is the foundation that powers every memory type we'll build in later activities.
 
@@ -27,8 +25,6 @@ You'll work with **SeerGroup's research paper collection**: a curated set of aca
 - **`HuggingFaceEmbeddings`**: Converts text to 768-dimensional vectors
 - **`DistanceStrategy.COSINE`**: Measures vector similarity using cosine distance
 - **HNSW Index**: Graph-based ANN index for fast and accurate nearest-neighbor retrieval
-
---------
 
 ## Task 1: Connect to Oracle AI Database
 
@@ -146,7 +142,7 @@ In a real deployment, this data would come from institutional repositories, jour
     ```python
     from datasets import load_dataset
 
-    MAX_PAPERS = 1000
+    MAX_PAPERS = 300
     ds_stream = load_dataset("nick007x/arxiv-papers", split="train", streaming=True)
 
     sampled_papers = []
@@ -192,7 +188,7 @@ In a real deployment, this data would come from institutional repositories, jour
     print(f"✅ Ingested {len(texts)} research papers into VECTOR_SEARCH_DEMO")
     ```
 
-> **🔍 Notice** The process to ingest the data may take several minutes.
+> **🔍 Notice** The process to ingest the data may take 3-5 minutes. Your patience is appreciated.
 
     ```python
     # Inspect one sample to see the metadata fields we can filter on
