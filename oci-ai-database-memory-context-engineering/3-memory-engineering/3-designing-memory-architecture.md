@@ -238,7 +238,7 @@ Placeholder
 
 ## Task 4: Create Vector-Enabled Tables for Semantic Memories
 
-Here we create five separate OracleVS-backed vector stores — one for each semantic memory type. Each uses the same embedding model for consistency.
+* Here we create five separate OracleVS-backed vector stores — one for each semantic memory type. Each uses the same embedding model for consistency.
 
 | Vector Store Handle | Purpose |
 |---------------------|---------|
@@ -248,42 +248,42 @@ Here we create five separate OracleVS-backed vector stores — one for each sema
 | `entity_vs` | Extracted entities: paper titles, authors, research topics, arXiv IDs |
 | `summary_vs` | Compressed summaries for long research sessions |
 
-        ```python
-        knowledge_base_vs = OracleVS(
-            client=vector_conn,
-            embedding_function=embedding_model,
-            table_name=KNOWLEDGE_BASE_TABLE,
-            distance_strategy=DistanceStrategy.COSINE,
-        )
+    ```python
+    knowledge_base_vs = OracleVS(
+        client=vector_conn,
+        embedding_function=embedding_model,
+        table_name=KNOWLEDGE_BASE_TABLE,
+        distance_strategy=DistanceStrategy.COSINE,
+    )
 
-        workflow_vs = OracleVS(
-            client=vector_conn,
-            embedding_function=embedding_model,
-            table_name=WORKFLOW_TABLE,
-            distance_strategy=DistanceStrategy.COSINE,
-        )
+    workflow_vs = OracleVS(
+        client=vector_conn,
+        embedding_function=embedding_model,
+        table_name=WORKFLOW_TABLE,
+        distance_strategy=DistanceStrategy.COSINE,
+    )
 
-        toolbox_vs = OracleVS(
-            client=vector_conn,
-            embedding_function=embedding_model,
-            table_name=TOOLBOX_TABLE,
-            distance_strategy=DistanceStrategy.COSINE,
-        )
+    toolbox_vs = OracleVS(
+        client=vector_conn,
+        embedding_function=embedding_model,
+        table_name=TOOLBOX_TABLE,
+        distance_strategy=DistanceStrategy.COSINE,
+    )
 
-        entity_vs = OracleVS(
-            client=vector_conn,
-            embedding_function=embedding_model,
-            table_name=ENTITY_TABLE,
-            distance_strategy=DistanceStrategy.COSINE,
-        )
+    entity_vs = OracleVS(
+        client=vector_conn,
+        embedding_function=embedding_model,
+        table_name=ENTITY_TABLE,
+        distance_strategy=DistanceStrategy.COSINE,
+    )
 
-        summary_vs = OracleVS(
-            client=vector_conn,
-            embedding_function=embedding_model,
-            table_name=SUMMARY_TABLE,
-            distance_strategy=DistanceStrategy.COSINE,
-        )
-        ```
+    summary_vs = OracleVS(
+        client=vector_conn,
+        embedding_function=embedding_model,
+        table_name=SUMMARY_TABLE,
+        distance_strategy=DistanceStrategy.COSINE,
+    )
+    ```
 
 ### Build HNSW Indexes for Each Vector Store
 
@@ -299,7 +299,7 @@ Here we create five separate OracleVS-backed vector stores — one for each sema
 
 ## Task 5: Seed the Knowledgebase with Research Papers
 
-We'll reuse the arXiv papers from Activity 1 to populate the knowledge base memory. In production, this would be a continuous ingestion pipeline from institutional repositories, journal APIs, or preprint servers.
+* We'll reuse the arXiv papers from Activity 1 to populate the knowledge base memory. In production, this would be a continuous ingestion pipeline from institutional repositories, journal APIs, or preprint servers.
 
     ```python
     # Seed knowledge base memory with arXiv papers from Activity 1
