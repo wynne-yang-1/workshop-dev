@@ -248,42 +248,42 @@ Here we create five separate OracleVS-backed vector stores — one for each sema
 | `entity_vs` | Extracted entities: paper titles, authors, research topics, arXiv IDs |
 | `summary_vs` | Compressed summaries for long research sessions |
 
-    ```python
-    knowledge_base_vs = OracleVS(
-        client=vector_conn,
-        embedding_function=embedding_model,
-        table_name=KNOWLEDGE_BASE_TABLE,
-        distance_strategy=DistanceStrategy.COSINE,
-    )
+        ```python
+        knowledge_base_vs = OracleVS(
+            client=vector_conn,
+            embedding_function=embedding_model,
+            table_name=KNOWLEDGE_BASE_TABLE,
+            distance_strategy=DistanceStrategy.COSINE,
+        )
 
-    workflow_vs = OracleVS(
-        client=vector_conn,
-        embedding_function=embedding_model,
-        table_name=WORKFLOW_TABLE,
-        distance_strategy=DistanceStrategy.COSINE,
-    )
+        workflow_vs = OracleVS(
+            client=vector_conn,
+            embedding_function=embedding_model,
+            table_name=WORKFLOW_TABLE,
+            distance_strategy=DistanceStrategy.COSINE,
+        )
 
-    toolbox_vs = OracleVS(
-        client=vector_conn,
-        embedding_function=embedding_model,
-        table_name=TOOLBOX_TABLE,
-        distance_strategy=DistanceStrategy.COSINE,
-    )
+        toolbox_vs = OracleVS(
+            client=vector_conn,
+            embedding_function=embedding_model,
+            table_name=TOOLBOX_TABLE,
+            distance_strategy=DistanceStrategy.COSINE,
+        )
 
-    entity_vs = OracleVS(
-        client=vector_conn,
-        embedding_function=embedding_model,
-        table_name=ENTITY_TABLE,
-        distance_strategy=DistanceStrategy.COSINE,
-    )
+        entity_vs = OracleVS(
+            client=vector_conn,
+            embedding_function=embedding_model,
+            table_name=ENTITY_TABLE,
+            distance_strategy=DistanceStrategy.COSINE,
+        )
 
-    summary_vs = OracleVS(
-        client=vector_conn,
-        embedding_function=embedding_model,
-        table_name=SUMMARY_TABLE,
-        distance_strategy=DistanceStrategy.COSINE,
-    )
-    ```
+        summary_vs = OracleVS(
+            client=vector_conn,
+            embedding_function=embedding_model,
+            table_name=SUMMARY_TABLE,
+            distance_strategy=DistanceStrategy.COSINE,
+        )
+        ```
 
 ### Build HNSW Indexes for Each Vector Store
 
