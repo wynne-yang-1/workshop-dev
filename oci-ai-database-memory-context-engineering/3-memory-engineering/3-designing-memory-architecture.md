@@ -126,6 +126,7 @@ Placeholder
 
 
     ```python
+    <copy>
     # Model token limits (for context management in Activity 4)
     MODEL_TOKEN_LIMITS = {
         "gpt-5": 256000,
@@ -135,8 +136,9 @@ Placeholder
         "gpt-4": 8192,
         "gpt-3.5-turbo": 16385,
     }
+    </copy>
     ```
-
+    
 ## Task 2: Create the Conversational Memory Table
 
 Unlike semantic memories backed by vector stores, conversational memory uses a traditional SQL table because we need **exact retrieval by thread ID** (not similarity search). Each research session gets its own `thread_id`.
