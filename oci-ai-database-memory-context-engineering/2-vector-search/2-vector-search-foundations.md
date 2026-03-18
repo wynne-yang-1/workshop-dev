@@ -31,12 +31,39 @@ You'll work with **SeerGroup's research paper collection**: a curated set of aca
 - **`DistanceStrategy.COSINE`**: Measures vector similarity using cosine distance
 - **HNSW Index**: Graph-based ANN index for fast and accurate nearest-neighbor retrieval
 
+## Task 0: Choose Your Own Adventure
+
+To simplify and accelerate this workshop, we've created a pre-built notebook with all the code. You may [download it here](https://raw.githubusercontent.com/enschilling/workshop-dev/refs/heads/main/oci-ai-database-memory-context-engineering/files/workshop-complete.ipynb) if you'd like.
+
+<details><summary>Choose the path of least resistance</summary>
+
+1. Download and save the complete workshop `.ipynb` notebook, then open it in the same VS Code instance that you used for lab 1. Ensure you select the same kernel: **`oracle-agent-env`**.
+
+2. Follow along in the lab guide as you execute each code block to learn more about all the components being constructed.
+
+3. Enjoy!
+
+</details>
+
+<details><summary>Off the beaten path - build your own notebook</summary>
+
+1. This path takes a bit of a turn as you forge your way through the copy&paste jungle. However, you may find yourself drawing a bit closer to the code as you inspect it more closely during the journey.
+
+2. Create a new `.ipynb` in your existing VS Code instance (don't close the other one): `ctrl+shift+p` (windows) or `cmd+shift+p` (Mac).
+
+3. As you progress through the lab instructions, you'll copy each code snippet from the guide, and paste / run in a new code block in your Jupyter notebook.
+
+4. Labs 2-6 will all be run in a single notebook.
+
+5. That's it! Enjoy, have fun, and we'll see you on the other side.
+
+</details>
 
 ## Task 1: Connect to Oracle AI Database
 
 Your environment has been pre-configured with Oracle AI Database 26ai running locally. The `VECTOR` user and connection details are ready to use.
 
-    ```python
+    ```
     import oracledb
     import time
     import logging
@@ -93,6 +120,7 @@ Your environment has been pre-configured with Oracle AI Database 26ai running lo
 We'll use the `sentence-transformers/paraphrase-mpnet-base-v2` model to convert text into 768-dimensional vectors. OracleVS handles the table creation, embedding storage, and similarity search under the hood.
 
     ```python
+    <copy>
     from langchain_oracledb.vectorstores import OracleVS
     from langchain_community.embeddings import HuggingFaceEmbeddings
     from langchain_oracledb.vectorstores.oraclevs import create_index
@@ -113,6 +141,7 @@ We'll use the `sentence-transformers/paraphrase-mpnet-base-v2` model to convert 
         table_name="VECTOR_SEARCH_DEMO",
         distance_strategy=DistanceStrategy.COSINE,
     )
+    </copy>
     ```
 
 ### Create an HNSW Index
