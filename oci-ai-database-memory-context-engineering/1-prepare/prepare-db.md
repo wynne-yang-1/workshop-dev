@@ -28,13 +28,13 @@ This lab assumes you have:
 
 1. Click the **View Loging Info** link to access account information.
 
-    ![LiveLabs - Account Info Link](images/02-view-login-info.png)
+    ![LiveLabs - Account Info Link](images/02-view-login-info.png " ")
 
 2. Locate and copy the Compartment OCID value. Store it in a text file to use in just a minute.
 
 3. Click the **[Launch OCI]** button and log in with the *Username* and *Password* provided.
 
-    ![LiveLabs - Log into OCI](images/02-launch-oci.png)
+    ![LiveLabs - Log into OCI](images/02-launch-oci.png " ")
 
 4. You should land on the OCI Dashboard, at which point you can proceed to the next task.
 
@@ -42,7 +42,7 @@ This lab assumes you have:
 
 1. Open Cloud Shell
 
-    ![Cloud shell button in UI](images/02-cloud-shell-button.png)
+    ![Cloud shell button in UI](images/02-cloud-shell-button.png " ")
 
 2. Copy the following command. Replace `<your-compartment-ocid>` with the value copied earlier.
 
@@ -97,31 +97,31 @@ This lab assumes you have:
 
 4. Use the navigation menu to visit the Autonous AI Database service console.
 
-    ![Web UI Nav Menu showing Oracle AI Database](images/02-nav-adb.png)
+    ![Web UI Nav Menu showing Oracle AI Database](images/02-nav-adb.png " ")
 
 5. Once the *State* of the database is `Avaialble`, click the name of the DB instance.
 
-    ![ADB Service Console showing DB instance](images/02-adb-service-console.png)
+    ![ADB Service Console showing DB instance](images/02-adb-service-console.png " ")
 
 6. Scroll down the page and locate the **Network** section.
 
-    ![ADB Instance details - Network section](images/02-adb-details-network.png)
+    ![ADB Instance details - Network section](images/02-adb-details-network.png " ")
 
 7. Click the **[Edit]** button next to **`Access control list`**.
 
 8. Click the *Add my IP address(shows your IP here) to IP value* toggle switch. You should notice the Values field above will populate with the external IP of your current machine.
 
-    ![Network ACL - Add my IP](images/02-adb-network-acl.png)
+    ![Network ACL - Add my IP](images/02-adb-network-acl.png " ")
 
 9. Click **[Save]** and allow the database a minute or so to update. Once the **[Edit]** button next to *Mutual TLS (mTLS) authentication is no longer grayed out, you may proceed to the next step.
 
 10. Click said **[Edit]** button next to the mTLS setting. Click the toggle switch to not require MTLs auth. Click **[Save]**.
 
-    ![Edit MTLS settings dialog](images/02-adb-network-mtls.png)
+    ![Edit MTLS settings dialog](images/02-adb-network-mtls.png " ")
  
 11. Finally - scroll back to the top of the page and click the **[Database connection]** button. Locate and copy the full **Connection string** for the TNS name that corresponds with `medium`. (Paste in a note pad for future reference)
 
-    ![Database connection details screen](images/02-adb-connection-details.png)
+    ![Database connection details screen](images/02-adb-connection-details.png " ")
 
 12. Time to set up VS Code!!
 
@@ -147,7 +147,7 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
             ```
         * Install the latest version of v3.12: `pyenv install 3.12.10`
 
-            ![Using pyenv-win to install Python 3.12.10](images/02-win-pyenv-install.png)
+            ![Using pyenv-win to install Python 3.12.10](images/02-win-pyenv-install.png " ")
 
 2. Open VS Code and close any existing tabs. 
 
@@ -155,7 +155,7 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
 
 3. Select an existing folder where you'd like to create your workspace, or create and select a new folder.
 
-    ![Select workspace folder dialog window](images/02-vscode-select-workspace.png)
+    ![Select workspace folder dialog window](images/02-vscode-select-workspace.png " ")
 
     >NOTE: If prompted to trust the authors of the files in this folder, click **[Yes, I trust the authors]**
 
@@ -165,7 +165,7 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
 
 8. Click *+ Create Python Environment*
 
-    ![Menu option to create python evironment](images/02-vscode-select-kernel.png)
+    ![Menu option to create python evironment](images/02-vscode-select-kernel.png " ")
 
 9. Choose the ***venv** Manages virtual environments created using 'venv'* 
 
@@ -197,7 +197,7 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
 
 14. Finally, before continuing to the next step, restart the kernel.
 
-    ![Restart kernel button in VS Code](images/02-vscode-restart-kernel.png)
+    ![Restart kernel button in VS Code](images/02-vscode-restart-kernel.png " ")
 
 </details>
 
@@ -220,7 +220,7 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
         </copy>
         ```
 
-        ![Shell command to create and activate conda environment](images/02-mac-create-conda.png)
+        ![Shell command to create and activate conda environment](images/02-mac-create-conda.png " ")
 
     * Option B: pyenv + venv
 
@@ -239,19 +239,19 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
 
 4. Select an existing folder or create and select a new one.
 
-    ![VS Code Open Folder](images/02-mac-open-folder.png)
+    ![VS Code Open Folder](images/02-mac-open-folder.png " ")
 
     >NOTE: If prompted to trust the authors of the files in this folder, click **[Yes, I trust the authors]**
 
 5. Press *Cmd+Shift+P* and begin typing "*Jupyter*". Select *Create: New Jupyter Notebook*
 
-    ![Create new jupyter notebook](images/02-mac-create-jupyter-notebook.png)
+    ![Create new jupyter notebook](images/02-mac-create-jupyter-notebook.png " ")
 
     >NOTE: You may need the [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) and [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) if not already installed.
 
 6. A new *Untitled-1.ipyn* file will be created. Confirm the kernel in the top right corner matches your environment.
 
-    ![Validate selected kernel](images/02-mac-validate-kernel.png)
+    ![Validate selected kernel](images/02-mac-validate-kernel.png " ")
 
 7. Paste the following code in the initial code block and press play.
 
@@ -273,7 +273,7 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
     </copy>
     ```
 
-    ![Output of test python code](images/02-mac-verify-setup.png)
+    ![Output of test python code](images/02-mac-verify-setup.png " ")
 
     >NOTE: Check for the green check mark and *All modules imported uccessfully - no errors*
 
@@ -289,7 +289,7 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
     * Your chosen VECTOR user password (recommended: MemoryContext_2026)
     * The DSN for your Autonomous DB _medium listener
 
-    ![VS Code prompt for input - DB Admin password](images/02-vscode-run-code-prompt.png)
+    ![VS Code prompt for input - DB Admin password](images/02-vscode-run-code-prompt.png " ")
 
     ```python
     <copy>
@@ -330,7 +330,7 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
     </copy>
     ```
 
-    ![Successful DB connection output in VS Code](images/02-vscode-db-connection-success.png)
+    ![Successful DB connection output in VS Code](images/02-vscode-db-connection-success.png " ")
 
 3. Create the VECTOR user.
 
@@ -465,7 +465,7 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
     <copy>
     ```
 
-    ![Notebook execution output - successfully created vector user](images/02-vscode-dbsetup-output.png)
+    ![Notebook execution output - successfully created vector user](images/02-vscode-dbsetup-output.png " ")
 
 You may now proceed to the next lab.
 
