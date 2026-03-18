@@ -1,10 +1,23 @@
 # Lab 6: Agent Execution & Evaluation
 
+### Objectives
+
+In this lab, you will:
+* TODO: Add objectives
+
+
+Estimated Time: TODO - x minutes
+
+
 Running Proteus Through Research Scenarios
 
 ## Objective
 
 This is where everything comes together. You'll build the **turn-level agent harness** that integrates all memory types, context engineering, and tool calling — then run Proteus through realistic research scenarios and compare the engineered approach against a naive baseline.
+
+## Introduction
+
+TODO: Add introduction text here.
 
 ## Task 1: The Agent System Prompt
 
@@ -83,26 +96,26 @@ This is the core of Proteus. Each call to `call_agent()` represents one **agent 
 
 ```
 1. BUILD CONTEXT (programmatic)
-   ├── Read conversational memory (unsummarized turns only)
-   ├── Read knowledge base (relevant research papers)
-   ├── Read workflow memory (past search-and-analysis patterns)
-   ├── Read entity memory (papers, authors, topics)
-   └── Read summary context (available summary IDs + descriptions)
+    ├── Read conversational memory (unsummarized turns only)
+    ├── Read knowledge base (relevant research papers)
+    ├── Read workflow memory (past search-and-analysis patterns)
+    ├── Read entity memory (papers, authors, topics)
+    └── Read summary context (available summary IDs + descriptions)
 
 2. GET TOOLS (programmatic)
-   └── Retrieve semantically relevant tools from toolbox
+    └── Retrieve semantically relevant tools from toolbox
 
 3. STORE USER MESSAGE (programmatic)
-   └── Persist the user message + best-effort entity extraction
+    └── Persist the user message + best-effort entity extraction
 
 4. WITHIN-RUN TOOL-CALL LOOP (up to max_iterations, within time budget)
-   ├── Call LLM with context + tool schemas
-   ├── If tool calls → execute tools and append results
-   ├── If tools changed memory (search/compaction) → rebuild context
-   └── If no tool calls → finalize answer
+    ├── Call LLM with context + tool schemas
+    ├── If tool calls → execute tools and append results
+    ├── If tools changed memory (search/compaction) → rebuild context
+    └── If no tool calls → finalize answer
 
 5. GUARDED STOP
-   └── If budget hit → force a final best-effort answer (no tools)
+    └── If budget hit → force a final best-effort answer (no tools)
 
 6. SAVE RESULTS (programmatic)
    ├── Write workflow (if tools were used)

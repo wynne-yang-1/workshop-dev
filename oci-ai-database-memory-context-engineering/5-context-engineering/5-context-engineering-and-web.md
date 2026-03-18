@@ -1,5 +1,14 @@
 # Lab 5: Context Engineering & Web Integration
 
+### Objectives
+
+In this lab, you will:
+* TODO: Add objectives
+
+
+Estimated Time: TODO - x minutes
+
+
 Context Window Management, Summarization, and Tavily Search
 
 ## Objective
@@ -40,6 +49,10 @@ For Proteus, this means:
 - Summary pointers (ID + description) are always loaded — cheap, a few tokens each
 - Full summary content is only retrieved when Proteus decides it's relevant to the current research query
 - This avoids wasting thousands of context tokens on summaries of unrelated troubleshooting sessions
+
+## Introduction
+
+TODO: Add introduction text here.
 
 ## Task 1: Context Window Usage Calculator
 

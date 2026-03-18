@@ -535,7 +535,7 @@ The `Toolbox` class solves this by treating tools as a **searchable memory**:
 2. **Retrieve only relevant tools** — At inference time, vector search finds tools semantically relevant to the current query
 3. **Pass a focused toolset** — Only the top 3-5 retrieved tools are passed to the LLM
 
-This means your system can **scale to hundreds of tools** while the LLM only sees the most relevant ones for each query.
+    This means your system can **scale to hundreds of tools** while the LLM only sees the most relevant ones for each query.
 
 ### How It Works
 
