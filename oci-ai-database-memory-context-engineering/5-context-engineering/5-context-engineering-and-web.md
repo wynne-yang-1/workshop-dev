@@ -1,20 +1,27 @@
 # Lab 5: Context Engineering & Web Integration
 
-## Context Window Management, Summarization, and Tavily Search
+### Objectives
 
---------
+In this lab, you will:
+* TODO: Add objectives
 
-### Objective
 
-While memory engineering focuses on *what to store and retrieve*, context engineering focuses on *how to manage what's in the context window right now*. In this lab, you'll build the techniques that keep Proteus's context lean and effective, plus integrate web search so Proteus can find information beyond the internal knowledge base.
+Estimated Time: TODO - x minutes
+
+
+Context Window Management, Summarization, and Tavily Search
+
+## Objective
+
+While memory engineering focuses on *what to store and retrieve*, context engineering focuses on *how to manage what's in the context window right now*. In this activity, you'll build the techniques that keep Proteus's context lean and effective, plus integrate web search so Proteus can find information beyond the internal knowledge base.
 
 > **Context engineering** refers to the set of strategies for curating and maintaining the optimal set of tokens (information) during LLM inference, including all the other information that may land there outside of the prompts.
 
 --------
 
-### What This Lab Covers
+### What This Activity Covers
 
-| Step | Function | Purpose |
+| Task | Function | Purpose |
 |------|----------|---------|
 | **1. Calculate Usage** | `calculate_context_usage()` | Monitor what % of the context window is used |
 | **2. Summarize** | `summarise_context_window()` | Compress long content into summaries using LLM |
@@ -22,17 +29,15 @@ While memory engineering focuses on *what to store and retrieve*, context engine
 | **4. Just-in-Time Retrieval** | `expand_summary()` tool | Let Proteus expand summaries on demand |
 | **5. Web Search** | `search_tavily()` tool | External retrieval with automatic knowledge base persistence |
 
-### The Context Management Flow
+## The Context Management Flow
 
-```
-Context built → Check usage % → Proteus may compact (summarize) → Store summary with ID
-                                                               ↓
-Proteus sees: [Summary ID: abc123] Brief description ← Proteus calls expand_summary("abc123") if needed
-```
+    ```
+    Context built → Check usage % → Proteus may compact (summarize) → Store summary with ID
+                                                                ↓
+    Proteus sees: [Summary ID: abc123] Brief description ← Proteus calls expand_summary("abc123") if needed
+    ```
 
 This approach keeps the context lean while giving Proteus access to full details when required.
-
---------
 
 ### Just-in-Time (JIT) Retrieval
 
@@ -42,12 +47,14 @@ In the context of agent memory, JIT is a retrieval-control strategy where memory
 
 For Proteus, this means:
 - Summary pointers (ID + description) are always loaded — cheap, a few tokens each
-- Full summary content is only retrieved when Proteus decides it's relevant to the current ticket
+- Full summary content is only retrieved when Proteus decides it's relevant to the current research query
 - This avoids wasting thousands of context tokens on summaries of unrelated troubleshooting sessions
 
---------
+## Introduction
 
-## Step 1: Context Window Usage Calculator
+TODO: Add introduction text here.
+
+## Task 1: Context Window Usage Calculator
 
 This simple utility estimates how much of the context window is being used. Proteus can check this to decide whether compaction is needed.
 
@@ -64,7 +71,7 @@ This simple utility estimates how much of the context window is being used. Prot
         }
     ```
 
-## Step 2: Context Summarizer
+## Task 2: Context Summarizer
 
 When the context window grows large — after several tool calls, long conversations, or large search results — we can compress it into a summary. The full content is stored in Summary Memory, and the context window gets a compact pointer.
 
@@ -77,13 +84,13 @@ When the context window grows large — after several tool calls, long conversat
     ) -> dict:
         """Summarise context window using LLM and store in summary memory."""
         summary_prompt = f"""
-    You are compressing an AI IT support agent's context window for later retrieval.
+    You are compressing an AI research assistant's context window for later retrieval.
     The content may include conversation memory, KB articles, entities, workflows, and prior summaries.
 
     Produce a compact summary that preserves:
     - user's reported issue and constraints
     - key diagnostic findings already established
-    - important entities (server names, service names, team names, ticket IDs)
+    - important entities (paper titles, author names, arXiv IDs, research topics)
     - unresolved questions and next actions
 
     Output 4-7 short bullet points.
@@ -118,7 +125,7 @@ When the context window grows large — after several tool calls, long conversat
         return {"id": summary_id, "description": description, "summary": summary}
     ```
 
-## Step 3: Context Offloader
+## Task 3: Context Offloader
 
 This utility checks whether the context exceeds a threshold and, if so, automatically summarizes and replaces the content with a compact reference.
 
@@ -141,7 +148,7 @@ This utility checks whether the context exceeds a threshold and, if so, automati
         return compact, [result]
     ```
 
-## Step 4: Register Summary Tools for the Agent
+## Task 4: Register Summary Tools for the Agent
 
 These are **agent-triggered** tools — Proteus decides when to call them based on the current context. We register them with `augment=True` for better semantic retrieval.
 
@@ -158,16 +165,16 @@ Memory should be *compressed* or *forgotten*, not *erased*. The original message
 
 ### The Compaction Flow
 
-    ```
-    Ticket thread has 50 messages → Context too large → summarize_conversation(thread_id)
-                                                            ↓
-                                1. Read unsummarized messages
-                                2. LLM summarizes them
-                                3. Store summary with unique ID
-                                4. UPDATE messages SET summary_id = 'abc123'
-                                                            ↓
-                                Next read: Only new messages appear + Summary ID reference
-    ```
+```
+Ticket thread has 50 messages → Context too large → summarize_conversation(thread_id)
+                                                          ↓
+                               1. Read unsummarized messages
+                               2. LLM summarizes them
+                               3. Store summary with unique ID
+                               4. UPDATE messages SET summary_id = 'abc123'
+                                                          ↓
+                               Next read: Only new messages appear + Summary ID reference
+```
 
     ```python
     @toolbox.register_tool(augment=True)
@@ -197,7 +204,7 @@ Memory should be *compressed* or *forgotten*, not *erased*. The original message
     @toolbox.register_tool(augment=True)
     def summarize_conversation(thread_id: str) -> str:
         """
-        Summarize unsummarized conversation turns for a ticket thread and mark those
+        Summarize unsummarized conversation turns for a research session thread and mark those
         turns with a summary_id. Use this when conversation memory becomes long and
         you need context compaction during a troubleshooting session.
         """
@@ -214,9 +221,9 @@ Memory should be *compressed* or *forgotten*, not *erased*. The original message
         return f"Conversation summarized as [Summary ID: {result['id']}] {result['description']}"
     ```
 
-## Step 5: Web Search with Tavily
+## Task 5: Web Search with Tavily
 
-Proteus needs to search external sources when the internal knowledge base doesn't have the answer — for example, looking up a new Kubernetes CVE, a vendor advisory, or an unfamiliar error message.
+Proteus needs to search external sources when the internal knowledge base doesn't have the answer — for example, looking up a recent paper not yet in the knowledge base, a new research finding, or an unfamiliar technique.
 
 We use [Tavily](https://tavily.com/), an AI-optimized search API designed for LLM applications.
 
@@ -224,15 +231,15 @@ We use [Tavily](https://tavily.com/), an AI-optimized search API designed for LL
 
 When Proteus calls `search_tavily()`, it doesn't just return results — it **persists them to the knowledge base**:
 
-    ```
-    Proteus calls search_tavily("CrowdStrike Falcon sensor error 0x80070005")
-        ↓
-    Tavily API returns results
-        ↓
-    Each result is written to knowledge_base_vs with metadata (title, URL, timestamp)
-        ↓
-    Future tickets can retrieve this information without searching again
-    ```
+```
+Proteus calls search_tavily("recent advances in diffusion models 2026")
+       ↓
+Tavily API returns results
+       ↓
+Each result is written to knowledge_base_vs with metadata (title, URL, timestamp)
+       ↓
+Future sessions can retrieve this information without searching again
+```
 
 This pattern means Proteus **learns** from its searches. Information discovered once becomes part of the agent's long-term memory.
 
@@ -301,7 +308,7 @@ Let's confirm that Proteus can find the search tool when needed:
 
 **Key Insight**: The search-and-store pattern means Proteus builds institutional knowledge over time. The first time a SeerGroup employee asks about a specific error, Proteus searches externally. The second time, Proteus finds the answer in its own knowledge base — no external call needed, faster and cheaper.
 
-**Next up**: In Lab 6, we'll wire everything together into the `call_agent` harness, run Proteus through real IT support scenarios, and compare the engineered approach against a naive baseline.
+**Next up**: In Lab 6, we'll wire everything together into the `call_agent` harness, run Proteus through real research scenarios, and compare the engineered approach against a naive baseline.
 
 ## Learn More
 

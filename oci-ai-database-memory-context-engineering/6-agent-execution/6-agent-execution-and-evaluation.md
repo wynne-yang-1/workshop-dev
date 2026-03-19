@@ -1,16 +1,25 @@
 # Lab 6: Agent Execution & Evaluation
 
-## Running Proteus Through IT Support Scenarios
+### Objectives
 
---------
+In this lab, you will:
+* TODO: Add objectives
+
+
+Estimated Time: TODO - x minutes
+
+
+Running Proteus Through Research Scenarios
 
 ## Objective
 
-This is where everything comes together. You'll build the **turn-level agent harness** that integrates all memory types, context engineering, and tool calling — then run Proteus through realistic IT support scenarios and compare the engineered approach against a naive baseline.
+This is where everything comes together. You'll build the **turn-level agent harness** that integrates all memory types, context engineering, and tool calling — then run Proteus through realistic research scenarios and compare the engineered approach against a naive baseline.
 
---------
+## Introduction
 
-## Step 1: The Agent System Prompt
+TODO: Add introduction text here.
+
+## Task 1: The Agent System Prompt
 
 The system prompt tells Proteus how to use its memory systems and tools. Notice it establishes a **priority order** for memory types — this is critical for reliable behavior.
 
@@ -26,18 +35,19 @@ The system prompt tells Proteus how to use its memory systems and tools. Notice 
 
     AGENT_SYSTEM_PROMPT = """
     # System Instructions
-    You are Proteus, SeerGroup Solutions' AI IT Support Agent. You have access to memory systems and
-    diagnostic tools to help resolve internal support tickets.
+    You are Proteus, SeerGroup's AI Research Assistant. You have access to memory systems and
+    research tools to help analysts navigate academic literature, synthesize findings, and track
+    research threads across sessions.
 
     IMPORTANT: The user's input contains CONTEXT retrieved from multiple memory systems.
     Each memory section has a Purpose and When-to-use guide — follow them.
 
     ## Memory Priority Order
-    1. **Conversation Memory** — check what the user already reported and what you already suggested.
-    2. **Knowledge Base Memory** — cite facts from stored KB articles, runbooks, and incident reports
+    1. **Conversation Memory** — check what the user already asked and what you already answered.
+    2. **Knowledge Base Memory** — cite facts from stored papers, abstracts, and web search results
     before searching externally.
-    3. **Entity Memory** — resolve named references ("that server", "the team we discussed") from here.
-    4. **Workflow Memory** — reuse proven resolution sequences for similar past tickets.
+    3. **Entity Memory** — resolve named references ("that author", "the paper we discussed") from here.
+    4. **Workflow Memory** — reuse proven search-and-analysis sequences for similar past queries.
     5. **Summary Memory** — expand a summary ID only when you need specific details from an older session.
 
     ## Tool Output Handling
@@ -54,12 +64,12 @@ The system prompt tells Proteus how to use its memory systems and tools. Notice 
     1. FIRST, use the context provided in the input
     2. Expand summary IDs just-in-time when needed
     3. Use external search tools only if memory context is insufficient
-    4. Keep responses evidence-based and aligned with SeerGroup's internal documentation
-    5. Always mention the relevant team to escalate to when appropriate
+    4. Keep responses evidence-based and grounded in the retrieved research context
+    5. Cite paper titles, authors, and arXiv IDs when available
     """
     ```
 
-## Step 2: Tool Execution and OpenAI Chat Wrapper
+## Task 2: Tool Execution and OpenAI Chat Wrapper
 
     ```python
     def execute_tool(tool_name: str, tool_args: dict) -> str:
@@ -78,40 +88,40 @@ The system prompt tells Proteus how to use its memory systems and tools. Notice 
         return client.chat.completions.create(**kwargs)
     ```
 
-## Step 3: The Turn-Level Agent Harness
+## Task 3: The Turn-Level Agent Harness
 
 This is the core of Proteus. Each call to `call_agent()` represents one **agent run** (one user turn handled). Within a run, the **tool-call loop** repeats: model reasoning → optional tool calls → harness executes tools → model observes results → repeat until a final answer.
 
 ### The Flow
 
-    ```
-    1. BUILD CONTEXT (programmatic)
+```
+1. BUILD CONTEXT (programmatic)
     ├── Read conversational memory (unsummarized turns only)
-    ├── Read knowledge base (relevant KB articles)
-    ├── Read workflow memory (past resolution patterns)
-    ├── Read entity memory (servers, services, people)
+    ├── Read knowledge base (relevant research papers)
+    ├── Read workflow memory (past search-and-analysis patterns)
+    ├── Read entity memory (papers, authors, topics)
     └── Read summary context (available summary IDs + descriptions)
 
-    2. GET TOOLS (programmatic)
+2. GET TOOLS (programmatic)
     └── Retrieve semantically relevant tools from toolbox
 
-    3. STORE USER MESSAGE (programmatic)
+3. STORE USER MESSAGE (programmatic)
     └── Persist the user message + best-effort entity extraction
 
-    4. WITHIN-RUN TOOL-CALL LOOP (up to max_iterations, within time budget)
+4. WITHIN-RUN TOOL-CALL LOOP (up to max_iterations, within time budget)
     ├── Call LLM with context + tool schemas
     ├── If tool calls → execute tools and append results
     ├── If tools changed memory (search/compaction) → rebuild context
     └── If no tool calls → finalize answer
 
-    5. GUARDED STOP
+5. GUARDED STOP
     └── If budget hit → force a final best-effort answer (no tools)
 
-    6. SAVE RESULTS (programmatic)
-    ├── Write workflow (if tools were used)
-    ├── Best-effort entity extraction on final answer
-    └── Store assistant response in conversational memory
-    ```
+6. SAVE RESULTS (programmatic)
+   ├── Write workflow (if tools were used)
+   ├── Best-effort entity extraction on final answer
+   └── Store assistant response in conversational memory
+```
 
     ```python
     import time
@@ -259,7 +269,7 @@ This is the core of Proteus. Each call to `call_agent()` represents one **agent 
                         )
                         continue
 
-                    # Ensure conversation compaction targets the active ticket thread
+                    # Ensure conversation compaction targets the active session thread
                     if tool_name == "summarize_conversation":
                         tool_args["thread_id"] = thread_id
 
@@ -348,51 +358,51 @@ This is the core of Proteus. Each call to `call_agent()` represents one **agent 
         return final_answer
     ```
 
-## Step 4: Run Proteus Through IT Support Scenarios
+## Task 4: Run Proteus Through Research Scenarios
 
-### Scenario 1: Simple Ticket — "I can't log in"
+### Scenario 1: Simple Literature Query
 
     ```python
     call_agent(
-        "Hi, I can't log in to any of our internal apps this morning. "
-        "Jira, Confluence, everything is giving me an error.",
-        thread_id="TICKET-2025-001",
+        "I'm looking for papers on transformer architectures applied to time-series "
+        "forecasting. What's in our knowledge base?",
+        thread_id="SESSION-2025-001",
     )
-```
+    ```
 
-### Scenario 2: Follow-up on the Same Ticket
+### Scenario 2: Follow-up on the Same Session
 
 Watch how Proteus uses conversational memory from the previous turn:
 
     ```python
     call_agent(
-        "I tried restarting my browser and clearing cookies like you suggested, "
-        "but it's still not working. My colleague on Floor 2 is having the same issue.",
-        thread_id="TICKET-2025-001",
-    )
-```
-
-### Scenario 3: Infrastructure Issue Requiring Web Search
-
-    ```python
-    call_agent(
-        "Our deployment pipeline is failing with an error about a Kubernetes "
-        "admission webhook timeout. This started after the cluster upgrade last night.",
-        thread_id="TICKET-2025-002",
-    )
-```
-
-### Scenario 4: Cross-Referencing Past Incidents
-
-Proteus should recognize the AUTH-SVC pattern from its knowledge base:
-
-    ```python
-    call_agent(
-        "AUTH-SVC is showing CrashLoopBackOff again. Did this happen before? "
-        "What did we do last time?",
-        thread_id="TICKET-2025-003",
+        "Interesting — can you search the web for more recent work on that topic? "
+        "I want to see what's been published in 2025 or 2026.",
+        thread_id="SESSION-2025-001",
     )
     ```
+
+### Scenario 3: New Research Thread Requiring Web Search
+
+    ```python
+    call_agent(
+        "I've heard about a new technique called 'flow matching' for generative models. "
+        "Can you find recent papers on it and summarize the key ideas?",
+        thread_id="SESSION-2025-002",
+    )
+    ```
+
+### Scenario 4: Cross-Referencing Prior Research
+
+Proteus should recall entities and papers from previous sessions:
+
+    ```python
+    call_agent(
+        "Remember the papers we found on transformer architectures? "
+        "How do those relate to the flow matching approach?",
+        thread_id="SESSION-2025-003",
+    )
+```
 
 ### Visualize Context Window Growth
 
@@ -412,7 +422,8 @@ Proteus should recognize the AUTH-SVC pattern from its knowledge base:
     else:
         print("No iterations recorded — run call_agent() first.")
     ```
-## Step 5: Baseline — The Naive Agent (No Context Engineering)
+
+## Task 5: Baseline — The Naive Agent (No Context Engineering)
 
 To appreciate the impact of memory and context engineering, let's see what happens **without them**.
 
@@ -472,7 +483,7 @@ In a real agent loop, the LLM is called **once per iteration** with the full `me
             _naive_messages_by_thread[thread_id] = [
                 {
                     "role": "system",
-                    "content": "You are an IT Support Assistant with access to tools.",
+                    "content": "You are a Research Paper Assistant with access to tools.",
                 }
             ]
         messages = _naive_messages_by_thread[thread_id]
@@ -551,9 +562,9 @@ In a real agent loop, the LLM is called **once per iteration** with the full `me
         return final_answer
     ```
 
-## Step 6: Head-to-Head Comparison
+## Task 6: Head-to-Head Comparison
 
-Run both agents through the same progressive queries — five escalating IT support questions that build on each other. This tests memory continuity, context management, and resolution quality.
+Run both agents through the same progressive queries — five escalating research questions that build on each other. This tests memory continuity, context management, and synthesis quality.
 
     ```python
     import uuid
@@ -568,11 +579,11 @@ Run both agents through the same progressive queries — five escalating IT supp
 
     # Progressive queries that build on each other
     queries = [
-        "AUTH-SVC is showing CrashLoopBackOff on prod-cluster-3. What should I check first?",
-        "The logs show an invalid OIDC issuer URL in the config map. Has this happened before?",
-        "I've confirmed it's the same root cause as the January incident. Walk me through the rollback.",
-        "Rollback is complete and AUTH-SVC is recovering. Summarize everything we've done so far.",
-        "What was the first symptom I reported in this ticket?",
+        "Search for recent papers on AI agent memory published in 2025 or 2026.",
+        "Pick the most interesting paper from those results and give me the key takeaways.",
+        "What other approaches or viewpoints might that paper have missed?",
+        "Summarize everything we've discussed so far in this session.",
+        "What was the first question I asked in this conversation?",
     ]
 
     for i, q in enumerate(queries, 1):
@@ -592,7 +603,7 @@ Run both agents through the same progressive queries — five escalating IT supp
         print("\n")
     ```
 
-    ### Visualize the Difference
+### Visualize the Difference
 
     ```python
     import matplotlib.pyplot as plt
@@ -644,7 +655,7 @@ An **agent harness** is the runtime scaffolding around that loop. In this worksh
 | **Context growth** | Unbounded — every tool output accumulates | Managed — tool outputs offloaded, conversations compacted |
 | **Memory** | None — only raw message history | 6 specialized types with semantic search |
 | **Tool discovery** | All tools all the time | Semantic retrieval of relevant tools per query |
-| **Knowledge retention** | Lost between sessions | Persistent across tickets and sessions |
+| **Knowledge retention** | Lost between sessions | Persistent across research sessions |
 | **Resolution patterns** | Rediscovered every time | Learned workflows reused automatically |
 
 ### The Practical Takeaway
@@ -662,12 +673,12 @@ You've built a complete memory-powered AI agent from the ground up:
 
 | Lab | What You Built |
 |----------|---------------|
-| **1** | Set up your Jupyter environment in VS Code, connected to Oracle Database, and created a VECTOR user |
-| **2** | Vector search foundations with OracleVS and SeerGroup KB data |
+| **1** | Deployed Oracle Autonomous DB and created VECTOR user |
+| **2** | Vector search foundations with OracleVS and arXiv research papers |
 | **3** | Memory architecture — 6 types, SQL + vector stores, design principles |
 | **4** | MemoryManager class and semantic Toolbox with LLM augmentation |
 | **5** | Context engineering — usage tracking, summarization, JIT retrieval, web search |
-| **6** | Agent harness, IT support scenarios, and engineered vs. naive comparison |
+| **6** | Agent harness, research scenarios, and engineered vs. naive comparison |
 
 Proteus now demonstrates how modern AI agents maintain context, learn from interactions, and manage information across sessions — all backed by Oracle AI Database 26ai as the converged storage layer for relational, vector, and semantic data.
 

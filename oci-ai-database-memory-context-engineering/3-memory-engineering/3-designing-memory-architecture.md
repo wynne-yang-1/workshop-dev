@@ -1,27 +1,29 @@
 # Lab 3: Designing the Memory Architecture
 
-## Memory Types, Design Decisions, and Storage Setup
+## Introduction
 
---------
+Memory Types, Design Decisions, and Storage Setup
 
-### Objective
+**Estimated Time:** 20 minutes
 
-In this lab, you'll understand *why* Proteus needs six distinct memory types, learn the design principles behind each one, and create all the database tables and vector stores that will power the Memory Manager in Lab 4.
+### Objectives
+
+In this activity, you'll understand *why* Proteus needs six distinct memory types, learn the design principles behind each one, and create all the database tables and vector stores that will power the Memory Manager in Lab 4.
 
 This is the **architecture** lab — we focus on design decisions before writing implementation code.
 
 ### Why Memory Engineering Matters
 
-Without memory, an IT support agent like Proteus:
-- Forgets that the user already said they're on VPN
-- Can't recall that AUTH-SVC crashed last week for the same reason
-- Repeats the same diagnostic steps it already tried
-- Loses track of which servers, services, and people have been mentioned
+Without memory, a research assistant like Proteus:
+- Forgets that the user already asked about transformer architectures
+- Can't recall which papers it recommended in the last session
+- Repeats the same search queries it already ran
+- Loses track of which authors, papers, and research threads have been mentioned
 
 With proper memory engineering, Proteus can:
-- Maintain context across long troubleshooting sessions
-- Reuse proven resolution patterns from past incidents
-- Track infrastructure entities and their relationships
+- Maintain context across long research sessions
+- Reuse proven search-and-analysis patterns from past queries
+- Track entities like paper titles, authors, and research topics across conversations
 - Compress long conversations while preserving key details
 
 #### Definitions
@@ -38,13 +40,13 @@ Just like humans have different types of memory (short-term, long-term, procedur
 
 | Memory Type | Human Analogy | SeerGroup Use Case | Storage |
 |-------------|---------------|-------------------|---------|
-| **Conversational** | Short-term memory | "The user said they're on Floor 2 with a MacBook" | SQL Table |
-| **Knowledge Base** | Long-term semantic memory | KB articles, runbooks, vendor docs, search results | Vector-Enabled SQL Table |
-| **Workflow** | Procedural memory | "Last time AUTH-SVC crashed, we ran these 3 steps" | Vector-Enabled SQL Table |
-| **Toolbox** | Skill memory | Available diagnostic tools, search APIs, scripts | Vector-Enabled SQL Table |
-| **Entity** | Episodic memory | "AUTH-SVC runs on prod-cluster-3, owned by Marcus Rivera" | Vector-Enabled SQL Table |
-| **Summary** | Compressed memory | "45-minute debug session condensed to 5 bullet points" | Vector-Enabled SQL Table |
-| **Tool Log** | Episodic memory | "Full kubectl output stored in DB, preview in context" | SQL Table |
+| **Conversational** | Short-term memory | "The user asked about transformer architectures for time-series" | SQL Table |
+| **Knowledge Base** | Long-term semantic memory | Research papers, web search results, curated references | Vector-Enabled SQL Table |
+| **Workflow** | Procedural memory | "Last time someone asked about GANs, we searched arXiv then Tavily" | Vector-Enabled SQL Table |
+| **Toolbox** | Skill memory | Available search tools, analysis functions, APIs | Vector-Enabled SQL Table |
+| **Entity** | Episodic memory | "Vaswani et al. authored 'Attention Is All You Need' on transformers" | Vector-Enabled SQL Table |
+| **Summary** | Compressed memory | "90-minute literature review condensed to 5 bullet points" | Vector-Enabled SQL Table |
+| **Tool Log** | Episodic memory | "Full Tavily search output stored in DB, preview in context" | SQL Table |
 
 > **Note on Tool Log:** Tool Log is a form of episodic memory — it records *what happened* during each tool execution. Beyond keeping the context window lean, tool logs can serve as a source from which **procedural memories** (workflow patterns) and **semantic memories** (knowledge base entries) can be distilled over time.
 
@@ -74,20 +76,28 @@ In Proteus's design, the harness is intentionally opinionated: memory loading an
 | `summarize_and_store()` | ❌ | ✅ | Agent-triggered context compaction primitive |
 | `summarize_conversation()` | ❌ | ✅ | Agent-triggered conversation compaction for active thread |
 
-### Why This Split Works
+#### Why This Split Works
 
 1. **Reliability from programmatic memory** — critical memory load/save behavior never depends on the model remembering to do it.
 2. **Adaptivity from agent-triggered tools** — the model can selectively fetch, expand, or compact only when needed.
 3. **Clear control boundaries** — the harness owns state integrity; the model owns strategy inside those boundaries.
 
-## Step 1: Define Table Names
+### Key Components
 
-Each memory type gets its own table. SQL tables for exact-match retrieval (conversational history, tool logs); vector-enabled SQL tables for semantic search (everything else).
+Placeholder
+
+--------
+
+
+## Task 1: Define Table Names
+
+* Each memory type gets its own table. SQL tables for exact-match retrieval (conversational history, tool logs); vector-enabled SQL tables for semantic search (everything else).
 
     ```python
+    <copy>
     # Table names for each memory type
-    CONVERSATIONAL_TABLE   = "CONVERSATIONAL_MEMORY"   # Episodic memory
-    KNOWLEDGE_BASE_TABLE   = "SEMANTIC_MEMORY"          # Semantic memory
+    CONVERSATIONAL_TABLE   = "CONVERSATIONAL_MEMORY"     # Episodic memory
+    KNOWLEDGE_BASE_TABLE   = "SEMANTIC_MEMORY"           # Semantic memory
     WORKFLOW_TABLE         = "WORKFLOW_MEMORY"           # Procedural memory
     TOOLBOX_TABLE          = "TOOLBOX_MEMORY"            # Procedural memory
     ENTITY_TABLE           = "ENTITY_MEMORY"             # Semantic memory
@@ -111,10 +121,13 @@ Each memory type gets its own table. SQL tables for exact-match retrieval (conve
                 print(f"  ✗ {table}: {e}")
 
     vector_conn.commit()
+    </copy>
     ```
 
+
     ```python
-    # Model token limits (for context management in Lab 5)
+    <copy>
+    # Model token limits (for context management in Activity 4)
     MODEL_TOKEN_LIMITS = {
         "gpt-5": 256000,
         "gpt-5-mini": 128000,
@@ -123,13 +136,14 @@ Each memory type gets its own table. SQL tables for exact-match retrieval (conve
         "gpt-4": 8192,
         "gpt-3.5-turbo": 16385,
     }
+    </copy>
     ```
+    
+## Task 2: Create the Conversational Memory Table
 
-## Step 2: Create the Conversational Memory Table
+* Unlike semantic memories backed by vector stores, conversational memory uses a traditional SQL table because we need **exact retrieval by thread ID** (not similarity search). Each research session gets its own `thread_id`.
 
-Unlike semantic memories backed by vector stores, conversational memory uses a traditional SQL table because we need **exact retrieval by thread ID** (not similarity search). Each support ticket gets its own `thread_id`.
-
-The table includes a `summary_id` column — when older messages are summarized and compressed, they're marked (not deleted) with a reference to the summary that replaced them.
+* The table includes a `summary_id` column — when older messages are summarized and compressed, they're marked (not deleted) with a reference to the summary that replaced them.
 
     ```python
     def create_conversational_history_table(conn, table_name: str = "CONVERSATIONAL_MEMORY"):
@@ -138,7 +152,7 @@ The table includes a `summary_id` column — when older messages are summarized 
 
         Columns:
         - id:         Unique message identifier
-        - thread_id:  Groups messages by support ticket / conversation
+        - thread_id:  Groups messages by research session / conversation
         - role:       'user' or 'assistant'
         - content:    The message text
         - timestamp:  When the message was stored
@@ -183,13 +197,13 @@ The table includes a `summary_id` column — when older messages are summarized 
     )
     ```
 
-## Step 3: Create the Tool Log Table
+## Task 3: Create the Tool Log Table
 
-Tool call outputs during agent execution can **bloat the context window** quickly — a single web search might return thousands of tokens that are only needed once.
+* Tool call outputs during agent execution can **bloat the context window** quickly — a single web search might return thousands of tokens that are only needed once.
 
-The `TOOL_LOG` table acts as an **experimental memory**: full tool outputs are persisted to the database and replaced in the context window with a compact one-line reference. Proteus can retrieve full outputs later if needed.
+* The `TOOL_LOG` table acts as an **experimental memory**: full tool outputs are persisted to the database and replaced in the context window with a compact one-line reference. Proteus can retrieve full outputs later if needed.
 
-This is a form of **context offloading** — keeping the working memory lean while preserving full fidelity in durable storage.
+* This is a form of **context offloading** — keeping the working memory lean while preserving full fidelity in durable storage.
 
     ```python
     def create_tool_log_table(conn, table_name: str = "TOOL_LOG"):
@@ -222,19 +236,19 @@ This is a form of **context offloading** — keeping the working memory lean whi
     TOOL_LOG_TABLE_NAME = create_tool_log_table(vector_conn, TOOL_LOG_TABLE)
     ```
 
---------
-
-## Step 4: Create Vector-Enabled Tables for Semantic Memories
+## Task 4: Create Vector-Enabled Tables for Semantic Memories
 
 Here we create five separate OracleVS-backed vector stores — one for each semantic memory type. Each uses the same embedding model for consistency.
 
 | Vector Store Handle | Purpose |
 |---------------------|---------|
-| `knowledge_base_vs` | KB articles, runbooks, vendor docs, web search results |
-| `workflow_vs` | Learned resolution patterns (tool sequences that worked) |
+| `knowledge_base_vs` | Research papers, web search results, curated references |
+| `workflow_vs` | Learned search-and-analysis patterns (tool sequences that worked) |
 | `toolbox_vs` | Tool definitions for semantic tool discovery |
-| `entity_vs` | Extracted entities: servers, services, people, teams |
-| `summary_vs` | Compressed summaries for long troubleshooting sessions |
+| `entity_vs` | Extracted entities: paper titles, authors, research topics, arXiv IDs |
+| `summary_vs` | Compressed summaries for long research sessions |
+
+* Run the following code to create the requisite tables.
 
     ```python
     knowledge_base_vs = OracleVS(
@@ -273,7 +287,7 @@ Here we create five separate OracleVS-backed vector stores — one for each sema
     )
     ```
 
-### Build HNSW Indexes for Each Vector Store
+* Build HNSW Indexes for Each Vector Store
 
     ```python
     print("Creating vector indexes...")
@@ -285,30 +299,32 @@ Here we create five separate OracleVS-backed vector stores — one for each sema
     print("✅ All indexes created!")
     ```
 
+## Task 5: Seed the Knowledgebase with Research Papers
 
-## Step 5: Seed the Knowledge Base with SeerGroup Data
-
-We'll reuse the SeerGroup KB articles from Lab 2 to populate the knowledge base memory. In production, this would be a continuous ingestion pipeline from your documentation systems.
+* We'll reuse the arXiv papers from Activity 1 to populate the knowledge base memory. In production, this would be a continuous ingestion pipeline from institutional repositories, journal APIs, or preprint servers.
 
     ```python
-    # Seed knowledge base memory with SeerGroup KB articles
-    if "seergroup_kb_articles" in globals() and seergroup_kb_articles:
+    # Seed knowledge base memory with arXiv papers from Activity 1
+    if "sampled_papers" in globals() and sampled_papers:
         kb_texts = [
-            f"Title: {a['title']}\nContent: {a['content']}" for a in seergroup_kb_articles
+            f"Title: {p['title']}\nAbstract: {p['abstract']}" for p in sampled_papers
         ]
         kb_meta = [
             {
-                "title": a["title"],
-                "category": a["category"],
-                "severity": a["severity"],
-                "team": a["team"],
-                "source_type": "internal_kb",
+                "id": p["arxiv_id"],
+                "arxiv_id": p["arxiv_id"],
+                "title": p["title"],
+                "primary_subject": p["primary_subject"],
+                "authors": p["authors"],
+                "source_type": "arxiv_papers",
             }
-            for a in seergroup_kb_articles
+            for p in sampled_papers
         ]
         knowledge_base_vs.add_texts(kb_texts, kb_meta)
-        print(f"✅ Seeded knowledge base memory with {len(kb_texts)} SeerGroup KB articles")
+        print(f"✅ Seeded knowledge base memory with {len(kb_texts)} arXiv papers")
     ```
+
+> **🔍 Notice** The process to seed the knowledgebase may take 3-5 minutes. Your patience is appreciated.
 
 ## Lab 3 Recap
 
@@ -322,7 +338,7 @@ You've designed and created the complete memory infrastructure for Proteus:
 | Created conversational memory table | Thread-based chat history with summary linkage |
 | Created tool log table | Context offloading for lean working memory |
 | Created 5 vector-enabled tables | Semantic search across knowledge, workflows, tools, entities, summaries |
-| Seeded the knowledge base | SeerGroup KB articles ready for Proteus to search |
+| Seeded the knowledge base | arXiv research papers ready for Proteus to search |
 
 **Key Insight**: The `summary_id` column in conversational memory enables **log compaction** — a pattern borrowed from databases where old entries are compressed but not lost. Messages are *marked* as summarized, not deleted, preserving full audit history.
 

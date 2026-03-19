@@ -1,49 +1,69 @@
 # Lab 2: Vector Search Foundations
 
-## with Oracle AI Database 26ai and LangChain OracleVS
+## Introduction
 
---------
+Using Oracle AI Database 26ai and LangChain OracleVS
 
-### Objective
+**Estimated Time:** 15 minutes
 
-In this lab, you'll learn how to store and search documents using **semantic similarity** — finding results based on meaning rather than exact keyword matches. This is the foundation that powers every memory type we'll build in later labs.
+### Objectives
 
-You'll work with **SeerGroup Solutions' IT knowledge base**: internal documentation, runbooks, and incident reports that our AI support agent "Proteus" will use to resolve tickets.
+In this lab, you'll learn how to store and search documents using **semantic similarity** — finding results based on meaning rather than exact keyword matches. This is the foundation that powers every memory type we'll build in later activities.
 
-#### What You'll Learn
+You'll work with **SeerGroup's research paper collection**: a curated set of academic papers spanning AI, physics, mathematics, and more. Our AI research assistant "Proteus" will use this collection to help analysts navigate the flood of academic literature.
 
-| Step | Description |
+### What You'll Learn
+
+
+| Task | Description |
 |------|-------------|
 | **1. Initialize Embeddings** | Load a HuggingFace embedding model to convert text into vectors |
 | **2. Create Vector-Enabled Table** | Set up an Oracle-backed vector store with cosine distance via `OracleVS` |
 | **3. Create Index** | Build an HNSW (Hierarchical Navigable Small World) index for fast similarity search |
-| **4. Add Documents** | Store SeerGroup IT knowledge base articles with metadata |
+| **4. Add Documents** | Store research papers from the arXiv dataset with metadata |
 | **5. Query** | Search for similar documents using natural language |
 | **6. Filter Results** | Use metadata filters to narrow down search results |
 
-#### Key Components
+### Key Components
 
 - **`OracleVS`**: LangChain abstraction over Oracle vector-enabled SQL tables
 - **`HuggingFaceEmbeddings`**: Converts text to 768-dimensional vectors
 - **`DistanceStrategy.COSINE`**: Measures vector similarity using cosine distance
 - **HNSW Index**: Graph-based ANN index for fast and accurate nearest-neighbor retrieval
 
---------
+## Task 0: Choose Your Own Adventure
 
-## Step 1: Download the .ipynb and open in VS Code
+To simplify and accelerate this workshop, we've created a pre-built notebook with all the code. You may [download it here](https://raw.githubusercontent.com/enschilling/workshop-dev/refs/heads/main/oci-ai-database-memory-context-engineering/files/workshop-complete.ipynb) if you'd like.
 
-The following notebook contains all the code for the remainder of the workshop. Download it and open with VS Code.
+<details><summary>Choose the path of least resistance</summary>
 
-[Download the notebook](https://raw.githubusercontent.com/enschilling/workshop-dev/refs/heads/main/oci-ai-database-memory-context-engineering/files/workshop-complete.ipynb)
+1. Download and save the complete workshop `.ipynb` notebook, then open it in the same VS Code instance that you used for lab 1. Ensure you select the same kernel: **`oracle-agent-env`**.
 
+2. Follow along in the lab guide as you execute each code block to learn more about all the components being constructed.
 
-## Step 2: Connect to Oracle AI Database and Initialize Embeddings
+3. Enjoy!
 
-Your environment has been pre-configured with Oracle AI Database 26ai running on OCI. In the first lab, you established a connection to the database and created the `VECTOR` uesr. We'll leverage connection details from the previous lab to keep building.
+</details>
 
-1. Run the following code block to create a `vector_conn` function that will be used during the workshop.
+<details><summary>Off the beaten path - build your own notebook</summary>
 
-    ```python
+1. This path takes a bit of a turn as you forge your way through the copy&paste jungle. However, you may find yourself drawing a bit closer to the code as you inspect it more closely during the journey.
+
+2. Create a new `.ipynb` in your existing VS Code instance (don't close the other one): `ctrl+shift+p` (windows) or `cmd+shift+p` (Mac).
+
+3. As you progress through the lab instructions, you'll copy each code snippet from the guide, and paste / run in a new code block in your Jupyter notebook.
+
+4. Labs 2-6 will all be run in a single notebook.
+
+5. That's it! Enjoy, have fun, and we'll see you on the other side.
+
+</details>
+
+## Task 1: Connect to Oracle AI Database
+
+Your environment has been pre-configured with Oracle AI Database 26ai running locally. The `VECTOR` user and connection details are ready to use.
+
+    ```
     import oracledb
     import time
     import logging
@@ -94,14 +114,15 @@ Your environment has been pre-configured with Oracle AI Database 26ai running on
     vector_conn = connect_to_oracle()
     print("Using user:", vector_conn.username)
     ```
-
-2. Initialize Embeddings and Create a Vector-Enabled Table
+    
+## Task 2: Initialize Embeddings and Create a Vector-Enabled Table
 
 We'll use the `sentence-transformers/paraphrase-mpnet-base-v2` model to convert text into 768-dimensional vectors. OracleVS handles the table creation, embedding storage, and similarity search under the hood.
 
-    ```python
+    ```
+    <copy>
     from langchain_oracledb.vectorstores import OracleVS
-    from langchain_huggingface import HuggingFaceEmbeddings
+    from langchain_community.embeddings import HuggingFaceEmbeddings
     from langchain_oracledb.vectorstores.oraclevs import create_index
     from langchain_community.vectorstores.utils import DistanceStrategy
 
@@ -120,9 +141,10 @@ We'll use the `sentence-transformers/paraphrase-mpnet-base-v2` model to convert 
         table_name="VECTOR_SEARCH_DEMO",
         distance_strategy=DistanceStrategy.COSINE,
     )
+    </copy>
     ```
 
-3. Create an HNSW Index
+### Create an HNSW Index
 
 HNSW (Hierarchical Navigable Small World) is a graph-based approximate nearest-neighbor index. It provides fast, accurate similarity search at scale — essential when your knowledge base grows to thousands or millions of documents.
 
@@ -146,262 +168,142 @@ HNSW (Hierarchical Navigable Small World) is a graph-based approximate nearest-n
     safe_create_index(vector_conn, vector_store, "oravs_hnsw")
     ```
 
-## Step 2: Ingest SeerGroup IT Knowledge Base
+--------
 
-In a real deployment, this data would come from Confluence, ServiceNow, or internal wikis. Here we'll seed the knowledge base with representative IT support articles that Proteus will use to resolve tickets.
+## Task 3: Ingest Research Papers
 
-    ```python
-    # SeerGroup IT Knowledge Base — internal docs, runbooks, and incident reports
-    seergroup_kb_articles = [
-        {
-            "title": "VPN Connectivity Troubleshooting Guide",
-            "content": "When users report VPN connectivity issues, first verify they are running "
-                    "GlobalProtect v6.2 or later. Check if the user's machine has a valid "
-                    "certificate by running 'certutil -viewstore My' on Windows. Common causes "
-                    "include expired certificates (renew via InternalCA portal), split-tunnel "
-                    "misconfiguration (verify route table with 'route print'), and DNS resolution "
-                    "failures (test with 'nslookup auth-svc.seergroup.internal'). Escalate to "
-                    "Network Ops if the issue persists beyond basic troubleshooting.",
-            "category": "networking",
-            "severity": "medium",
-            "team": "Network Ops",
-        },
-        {
-            "title": "AUTH-SVC Service Recovery Runbook",
-            "content": "AUTH-SVC is SeerGroup's central authentication service running on "
-                    "prod-cluster-3 (Kubernetes). If AUTH-SVC is unresponsive: 1) Check pod "
-                    "status: 'kubectl get pods -n auth -l app=auth-svc'. 2) Review logs: "
-                    "'kubectl logs -n auth -l app=auth-svc --tail=200'. 3) If OOMKilled, "
-                    "increase memory limit in helm values and redeploy. 4) If CrashLoopBackOff, "
-                    "check for config map changes in the last 24h. 5) As last resort, rollback: "
-                    "'helm rollback auth-svc -n auth'. Owner: Platform Team. SLA: P1 — 15min response.",
-            "category": "infrastructure",
-            "severity": "critical",
-            "team": "Platform Team",
-        },
-        {
-            "title": "New Employee Laptop Provisioning",
-            "content": "Standard provisioning for new SeerGroup employees: 1) Image laptop with "
-                    "SeerGroup-Win11-Enterprise or SeerGroup-macOS-14 base image. 2) Enroll in "
-                    "Intune MDM. 3) Install standard software bundle: GlobalProtect VPN, "
-                    "Microsoft 365, Slack, Zoom, CrowdStrike Falcon. 4) Create AD account and "
-                    "add to department security group. 5) Provision Okta SSO with MFA (require "
-                    "hardware key for engineering roles). 6) Send welcome email with setup guide. "
-                    "Average provisioning time: 2 hours. Escalation: IT Service Desk Manager.",
-            "category": "onboarding",
-            "severity": "low",
-            "team": "IT Service Desk",
-        },
-        {
-            "title": "Database Connection Pool Exhaustion",
-            "content": "If applications report 'connection pool exhausted' errors against Oracle "
-                    "databases: 1) Check current sessions: 'SELECT COUNT(*) FROM v$session WHERE "
-                    "username = <app_user>'. 2) Identify long-running queries: check v$sql for "
-                    "queries exceeding 30s. 3) Check HikariCP pool settings — default max is 10, "
-                    "recommended 20-30 for production services. 4) Look for connection leaks: "
-                    "enable leak detection with 'leakDetectionThreshold: 60000' in application "
-                    "config. 5) If immediate relief needed, kill idle sessions older than 30min. "
-                    "Owner: DBA Team. Related: APP-CONFIG-2024-017.",
-            "category": "database",
-            "severity": "high",
-            "team": "DBA Team",
-        },
-        {
-            "title": "Slack Integration Bot Failures",
-            "content": "SeerGroup's internal Slack bots (TicketBot, DeployBot, AlertBot) run on "
-                    "the automation-cluster in the 'bots' namespace. Common failure modes: "
-                    "1) Token expiration — Slack bot tokens expire every 12 hours; check if "
-                    "token refresh cron job is running. 2) Rate limiting — Slack API limits to "
-                    "1 message/second per channel; batch notifications. 3) Webhook URL changes "
-                    "after Slack workspace migration — update in Vault at "
-                    "'secret/bots/slack-webhooks'. Contact: Automation Team (Sarah Chen, lead).",
-            "category": "integrations",
-            "severity": "medium",
-            "team": "Automation Team",
-        },
-        {
-            "title": "CrowdStrike Falcon Sensor Troubleshooting",
-            "content": "If CrowdStrike Falcon sensor shows as inactive or fails to check in: "
-                    "1) Verify service is running: 'sc query csfalconservice' (Windows) or "
-                    "'sudo systemctl status falcon-sensor' (Linux). 2) Check proxy settings — "
-                    "sensor needs outbound access to ts01-b.cloudsink.net on port 443. "
-                    "3) Verify Customer ID (CID) matches SeerGroup's tenant: check "
-                    "'HKLM\\SYSTEM\\CrowdStrike\\{9b03c1d9-3138}\\CU'. 4) If reinstall needed, "
-                    "use the latest installer from the Falcon console — never use cached "
-                    "installers as they embed the old CID. Escalation: Security Ops.",
-            "category": "security",
-            "severity": "high",
-            "team": "Security Ops",
-        },
-        {
-            "title": "Kubernetes Pod Scheduling Failures",
-            "content": "When pods are stuck in Pending state on SeerGroup clusters: 1) Check events: "
-                    "'kubectl describe pod <pod> -n <ns>' — look for 'Insufficient cpu' or "
-                    "'Insufficient memory'. 2) Review node capacity: 'kubectl top nodes'. "
-                    "3) Check for taints blocking scheduling: 'kubectl describe node <node> | "
-                    "grep Taint'. 4) Verify resource requests aren't over-provisioned — the "
-                    "Platform Team recommends requests at 50% of limits for non-critical services. "
-                    "5) If cluster is at capacity, request node scale-up via #platform-requests "
-                    "Slack channel. prod-cluster-3 has auto-scaling enabled; staging does not.",
-            "category": "infrastructure",
-            "severity": "high",
-            "team": "Platform Team",
-        },
-        {
-            "title": "Email Delivery Delays and Bounces",
-            "content": "SeerGroup uses Microsoft 365 for email with a custom transport rule for DLP. "
-                    "If users report delivery delays: 1) Check message trace in Exchange Admin "
-                    "Center (admin.microsoft.com). 2) Verify SPF/DKIM/DMARC records are current: "
-                    "'nslookup -type=txt seergroup.com'. 3) Common cause: DLP policy scan adds "
-                    "2-5min delay for messages with attachments over 10MB. 4) For bounces, check "
-                    "if recipient domain is on the block list (maintained by Security Ops). "
-                    "5) External relay issues — check Mimecast dashboard for queue depth. "
-                    "Contact: Messaging Team (part of IT Service Desk).",
-            "category": "email",
-            "severity": "medium",
-            "team": "IT Service Desk",
-        },
-        {
-            "title": "Incident Report: AUTH-SVC Outage 2025-01-15",
-            "content": "Duration: 47 minutes (08:12 - 08:59 UTC). Impact: All SSO logins failed "
-                    "across SeerGroup. Root cause: A config map update pushed an invalid OIDC "
-                    "issuer URL, causing AUTH-SVC pods to crash on startup (CrashLoopBackOff). "
-                    "Detection: AlertBot triggered P1 alert at 08:14 via Slack #incidents. "
-                    "Resolution: Platform Team rolled back the config map change, pods recovered "
-                    "automatically. Prevention: Added config validation pre-hook to CI/CD pipeline. "
-                    "Action items: (1) Add dry-run config validation. (2) Implement canary "
-                    "deployment for auth services. (3) Review change approval process for "
-                    "auth-critical configs. Owner: Marcus Rivera, Platform Team Lead.",
-            "category": "incident_report",
-            "severity": "critical",
-            "team": "Platform Team",
-        },
-        {
-            "title": "Printer and Peripheral Setup Guide",
-            "content": "SeerGroup offices use HP LaserJet Enterprise printers managed via HP Web "
-                    "Jetadmin. To add a printer: 1) Connect to 'seergroup-corp' WiFi or wired "
-                    "LAN. 2) Open Settings > Printers > Add via IP. 3) Floor 1: 10.20.1.50, "
-                    "Floor 2: 10.20.2.50, Floor 3: 10.20.3.50. 4) Use driver 'HP Universal "
-                    "Print Driver' (pre-installed on SeerGroup images). For USB peripherals "
-                    "(monitors, docks): Intune policy auto-installs drivers. If a dock isn't "
-                    "recognized, run 'devmgmt.msc' and scan for hardware changes. For persistent "
-                    "issues, check that USB-C port supports DisplayPort Alt Mode.",
-            "category": "hardware",
-            "severity": "low",
-            "team": "IT Service Desk",
-        },
-    ]
+In a real deployment, this data would come from institutional repositories, journal APIs, or preprint servers. Here we'll load papers from the `nick007x/arxiv-papers` dataset on HuggingFace — a collection of arXiv papers spanning multiple disciplines that Proteus will use to answer research queries.
 
-    # Prepare texts and metadata for ingestion
+    ```
+    from datasets import load_dataset
+
+    MAX_PAPERS = 300
+    ds_stream = load_dataset("nick007x/arxiv-papers", split="train", streaming=True)
+
+    sampled_papers = []
     texts = []
     metadata_list = []
 
-    for article in seergroup_kb_articles:
-        text = f"Title: {article['title']}\nContent: {article['content']}"
+    for i, item in enumerate(ds_stream):
+        if i >= MAX_PAPERS:
+            break
+
+        arxiv_id = item.get("arxiv_id", f"unknown_{i}")
+        title = (item.get("title") or "").strip()
+        abstract = (item.get("abstract") or "").strip()
+        primary_subject = (item.get("primary_subject") or "").strip()
+        authors = item.get("authors") or []
+
+        if isinstance(authors, str):
+            authors_text = authors
+        elif isinstance(authors, list):
+            authors_text = ", ".join(str(a).strip() for a in authors if str(a).strip())
+        else:
+            authors_text = ""
+
+        text = f"Title: {title}\nAbstract: {abstract}"
+
+        sampled_papers.append({
+            "arxiv_id": arxiv_id,
+            "title": title,
+            "abstract": abstract,
+            "primary_subject": primary_subject,
+            "authors": authors_text,
+        })
         texts.append(text)
         metadata_list.append({
-            "title": article["title"],
-            "category": article["category"],
-            "severity": article["severity"],
-            "team": article["team"],
-            "source_type": "internal_kb",
+            "id": arxiv_id,
+            "arxiv_id": arxiv_id,
+            "title": title,
+            "primary_subject": primary_subject,
+            "authors": authors_text,
         })
 
-    # Ingest into the vector-enabled table
     vector_store.add_texts(texts=texts, metadatas=metadata_list)
-    print(f"✅ Ingested {len(texts)} SeerGroup KB articles into VECTOR_SEARCH_DEMO")
+    print(f"✅ Ingested {len(texts)} research papers into VECTOR_SEARCH_DEMO")
     ```
 
-## Step 4: Querying with Natural Language
+> **🔍 Notice** The process to ingest the data may take 3-5 minutes. Your patience is appreciated.
 
-Now let's see the power of semantic search. Unlike keyword search, vector similarity finds documents based on *meaning*. A query about "login problems" will match articles about AUTH-SVC and SSO — even if those exact words don't appear in the query.
+    ```
+    # Inspect one sample to see the metadata fields we can filter on
+    sample_primary_subject = sampled_papers[0]["primary_subject"] if sampled_papers else ""
+    sample_arxiv_id = sampled_papers[0]["arxiv_id"] if sampled_papers else ""
+    print("Sample primary subject:", sample_primary_subject)
+    print("Sample arxiv_id:", sample_arxiv_id)
+    ```
+
+## Task 4: Querying with Natural Language
+
+Now let's see the power of semantic search. Unlike keyword search, vector similarity finds documents based on *meaning*. A query about "how neural networks learn representations" will match papers about deep learning, feature extraction, and representation learning — even if those exact words don't appear in the query.
 
 ### Basic Similarity Search
 
-    ```python
-    query = "Users can't log in to any applications this morning"
+    ```
+    query = "Find research papers about planetary exploration mission planning"
 
     results = vector_store.similarity_search(query, k=3)
 
     for i, doc in enumerate(results, start=1):
         print(f"--- Result {i} ---")
         print("Title:", doc.metadata.get("title", "N/A"))
-        print("Team:", doc.metadata.get("team", "N/A"))
+        print("Subject:", doc.metadata.get("primary_subject", "N/A"))
         print("Text:", doc.page_content[:200], "...")
         print()
     ```
 
-> **🔍 Notice** how the search returns AUTH-SVC and authentication-related articles even though the query didn't mention "auth", "SSO", or "Kubernetes". That's semantic similarity at work.
+> **🔍 Notice** how the search returns relevant papers even when the query uses different terminology than the paper titles. That's semantic similarity at work — the embedding model understands the *meaning* behind the words.
 
 ### Search with Relevance Scores
 
 Scores let Proteus gauge confidence. A score close to 0 means high similarity (cosine distance); a score near 1 means low relevance.
 
-    ```python
-    query = "The VPN keeps disconnecting on my laptop"
+    ```
+    query = "methods for detecting gravitational waves"
 
     results = vector_store.similarity_search_with_score(query, k=3)
 
     for doc, score in results:
         print(f"Score: {score:.4f}")
         print(f"Title: {doc.metadata.get('title', 'N/A')}")
-        print(f"Team:  {doc.metadata.get('team', 'N/A')}")
+        print(f"Subject: {doc.metadata.get('primary_subject', 'N/A')}")
         print("------")
     ```
 
-## Step 5: Filtered Search with Metadata
+## Task 5: Filtered Search with Metadata
 
-In a real IT support system, Proteus needs to narrow results by category, severity, or owning team. OracleVS supports metadata filters that combine with vector similarity.
+In a real research workflow, Proteus needs to narrow results by subject area, specific paper IDs, or authors. OracleVS supports metadata filters that combine with vector similarity.
 
-### Filter by Category
+### Filter by Subject Area
 
-    ```python
-    query = "something is wrong with the kubernetes cluster"
+    ```
+    query = "Find papers related to mission planning and observational astronomy"
 
     docs = vector_store.similarity_search(
         query,
         k=3,
-        filter={"category": {"$eq": "infrastructure"}},
+        filter={"primary_subject": {"$eq": sample_primary_subject}},
     )
 
     for doc in docs:
         print("Title:", doc.metadata.get("title", "N/A"))
-        print("Severity:", doc.metadata.get("severity", "N/A"))
+        print("Subject:", doc.metadata.get("primary_subject", "N/A"))
         print("Text:", doc.page_content[:150], "...")
         print("------")
     ```
 
-### Filter by Severity (Critical Issues Only)
+### Filter by Paper ID
 
-    ```python
-    query = "What are the most important incidents I should know about?"
-
-    docs = vector_store.similarity_search(
-        query,
-        k=5,
-        filter={"severity": {"$eq": "critical"}},
-    )
-
-    for doc in docs:
-        print("Title:", doc.metadata.get("title", "N/A"))
-        print("Team:", doc.metadata.get("team", "N/A"))
-        print("------")
     ```
-
-### Filter by Team
-
-    ```python
-    query = "What does the Platform Team own?"
-
     docs = vector_store.similarity_search(
-        query,
+        query="Explain key themes in this research paper",
         k=5,
-        filter={"team": {"$eq": "Platform Team"}},
+        filter={"id": {"$in": [sample_arxiv_id]}},
     )
 
     for doc in docs:
         print("Title:", doc.metadata.get("title", "N/A"))
-        print("Category:", doc.metadata.get("category", "N/A"))
+        print("ArXiv ID:", doc.metadata.get("arxiv_id", "N/A"))
         print("------")
     ```
 
@@ -413,11 +315,11 @@ You've now built the search foundation that Proteus will rely on:
 |-------------|----------------|
 | Created a vector-enabled SQL table | Documents stored with embeddings for semantic retrieval |
 | Built an HNSW index | Fast approximate nearest-neighbor search at scale |
-| Ingested SeerGroup KB articles | Real IT support data with rich metadata |
-| Queried with natural language | "Users can't log in" finds AUTH-SVC articles without keyword matching |
-| Applied metadata filters | Narrow results by category, severity, or team |
+| Ingested 1,000 arXiv research papers | Real academic data with rich metadata (subject, authors, IDs) |
+| Queried with natural language | "Planetary exploration" finds relevant papers without keyword matching |
+| Applied metadata filters | Narrow results by subject area or specific paper IDs |
 
-**Next up**: In Lab 3, we'll design the complete memory architecture that gives Proteus six distinct types of memory — each with a specific purpose and storage strategy.
+**Next up**: In Lab 3, we'll design the complete memory architecture that gives Proteus seven distinct types of memory — each with a specific purpose and storage strategy.
 
 ## Learn More
 
