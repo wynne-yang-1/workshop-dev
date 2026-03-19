@@ -29,15 +29,19 @@ This lab assumes you have:
 
 Tag namespaces logically group related tag keys. All defined tags must belong to a namespace.
 
-### Console Steps
+
 
 1. Open the OCI Console.
 
-2. Navigate to **Identity & Security**.
+2. Navigate to **Governance & Adminitstration**.
 
 3. Select **Tag Namespaces**.
 
+   ![Screenshot showing navigation to ADB](./screenshots/1.png)
+
 4. Click **Create Tag Namespace**.
+
+   ![Screenshot showing navigation to ADB](./screenshots/2.png)
 
 5. Enter:
 
@@ -45,7 +49,7 @@ Tag namespaces logically group related tag keys. All defined tags must belong to
 
     ```text
     <copy>
-    'LLTagNamespace'
+    LLTagNamespace
     </copy>
     ```
 
@@ -53,16 +57,20 @@ Tag namespaces logically group related tag keys. All defined tags must belong to
 
      ```text
     <copy>
-    My Tag Namespace
+    Identifies the business cost center
     </copy>
     ```
 
-6. Ensure "Retired" is unchecked.
-7. Click **Create**.
-[Insert Screenshot – Creating Tag Namespace]
-Verify the namespace appears in the list.
+6. Click **Create**.
 
-### CLI Method
+   ![Screenshot showing navigation to ADB](./screenshots/3.png)
+
+7. Verify the namespace appears in the list.
+
+   ![Screenshot showing navigation to ADB](./screenshots/4.png)
+
+<details>
+<summary>CLI Method (Optional)</summary>
 
  ```text
     <copy>
@@ -75,6 +83,8 @@ oci iam tag-namespace create
 ```
 Verify:
 oci iam tag-namespace list –compartment-id <tenancy_ocid>
+
+</details>
 
 ## Task 2: Create Tag Key Definitions
 
@@ -98,32 +108,39 @@ Using list-based validation helps standardize tagging across teams.
 
 This tag will represent which department or business unit owns a resource.
 
-### Console Steps
 
-1. Navigate to **Identity & Security → Tag Namespaces**.
 
-2. Select the namespace you created earlier (`LivelabTagNS`).
+1. Navigate to **Governance & Administration → Tag Namespaces**.
 
-3. Click **Create Tag**.
+2. Select the namespace you created earlier (`LLTagNamespace`).
+
+   ![Screenshot showing navigation to ADB](./screenshots/4.png)
+
+3. Click **Create Tag Key Definition**.
+
+   ![Screenshot showing navigation to ADB](./screenshots/5.png)
 
 4. Enter the following:
-   **Name:**
-   ```text
-   <copy>
-    CostCenter
-    </copy>
-    ```
-   **Description:**
-   ```text
-   <copy>
-   Identifies the business cost center
-   </copy>
-   ```
-5. Leave the Validator section as default (no restrictions).
 
-6. Click **Create**.
+      **Name:**
+      ```text
+      <copy>
+      CostCenter
+      </copy>
+      ```
+      **Description:**
+      ```text
+      <copy>
+      Identifies the business cost center
+      </copy>
+      ```
+5. Click **Create**.
 
-[Insert Screenshot – Creating CostCenter Tag]
+   ![Screenshot showing navigation to ADB](./screenshots/6.png)
+
+6. Validate the **CostCenter** Tag Key Definition appears in the list. 
+
+   ![Screenshot showing navigation to ADB](./screenshots/7.png)
 
 The CostCenter tag can accept any value when applied to a resource, such as:
 - Finance
@@ -132,7 +149,9 @@ The CostCenter tag can accept any value when applied to a resource, such as:
 - 1001
 This provides flexibility for business labeling.
 
-### CLI Method (Optional)
+<details>
+
+<summary>CLI Method (Optional)</summary>
 
 ```text
 <copy>
@@ -142,48 +161,56 @@ oci iam tag create
 –description “Identifies the business cost center”
 </copy>
 ```
+</details>
 
 ## Task 2B: Create the Environment Tag
 
 This tag will identify the lifecycle stage of a resource.
 To keep tagging consistent, you will restrict values to a predefined list.
 
-### Console Steps
 
-1. Still inside the `LivelabTagNS` namespace, click **Create Tag**.
+
+1. Still inside the `LivelabTagNS` namespace, click **Create Tag Key Definition** once more.
+
+   ![Screenshot showing navigation to ADB](./screenshots/7.png)
+
 2. Enter:
 
-**Name:** 
-   ```text
-   <copy>
-   Environment
-   </copy> 
-   ```
-**Description:**
-   ```text
-   <copy>
-   Identifies the environment of the resource
-   </copy>
-   ```
-3. Under **Validator**, select **List of values**.
+   **Name:** 
+      ```text
+      <copy>
+      Environment
+      </copy> 
+      ```
+   **Description:**
+      ```text
+      <copy>
+      Identifies the environment of the resource
+      </copy>
+      ```
 
-4. Add the following values:
-   - Dev
-   - Test
-   - Prod
+3. Under Tag Value Type, select **A list of values** and add the following:
+      - Dev
+      - Test
+      - Prod
 
-5. Click **Create**.
+4. Make sure all the values are entered and click **Create**.
 
-[Insert Screenshot – Creating Environment Tag with List Values]
+   ![Screenshot showing navigation to ADB](./screenshots/8.png)
 
-When users apply this tag to a resource, they can only select:
-- Dev
-- Test
-- Prod
+   When users apply this tag to a resource, they can only select Dev, Test and Prod. This ensures consistent tagging and supports future policy enforcement.
 
-This ensures consistent tagging and supports future policy enforcement.
+5. Verify your work.
 
-### CLI Method (Optional)
+   At the end of this task, confirm that both **CostCenter** and **Environment** appear under your namespace.
+
+   ![Screenshot showing navigation to ADB](./screenshots/9.png)
+
+   Tag keys define the structure for how resources are labeled.
+   In a later task, you will use these tag keys to automatically apply tags using Tag Defaults.
+
+<details>
+<summary>CLI Method (Optional)</summary>
 
 ```text
 <copy>
@@ -197,40 +224,9 @@ oci iam tag create
 }’
 </copy>
 ```
-**Verify Your Work**
+</details>
 
-At the end of this task, confirm that:
-- Both `CostCenter` and `Environment` appear under your namespace.
-- The Environment tag shows a list validator.
-- Neither tag is marked as retired.
-[Insert Screenshot – Tag List Showing Both Keys]
-
-Tag keys define the structure for how resources are labeled.
-In a later task, you will use these tag keys to automatically apply tags using Tag Defaults.
-
-## Task 3: Review Tag Namespace Templates
-Before applying tags broadly, it is helpful to understand that OCI provides built-in tag namespace templates.
-Templates are pre-designed tagging structures that follow common governance patterns. They can help organizations get started quickly without designing a tagging structure from scratch.
-In this task, you will explore available templates so you can see how OCI recommends structuring tags.
-
-### Console Steps
-
-1. Navigate to **Identity & Security → Tag Namespaces**.
-2. At the top of the page, select **Templates**.
-3. Review the available templates.
-4. Click into one of the templates to see the tag keys it includes.
-[Insert Screenshot – Viewing Tag Templates]
-
-### CLI Method (Optional)
-OCI CLI does not provide a direct “templates” browsing command like the Console UI.  
-Instead, you can list the tag namespaces that currently exist in your tenancy. Some of these may have been created from templates.
-1. List tag namespaces in the tenancy:
-oci iam tag-namespace list –compartment-id <tenancy_ocid>
-2. If you want to inspect a specific namespace in more detail, you can list the tags inside it:
-oci iam tag list –tag-namespace-id <tag_namespace_ocid>
-This CLI step is informational. Templates are primarily a Console-guided feature.
-
-## Task 4: Assign Tag Defaults to a Compartment
+## Task 3: Assign Tag Defaults to a Compartment
 Now that you have created tag keys, you will configure a Tag Default.
 A Tag Default automatically applies a defined tag to all new resources created inside a specific compartment. This helps ensure consistent tagging without requiring users to manually tag every resource.
 
@@ -246,20 +242,42 @@ Tags might be forgotten or inconsistent.
 The tag is automatically added when a resource is created.
 Governance becomes easier and more reliable.
 
-### Console Steps
-1. Navigate to **Governance & Administration → Tag Defaults**.
-2. Click **Assign Tag Default**.
-3. Select the compartment where you want the tag applied automatically.
-4. Choose:
-   - Tag Namespace: `LivelabTagNS`
-   - Tag Key: `Environment`
-   - Default Value: `Prod`
-5. Click **Assign**.
-[Insert Screenshot – Assigning Tag Default]
-After assignment, confirm the Tag Default appears in the list for that compartment.
 
-### CLI Method (Optional)
+1. Navigate to **Identity & Security → Compartments**.
+
+   ![Screenshot showing navigation to ADB](./screenshots/10.png)
+
+2. Select the compartment where you want the tag applied automatically. 
+   Selecting the root compartment will allow the tag to be applied automatically to **all** resources created in the tenancy. 
+
+   ![Screenshot showing navigation to ADB](./screenshots/11.png)
+
+3. Navigate to **Tag Default**.
+
+   ![Screenshot showing navigation to ADB](./screenshots/12.png)
+
+4. Click **Create Tag Default**.
+
+   ![Screenshot showing navigation to ADB](./screenshots/13.png)
+
+5. Choose:
+
+      - Tag Namespace: `LLTagNamespace`
+      - Tag Key: `Environment`
+      - Default Value: `Prod`
+
+6. Click **Create Tag Default**.
+
+   ![Screenshot showing navigation to ADB](./screenshots/14.png)
+
+7. After assignment, confirm the Tag Default appears in the list for that compartment.
+
+   ![Screenshot showing navigation to ADB](./screenshots/15.png)
+
+<details>
+<summary>CLI Method (Optional)</summary>
 To create a tag default, you need the OCID of the tag key definition (Tag Definition OCID).
+
 1. Get your Object Storage namespace (you will use this later as well):
 ```text
 <copy>
@@ -294,25 +312,40 @@ oci iam tag-default create
 oci iam tag-default list –compartment-id <target_compartment_ocid>
 </copy>
 ```
-## Task 5: Validate Tag Default Enforcement
+</details>
+
+## Task 4: Validate Tag Default Enforcement
 Now you will confirm that your Tag Default is working as expected.
 You will create a new bucket in the compartment where you assigned the tag default, and then verify that the defined tag was applied automatically.
 
-### Console Steps
+
 
 1. Navigate to **Object Storage → Buckets**.
-2. Click **Create Bucket**.
-3. Select the same compartment where you applied the Tag Default.
-4. Enter a bucket name (for example: `tag-test-bucket`).
-5. Expand the **Defined Tags** section before creating the bucket.
-[Insert Screenshot – Bucket Create Page Showing Defined Tags]
-You should see the `Environment` tag pre-populated with the value `Prod`.
-6. Click **Create**.
-7. Open the bucket after it is created.
-8. Scroll to the **Defined Tags** section and confirm the tag is present.
-[Insert Screenshot – Bucket Details Showing Applied Tag]
 
-### CLI Method (Optional)
+   ![Screenshot showing navigation to ADB](./screenshots/21.png)
+
+2. Select the same compartment where you applied the Tag Default and click **Create Bucket**
+
+3. Enter a bucket name (for example: `tag-test-bucket`) and click **Create Bucket**
+
+      ```text
+      <copy>
+      tag-test-bucket
+      </copy>
+      ```
+
+   ![Screenshot showing navigation to ADB](./screenshots/22.png)
+
+7. Open the bucket after it is created.
+
+   ![Screenshot showing navigation to ADB](./screenshots/19.png)
+
+8. Scroll to the **Tags** section and confirm the tag is present.
+
+   ![Screenshot showing navigation to ADB](./screenshots/20.png)
+
+<details>
+ <summary>CLI Method (Optional)</summary>
 1. Get your Object Storage namespace (if you did not already):
 oci os ns get
 2. Create a bucket in the compartment where the Tag Default is assigned:
@@ -328,6 +361,8 @@ In the output, look for the `defined-tags` section and confirm it includes somet
 - Namespace: `LivelabTagNS`
 - Key: `Environment`
 - Value: `Prod`
+
+</details>
 
 ### Check Your Work
 You should now have:
