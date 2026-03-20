@@ -2,14 +2,6 @@
 
 ## Introduction
 
---Quick intro to OCI CLI (previewed last lab)
---What / Why bulk editing tags on resources
---References - to be removed before publishing:
-    https://medium.com/@ralflange/tagging-resources-in-oracle-oci-3ded10c1e28f
-    https://github.com/hoehenunterschied/OCI-Utilities/tree/main
-    https://oracledbasjourney.wordpress.com/2023/05/10/update-multiple-created-tags/
-    https://jasonlesterdba.wordpress.com/2025/03/18/individual-tag-updates-in-bulk/
-
 In this lab you will provision a set of OCI resources (Compute instance, two Block Volumes, and an Object Storage bucket) and then use the OCI CLI to apply and modify defined tags on those resources in bulk. You will create one block volume attached to the compute instance and one unattached, plus an object storage bucket. After the resources are created, you will use the CLI to add defined tags and then alter them together.
 
 **Estimated Time:** 30 minutes
@@ -319,8 +311,7 @@ Create a `resources.json` file with all resource OCIDs and types.
       --bulk-edit-operations file://bulk-edit-add.json \
       --wait-for-state SUCCEEDED</copy>
     ```
-
-    [TODO] ![Bulk Edit Add Command](./images/bulk-edit-add-command.png)
+    ![Bulk Update Complete](./images/bulk-edit-complete.png)
 
 4. Check the defined tags on each resource with CLI commands such as:
 
@@ -331,8 +322,6 @@ Create a `resources.json` file with all resource OCIDs and types.
     ```
 
 5.  Confirm that all resources show the updated defined tag values.
-
-  [TODO] ![Updated Tags](./images/updated-tags.png)
     
 6. To modify resources in bulk using tags, run the following command in the **Cloud Shell**:
 

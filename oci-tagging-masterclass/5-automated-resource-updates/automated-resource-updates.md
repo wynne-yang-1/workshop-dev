@@ -44,14 +44,20 @@ Before you can update or manage tags, you need to find the resources that have (
 
 2. Click **Advanced Resource Search** (or navigate to **Governance & Administration > Resource Explorer**).
 
+    ![Advanced Resource Query](./images/advanced-resource-query.png)
+
 3. In the search interface, you can build a query to find resources by tag. Select the following:
 
     - **Resource Type:** Select `All` or a specific type (e.g., `Instance`).
-    - **Tag Namespace:** Select your workshop tag namespace (e.g., `Operations`).
+    - **Tag Namespace:** Select your workshop tag namespace (e.g., `LLTagNameSpace`).
     - **Tag Key:** Select a key (e.g., `Environment`).
     - **Tag Value:** Enter or select a value (e.g., `Development`).
 
+    ![Search Query](./images/search-query.png)
+
 4. Click **Search**. The results show all resources matching your tag criteria, along with their compartment, lifecycle state, and creation time.
+
+    ![Search Query Result](./images/search-query-result.png)
 
     > **Tip:** You can also search for resources that have a specific tag key with *any* value, which is useful for verifying tag coverage — if a resource does not appear in the results, it may be missing the tag entirely.
 
@@ -63,13 +69,19 @@ Tenancy Explorer allows you to select multiple resources and add, update, or rem
 
 1. Open the **Navigation Menu** and select **Governance & Administration**. Under **Tenancy Management**, select **Tenancy Explorer**.
 
+    ![Tenancy Explorer Navigation](./images/tenancy-explorer-navigation.png)
+
 2. Select your workshop compartment from the compartment picker. The Tenancy Explorer displays all resources in that compartment.
 
 3. Use the **Filter by resource type** dropdown to narrow the list if needed (e.g., show only Compute instances).
 
+    ![Tenancy Explorer Navigation](./images/tenancy-explorer-search.png)
+
 4. Select the checkboxes next to two or more resources that you want to update.
 
 5. From the **Actions** menu, select **Manage Tags**.
+
+    ![Manage Tags Actions](./images/manage-tags-actions.png)
 
 6. The **Manage Tags** panel opens with two sections:
 
@@ -77,6 +89,8 @@ Tenancy Explorer allows you to select multiple resources and add, update, or rem
     - The **bottom table** lists the selected resources.
 
 7. To **add a new tag** to all selected resources: Click **Additional Tag**, select a namespace, key, and value, and set the Action to **Apply tag**.
+
+    ![Manage Tags](./images/manage-tags.png)
 
 8. To **update an existing tag**: Find the tag in the list, change its value, and set the Action to **Apply tag**.
 
