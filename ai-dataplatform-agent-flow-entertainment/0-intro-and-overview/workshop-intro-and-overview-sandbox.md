@@ -81,6 +81,6 @@ By the end of this workshop, you will be able to:
 
 ## Acknowledgements
 
-* **Author(s)** - Jean-Rene Gauthier [AID]
+* **Author(s)** - Jean-Rene Gauthier [AIDP]
 * **Contributors** - Eli Schilling - Cloud Architect, Gareth Nathan - SDE, GenAI
 * **Last Updated By/Date** - Published March 2026

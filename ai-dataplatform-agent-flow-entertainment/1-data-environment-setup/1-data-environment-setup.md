@@ -137,6 +137,6 @@ In the next lab, you'll create the agent flow itself — configuring the AI Comp
 
 ## Acknowledgements
 
-* **Author(s)** - Jean-Rene Gauthier [AID]
+* **Author(s)** - Jean-Rene Gauthier [AIDP]
 * **Contributors** - Eli Schilling - Cloud Architect, Gareth Nathan - SDE, GenAI
 * **Last Updated By/Date** - Published March 2026
