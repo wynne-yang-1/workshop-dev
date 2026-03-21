@@ -141,7 +141,7 @@ Verify that the following tables exist and contain data:
 
     ```sql
     <copy>
-    select * from marketing_daily_spend;
+    select * from ENTERTAINMENT.marketing_daily_spend;
     </copy>
     ```
 
