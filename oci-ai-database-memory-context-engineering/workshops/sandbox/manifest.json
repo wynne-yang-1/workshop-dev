@@ -8,31 +8,23 @@
         },
         {
             "title": "Get Started",
-            "filename": "https://oracle-livelabs.github.io/common/labs/cloud-login/cloud-login.md"
+            "filename": "https://oracle-livelabs.github.io/common/labs/cloud-login/cloud-login-livelabs2.md"
         },
         {
             "title": "Lab 1: Deploy and Prep the Database",
-            "filename": "../../1-prepare/prepare-db.md"
+            "filename": "../../1-prepare/lab-1-prepare-environment.md"
         },
         {
             "title": "Lab 2: Vector Search Foundations",
-            "filename": "../../2-vector-search/2-vector-search-foundations.md"
+            "filename": "../../2-memory-engine/lab-2-build-memory-engine.md"
         },
         {
             "title": "Lab 3: Designing the Memory Architecture",
-            "filename": "../../3-memory-engineering/3-designing-memory-architecture.md"
+            "filename": "../../3-context-engineering/lab-3-context-engineering.md"
         },
         {
             "title": "Lab 4: Building Memory Manager and Toolbox",
-            "filename": "../../4-memory-manager/4-memory-manager-and-toolbox.md"
-        },
-        {
-            "title": "Lab 5: Context Engineering and Web Integration",
-            "filename": "../../5-context-engineering/5-context-engineering-and-web.md"
-        },
-        {
-            "title": "Lab 6: Agent Execution and Evaluation",
-            "filename": "../../6-agent-execution/6-agent-execution-and-evaluation.md"
+            "filename": "../../4-agent-execution/lab-4-agent-execution.md"
         },
         {
             "title": "Need Help?",

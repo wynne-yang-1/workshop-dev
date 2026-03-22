@@ -13,20 +13,22 @@ This workshop has been tested with VS Code on both Mac and Windows. If you prefe
 In this lab, you will:
 
 1. Log into the provided OCI tenancy
-2. Use Coud Shell / CLI to provisiong the Autonomous Database (ADB)
-3. Connect to the ADB instance and create a dedicated user for vector operations
+2. Use Cloud Shell / CLI to provision the Autonomous Database (ADB)
+3. Set up VS Code with a Python virtual environment and Jupyter support
+4. Download the Proteus workshop package (pre-built Python modules)
+5. Connect to the ADB instance and create a dedicated user for vector operations
 
 ### Prerequisites
 
 This lab assumes you have:
 
-- Provisioned the Workshop using the LiveLabs Sandbox
-- Retrieved your account credentials from the LiveLabs UI
-- Have Microsoft VS Code installed on your computer
+* Provisioned the Workshop using the LiveLabs Sandbox
+* Retrieved your account credentials from the LiveLabs UI
+* Have Microsoft VS Code installed on your computer
 
 ## Task 1: Log into the OCI Tenancy
 
-1. Click the **View Loging Info** link to access account information.
+1. Click the **View Login Info** link to access account information.
 
     ![LiveLabs - Account Info Link](images/02-view-login-info.png " ")
 
@@ -63,43 +65,15 @@ This lab assumes you have:
     </copy>
     ```
 
-    >NOTE: You're welcome to choose your own `admin-password` and/or `disply-name` if you'd like.
+    >NOTE: You're welcome to choose your own `admin-password` and/or `display-name` if you'd like.
 
-3. The command will return a large block of JSON:
+3. The command will return a large block of JSON. Wait for the provisioning to complete.
 
-    Starting with:
-    ```
-    {
-    "data": {
-        "actual-used-data-storage-size-in-tbs": null,
-        "additional-attributes": null,
-        "allocated-storage-size-in-tbs": null,
-        "apex-details": null,
-        "are-primary-whitelisted-ips-used": null,
-        "auto-refresh-frequency-in-seconds": null,
-    ```
-
-    ...and ending with:
-    ```
-        "vanity-connection-urls": null,
-        "vanity-url-details": {
-        "api-gateway-id": null,
-        "is-disabled": true,
-        "vanity-url-host-name": null
-        },
-        "vault-id": null,
-        "whitelisted-ips": null
-    },
-    "etag": "bffaf316--gzip",
-    "opc-work-request-id": "ocid1.coreservicesworkrequest.oc1.phx.abyh.......ykzp2ltfr7kqa"
-    }
-    ```
-
-4. Use the navigation menu to visit the Autonous AI Database service console.
+4. Use the navigation menu to visit the Autonomous AI Database service console.
 
     ![Web UI Nav Menu showing Oracle AI Database](images/02-nav-adb.png " ")
 
-5. Once the *State* of the database is `Avaialble`, click the name of the DB instance.
+5. Once the *State* of the database is `Available`, click the name of the DB instance.
 
     ![ADB Service Console showing DB instance](images/02-adb-service-console.png " ")
 
@@ -109,25 +83,55 @@ This lab assumes you have:
 
 7. Click the **[Edit]** button next to **`Access control list`**.
 
-8. Click the *Add my IP address(shows your IP here) to IP value* toggle switch. You should notice the Values field above will populate with the external IP of your current machine.
+8. Click the *Add my IP address* toggle switch. The Values field will populate with the external IP of your current machine.
 
     ![Network ACL - Add my IP](images/02-adb-network-acl.png " ")
 
-9. Click **[Save]** and allow the database a minute or so to update. Once the **[Edit]** button next to *Mutual TLS (mTLS) authentication is no longer grayed out, you may proceed to the next step.
+9. Click **[Save]** and allow the database a minute or so to update. Once the **[Edit]** button next to *Mutual TLS (mTLS) authentication* is no longer grayed out, proceed to the next step.
 
-10. Click said **[Edit]** button next to the mTLS setting. Click the toggle switch to not require MTLs auth. Click **[Save]**.
+10. Click said **[Edit]** button next to the mTLS setting. Click the toggle switch to not require mTLS auth. Click **[Save]**.
 
     ![Edit MTLS settings dialog](images/02-adb-network-mtls.png " ")
- 
-11. Finally - scroll back to the top of the page and click the **[Database connection]** button. Locate and copy the full **Connection string** for the TNS name that corresponds with `medium`. (Paste in a note pad for future reference)
+
+11. Scroll back to the top and click the **[Database connection]** button. Locate and copy the full **Connection string** for the TNS name that corresponds with `medium`. Paste it in a notepad for future reference.
 
     ![Database connection details screen](images/02-adb-connection-details.png " ")
 
-12. Time to set up VS Code!!
+12. Time to retrieve the workshop artifacts.
 
-## Task 3: Open VS Code and Create Jupyter environment
+## Task 3: Download the Proteus Workshop Package
 
-For this lab, you will create a new `.ipynb` file and copy in the code to prep the database. The remainder of the labs key off a single, consolidated notebook that will ensure a consistent flow throughout.
+The subsequent labs in this workshop use a pre-built Python package called `proteus` that contains the memory engine, toolbox, context utilities, agent harness, and Streamlit chat UI. Labs 2-4 import from this package rather than defining code inline.
+
+1. [CLICK HERE](https://github.com/enschilling/workshop-dev/raw/refs/heads/main/oci-ai-database-memory-context-engineering/files/mem-workshop.zip) to download the `proteus-workshop` package from the workshop repository. Then unzip the package to your local filesystem.
+
+2. Verify the package structure:
+
+    ```
+    proteus-workshop/
+    ├── requirements.txt
+    ├── proteus/
+    │   ├── __init__.py
+    │   ├── config.py
+    │   ├── db.py
+    │   ├── vector_store.py
+    │   ├── memory_manager.py
+    │   ├── toolbox.py
+    │   ├── context.py
+    │   ├── tools.py
+    │   ├── agent.py
+    │   └── app.py
+    └── notebooks/
+        ├── lab-2-build-memory-engine.ipynb
+        ├── lab-3-context-engineering.ipynb
+        └── lab-4-agent-execution.ipynb
+    ```
+
+3. Start Visual Studio Code and open the `proteus-workshop` folder. For the remaining labs, you'll open the corresponding `.ipynb` file from the `notebooks/` folder. But don't get ahead of yourself just yet!
+
+## Task 4: Create Jupyter Environment in VS Code
+
+For this lab, you will create a new `.ipynb` file and copy in the code to prep the database. The remainder of the labs use dedicated notebooks that import from the pre-built `proteus` Python package.
 
 <details><summary>IDE Setup in Windows</summary>
 
@@ -137,7 +141,7 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
 
     * Use `pyenv-win` to install and manage multiple versions of Python.
 
-        * Open **PowerShell as an Administrator** 
+        * Open **PowerShell as an Administrator**
         * Run `Get-ExecutionPolicy` - if it is anything other than *Unrestricted* or *RemoteSigned*, you'll need to run `Set-ExecutionPolicy RemoteSigned`
         * Install `pyenv-win` with this command:
             ```bash
@@ -147,45 +151,37 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
             ```
         * Install the latest version of v3.12: `pyenv install 3.12.10`
 
-            ![Using pyenv-win to install Python 3.12.10](images/02-win-pyenv-install.png " ")
+2. Open VS Code and close any existing tabs.
 
-2. Open VS Code and close any existing tabs. 
+3. Create a new Workspace: **File** -> **Open Folder**
 
-2. Create a new Workspace: **File** -> **Open Folder**
-
-3. Select an existing folder where you'd like to create your workspace, or create and select a new folder.
-
-    ![Select workspace folder dialog window](images/02-vscode-select-workspace.png " ")
+4. Select an existing folder where you'd like to create your workspace, or create and select a new folder.
 
     >NOTE: If prompted to trust the authors of the files in this folder, click **[Yes, I trust the authors]**
 
-6. Press `Ctrl+Shift+P` and begin typing "Jupyter". It should auto-populate the option to `Create: New Jupyter Notebook`. Select this option.
+5. Press `Ctrl+Shift+P` and begin typing "Jupyter". Select `Create: New Jupyter Notebook`.
 
-7. A new, `Untitled-1.ipynb` file will be created. For the best experience, you'll want to create a virtual environment fo the workshop. Click **[Select Kernel]** in the top right corner of VS Code.
+6. A new `Untitled-1.ipynb` file will be created. Click **[Select Kernel]** in the top right corner.
 
-8. Click *+ Create Python Environment*
+7. Click *+ Create Python Environment*
 
-    ![Menu option to create python evironment](images/02-vscode-select-kernel.png " ")
+8. Choose ***venv** Manages virtual environments created using 'venv'*
 
-9. Choose the ***venv** Manages virtual environments created using 'venv'* 
+9. Select desired Python version and assign a name: `oracle-agent-env`
 
-10. Select desired Python version and assign a name: `oracle-agent-env`
+10. Skip package installation — we'll do that in a separate step.
 
-    >NOTE: For creating / testing the workshop I used 3.12.10 on Windows
-
-11. You can skip package installation. We'll do that in a separate step. 
-
-12. VS Code will automatically install a bunch of required packages to support Jupyter notebooks. We'll go ahead and add a few more that are required for the workshop. Paste the following and run the code block:
+11. Paste the following and run the code block:
 
     ```
     <copy>
-    pip install -qU oracledb langchain-oracledb langchain langchain-openai langchain-huggingface ipywidgets tavily-python sentence-transformers ipykernel jupyter numpy datasets
+    pip install -qU oracledb langchain-oracledb langchain langchain-openai langchain-huggingface ipywidgets tavily-python sentence-transformers ipykernel jupyter numpy datasets streamlit matplotlib pydantic
     </copy>
     ```
 
-    >NOTE: This will perform a quiet install that takes 3-5 minutes. No output will be diplayed until it completes.
+    >NOTE: This will perform a quiet install that takes 3-5 minutes.
 
-13. Test to make sure the Python modules were installed properly. Create a new code block, then paste and run the following:
+12. Test the installation:
 
     ```bash
     <copy>
@@ -195,77 +191,67 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
     </copy>
     ```
 
-    >NOTE: No output is displayed unless there are errors. If you see a green check mark, all is well!
+    >NOTE: No output is displayed unless there are errors.
 
-14. Finally, before continuing to the next step, restart the kernel.
-
-    ![Restart kernel button in VS Code](images/02-vscode-restart-kernel.png " ")
+13. Restart the kernel before continuing.
 
 </details>
 
 <details><summary>IDE Setup for MacOS</summary>
 
-1. First off, make sure you have the necessary tools installed.
+1. First, make sure you have the necessary tools installed.
 
-    * **Conda:** Install via [Miniconda](https://docs.conda.io/en/latest/miniconda.html) (recommended) or [Anaconda](https://www.anaconda.com/download)
-    * **pyenv:** Install via [pyenv GitHub](https://github.com/pyenv/pyenv) OR `brew install pyenv`. Get Homebrew at [brew.sh](https://brew.sh/)
+    * **Conda:** Install via [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/download)
+    * **pyenv:** Install via [pyenv GitHub](https://github.com/pyenv/pyenv) OR `brew install pyenv`
     * **VS Code:** Download at [code.visualstudio.com](https://code.visualstudio.com/)
 
-2. Next - decide whether you want to use **Conda** or **pyenv + venv** for your development environment. Execute one of the following in your shell.
+2. Create a virtual environment using either Conda or pyenv + venv:
 
     * Option A: Conda:
 
         ```bash
         <copy>
-        conda create -n oracle-agent-env python3.11
+        conda create -n oracle-agent-env python=3.11
         conda activate oracle-agent-env
         </copy>
         ```
-
-        ![Shell command to create and activate conda environment](images/02-mac-create-conda.png " ")
 
     * Option B: pyenv + venv
 
         ```bash
         <copy>
-        pyenv install 3.11.9    # skip if already installed
+        pyenv install 3.11.9
         pyenv local 3.11.9
         python -m venv oracle-agent-env
         source oracle-agent-env/bin/activate
         </copy>
-        ``` 
-    
-    >NOTE: Once activated, your terminal prompt shows *(oracle-agentenv)*. Keep this session open for the duration of the workshop.
+        ```
+
+    >NOTE: Once activated, your terminal prompt shows *(oracle-agent-env)*.
 
 3. Open VS Code and create a new Workspace: **File -> Open Folder**
 
 4. Select an existing folder or create and select a new one.
 
-    ![VS Code Open Folder](images/02-mac-open-folder.png " ")
+    >NOTE: If prompted to trust the authors, click **[Yes, I trust the authors]**
 
-    >NOTE: If prompted to trust the authors of the files in this folder, click **[Yes, I trust the authors]**
+5. Press *Cmd+Shift+P* and select *Create: New Jupyter Notebook*
 
-5. Press *Cmd+Shift+P* and begin typing "*Jupyter*". Select *Create: New Jupyter Notebook*
+    >NOTE: You may need the [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) and [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter).
 
-    ![Create new jupyter notebook](images/02-mac-create-jupyter-notebook.png " ")
+6. Confirm the kernel in the top right corner matches your environment.
 
-    >NOTE: You may need the [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) and [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) if not already installed.
-
-6. A new *Untitled-1.ipyn* file will be created. Confirm the kernel in the top right corner matches your environment.
-
-    ![Validate selected kernel](images/02-mac-validate-kernel.png " ")
-
-7. Paste the following code in the initial code block and press play.
+7. Install dependencies:
 
     ```bash
     <copy>
-    pip install -qU oracledb langchain-oracledb langchain langchain-openai langchain-huggingface ipywidgets tavily-python sentence-transformers ipykernel jupyter numpy datasets
+    pip install -qU oracledb langchain-oracledb langchain langchain-openai langchain-huggingface ipywidgets tavily-python sentence-transformers ipykernel jupyter numpy datasets streamlit matplotlib pydantic
     </copy>
     ```
 
-    >NOTE: This will perform a quiet install that may take 3-5 minutes. No output will be displayed until it completes.
+    >NOTE: This may take 3-5 minutes.
 
-8. Test the installation by creating a new code block, then paste and run:
+8. Test the installation:
 
     ```bash
     <copy>
@@ -275,15 +261,11 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
     </copy>
     ```
 
-    ![Output of test python code](images/02-mac-verify-setup.png " ")
-
-    >NOTE: Check for the green check mark and *All modules imported uccessfully - no errors*
-
-9. Finally, restart the kernel before proceeding to the next section.
+9. Restart the kernel before proceeding.
 
 </details>
 
-## Task 4: Connect to the database and create VECTOR user
+## Task 5: Connect to the database and create VECTOR user
 
 1. Now test the connection using the OracleDB driver for Python. When you run this code block, VS Code will prompt you for three values. After entering these three values, the code block will finish executing.
 
@@ -473,10 +455,12 @@ You may now proceed to the next lab.
 
 ## Learn More
 
-
+* [Oracle AI Database Documentation](https://docs.oracle.com/en/database/oracle/oracle-database/26/)
+* [python-oracledb Driver Documentation](https://python-oracledb.readthedocs.io/)
+* [LangChain OracleVS Integration](https://github.com/oracle/langchain-oracle)
 
 ## Acknowledgements
 
-- **Author** - Richmond Alake
-- **Contributors** - Eli Schilling
-- **Last Updated By/Date** - Published February, 2026
+* **Author(s)** - Richmond Alake
+* **Contributors** - Eli Schilling
+* **Last Updated By/Date** - Published February, 2026
