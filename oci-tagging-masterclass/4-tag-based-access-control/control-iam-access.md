@@ -4,7 +4,7 @@
 
 In this lab, you will use **Defined Tags within IAM policies** to control access to resources in Oracle Cloud Infrastructure (OCI). Tag-based access control allows administrators to grant or restrict permissions based on tag values instead of only using compartments. This provides more flexible and scalable governance.You will create a test group and user, write an IAM policy that evaluates the tag value, and confirm that users cannot delete resources tagged as **Production**.
 
-**Estimated Time:** 25–30 minutes
+**Estimated Time:** 25-30 minutes
 
 ### Objectives
 In this lab, you will:
@@ -34,11 +34,11 @@ In **Lab 1**, you created a bucket to confirm that Tag Defaults automatically ap
 
 1. Navigate to **Object Storage → Buckets**.
 
-    ![Screenshot showing navigation to ADB](./images/1.png " ")
+    ![Screenshot showing navigation to Object Storage - Buckets](./images/1.png " ")
 
 2. Locate the bucket created in Lab 1.
 
-    ![Screenshot showing navigation to ADB](./images/2.png " ")
+    ![Screenshot showing list of buckets](./images/2.png " ")
 
 3. Open the bucket. 
 
@@ -48,19 +48,36 @@ In **Lab 1**, you created a bucket to confirm that Tag Defaults automatically ap
 
     LLTagNamespace.Environment = Prod
 
-    ![Screenshot showing navigation to ADB](./images/3.png " ")
+    ![Screenshot showing bucket tags](./images/3.png " ")
 
 <details>
 <summary>CLI Method (Optional)</summary>
 
-```text
-<copy>
-oci os bucket create
-–compartment-id <compartment_ocid>
-–name prod-bucket-cli
-–namespace-name <object_storage_namespace>
-</copy>
-```
+1. Retrieve bucket details:
+
+    ```bash
+    <copy>
+    oci os bucket get test-tag-bucket
+    </copy>
+    ```
+
+2. Or we could streamline the command since we're here to look at tags:
+
+    ```bash
+    <copy>
+    oci os bucket get test-tag-bucket --query 'data."defined-tags"'
+    <copy>
+    ```
+
+    You'll notice in the output it only returns the contents of the defined tags JSON element:
+
+    ```text
+    {
+        "LLTagNameSpace": {
+            "Environment": "Prod"
+        }
+    }
+    ```
 </details>
 
 ## Task 2: Create a Test Group and User
@@ -70,18 +87,18 @@ Console Steps
 
 1. **Navigate to Identity & Security → Domains**.
 
-    ![Screenshot showing navigation to ADB](./images/4.png " ")
+    ![Screenshot showing navigation to IAM Domains](./images/4.png " ")
 
 2. Click on your Domain
 
-    ![Screenshot showing navigation to ADB](./images/5.png " ")
+    ![Screenshot showing default domain](./images/5.png " ")
 
 3. Navigate to User Mangement. 
 
-    ![Screenshot showing navigation to ADB](./images/6.png " ")
+    ![Screenshot showing Domain Groups](./images/6.png " ")
 
 4. Scroll and click  **Create Group**.
-3. Enter
+5. Enter
     **Name:**
     ```text
     <copy>
@@ -89,51 +106,59 @@ Console Steps
     </copy>
     ```
 
-4. Click **Create**.
+6. Click **Create**.
 
-    ![Screenshot showing navigation to ADB](./images/7.png " ")
+    ![Screenshot showing create group dialog](./images/7.png " ")
 
-5. Navigate to **Users** and click **Create**.
+7. Navigate to **Users** and click **Create**.
 
-    ![Screenshot showing navigation to ADB](./images/13.png " ")
+    ![Screenshot showing create users tab](./images/13.png " ")
 
-6. Enter **First Name**, **Last Name**, and an **Email** that is *not* currently assoicated with your cloud account.
+8. Enter **First Name**, **Last Name**, and an **Email** that is *not* currently assoicated with your cloud account.
 
 7. Add the user to the **TagTestUsers** group.    
 
 8. Click **Create**.
 
-    ![Screenshot showing navigation to ADB](./images/14.png " ")
+    ![Screenshot showing create user dialog](./images/14.png " ")
 
 9. Confirm the user is in the group **TagTestUsers**.
 
-    ![Screenshot showing navigation to ADB](./images/26.png " ")
+    ![Screenshot showing new user details and group membership](./images/26.png " ")
     
 
 <details>
 <summary>CLI Method (Optional)</summary>
 
-```text
-<copy>
-oci iam group create
-–name TagTestUsers
-–description “Tag testing group”
-</copy>
-```
-```text
-<copy>
-oci iam user create
-–name tagtestuser
-–description “Tag policy test user”
-</copy>
-```
-```text
-<copy>
-oci iam group add-user
-–group-id <group_ocid>
-–user-id <user_ocid>
-</copy>
-```
+1. Create the group
+
+    ```bash
+    <copy>
+    oci iam group create
+    --name TagTestUsers
+    --description "Tag testing group"
+    </copy>
+    ```
+
+2. Create the user
+
+    ```bash
+    <copy>
+    oci iam user create
+    --name tagtestuser
+    --description "Tag policy test user"
+    </copy>
+    ```
+
+3. Add user to group (make sure to retrieve group and user OCIDs from output of previous commands)
+
+    ```bash
+    <copy>
+    oci iam group add-user
+    --group-id <group_ocid>
+    --user-id <user_ocid>
+    </copy>
+    ```
 
 </details>
 
@@ -145,11 +170,11 @@ This policy allows management of Object Storage resources, except those tagged w
 
 1. Navigate to **Identity & Security → Policies**.
 
-    ![Screenshot showing navigation to ADB](./images/9.png " ")
+    ![Screenshot showing navigation to IAM Policies](./images/9.png " ")
 
 2. Click **Create Policy**.
 
-    ![Screenshot showing navigation to ADB](./images/10.png " ")
+    ![Screenshot showing list of policies](./images/10.png " ")
 
 3. Enter **Name:**
     
@@ -195,13 +220,13 @@ The group can manage object storage resources, **except** those tagged as Produc
 
     ```text
     <copy>
-    oci iam policy create
-    –compartment-id <tenancy_ocid>
-    –name TagDeleteRestrictionPolicy
-    –description “Restrict delete if tagged Prod”
-    –statements ‘[
-    “Allow group TagTestUsers to manage object-family in compartment <compartment_name> where target.resource.tag.LLTagNamespace.Environment != ‘Prod’”
-    ]’
+    oci iam policy create \
+        --compartment-id <tenancy_ocid> \
+        --name TagDeleteRestrictionPolicy \
+        --description "Restrict delete if tagged Prod" \
+        --statements '[
+            "Allow group TagTestUsers to manage object-family in compartment <compartment_name> where target.resource.tag.LLTagNamespace.Environment != '\''Prod'\''
+        ]’
     </copy>
     ```
 </details>
@@ -213,23 +238,23 @@ Now you will confirm that the policy is working.
 
 1. Sign out of the administrator account.
 
-    ![Screenshot showing navigation to ADB](./images/18.png " " " ")
+    ![Screenshot showing log out with existing user](./images/18.png " ")
 
 2. Sign in as **tagtestuser**.
 
-    ![Screenshot showing navigation to ADB](./images/19.png " ")
+    ![Screenshot showing log in with tag user](./images/19.png " ")
 
 3. Navigate to **Object Storage → Buckets**.
 
-    ![Screenshot showing navigation to ADB](./images/1.png " ")
+    ![Screenshot showing navigation to Object Storage](./images/1.png " ")
 
 4. Attempt to **Delete prod-bucket**.
 
-    ![Screenshot showing navigation to ADB](./images/21.png " ")
+    ![Screenshot showing attempt to delete bucket](./images/21.png " ")
 
 5. You should receive a permissions error.
 
-    ![Screenshot showing navigation to ADB](./images/20.png " ")
+    ![Screenshot showing permissions error](./images/20.png " ")
 
 
 This happens because the bucket is tagged as Prod, and the policy blocks deletion of Production resources.
@@ -237,16 +262,14 @@ This happens because the bucket is tagged as Prod, and the policy blocks deletio
 <details>
 <summary>CLI Validation (Optional)</summary>
 
-Using a configured CLI profile for tagtestuser:
+Using Cloud Shell (or configured CLI profile for tagtestuser):
 
-```text
-<copy>
-oci os bucket delete
-–bucket-name prod-bucket-cli
-–namespace-name <object_storage_namespace>
-</copy>
-```
-You should receive a “Not authorized” error.
+    ```bash
+    <copy>
+    oci os bucket delete --name test-tag-bucket
+    </copy>
+    ```
+You should receive a "Not authorized" error.
 
 </details>
 
@@ -259,7 +282,6 @@ You should receive a “Not authorized” error.
 
 **Check Your Work**
 
-
 You should now have:
 
 - A bucket tagged as Production
@@ -269,6 +291,7 @@ You should now have:
 - Observed how changing the tag changes access behavior
 
 ## Summary
+
 In this lab, you:
 
 - Applied a defined tag to a resource

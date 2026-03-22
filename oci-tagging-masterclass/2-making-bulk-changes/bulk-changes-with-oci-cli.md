@@ -161,7 +161,7 @@ Use the OCI CLI to launch a compute instance. You must specify the compartment, 
 
 4. Find public subnet in existing VCN
 
-We'll run the following two commands to retrieve network details required to launch the Compute instance. It's important to note that this assumes your VCN name is **`App-Network`**. If you created your own VCN or the facilitator has provided a different VCN name, be sure to update the command.
+- We'll run the following two commands to retrieve network details required to launch the Compute instance. It's important to note that this assumes your VCN name is **`App-Network`**. If you created your own VCN or the facilitator has provided a different VCN name, be sure to update the command.
 
     ```bash
     <copy>
@@ -171,7 +171,7 @@ We'll run the following two commands to retrieve network details required to lau
 
     ## retrieve the OCID for your public subnet
     subnet_ocid=$(oci network subnet list --compartment-id $compartment_ocid \
-    --vcn-id $vcn_ocid --query 'data[?contains("display-name", `Public-Subnet`)].id | [0]' \
+    --vcn-id $vcn_ocid --query 'data[?contains("display-name", `public subnet`)].id | [0]' \
     --raw-output)
     </copy>
     ```

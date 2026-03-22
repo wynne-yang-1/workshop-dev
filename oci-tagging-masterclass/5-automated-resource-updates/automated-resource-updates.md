@@ -7,7 +7,7 @@ In the previous labs, you created tags, applied defaults, performed bulk changes
 This lab focuses on discovering, updating, and automating tags to keep them accurate over time. You will work through three progressively more advanced approaches:
 
 1. **Console-based discovery and bulk editing** — Use the OCI Console's search capabilities and Tenancy Explorer to find resources by tag and update tags across multiple resources at once.
-2. **CLI-based search and bulk editing** — Use the OCI CLI in Cloud Shell to query resources by tag using the structured query language and perform bulk tag edits from the command line.
+2. **CLI-based search** — Use the OCI CLI in Cloud Shell to query resources by tag using the structured query language.
 3. **Scheduled automation with OCI Functions and Resource Scheduler** — Deploy a serverless function that automatically updates a tag default's value on a daily schedule, ensuring that every new resource inherits a current, accurate tag value without manual intervention.
 
 The third approach is inspired by a common real-world scenario: managing resource expiration dates in shared environments. In tenancies where many users create resources for demos, proof-of-concept work, or development, an automatically maintained expiration tag makes it easy to identify stale resources and take action — whether that action is a reminder to the owner, a cost review, or automated cleanup (as you will see in Lab 6).
@@ -20,7 +20,6 @@ In this lab, you will:
 
 - Use the OCI Console search and Tenancy Explorer to discover resources by tag and update tags in bulk.
 - Use the OCI CLI structured search to query resources by defined tag, free-form tag, and lifecycle state.
-- Use the OCI CLI `bulk-edit` command to add, update, or remove tags across multiple resources.
 - Deploy an OCI Function that programmatically updates a tag default value using the OCI Python SDK.
 - Configure OCI Resource Scheduler to invoke the function on a daily schedule.
 - Verify that newly created resources inherit the auto-updated tag default value.
@@ -102,45 +101,57 @@ Tenancy Explorer allows you to select multiple resources and add, update, or rem
 
     > **Key Takeaway:** Tenancy Explorer is the easiest way to make ad-hoc tag updates across a handful of resources. For larger-scale changes or repeatable operations, the CLI approach in the next task is more efficient.
 
-## Task 2: Search and Bulk-Edit Tags with the OCI CLI
+## Task 2: Search by Tags with the OCI CLI
 
 The OCI CLI provides powerful tag management capabilities that can be scripted, repeated, and integrated into operational workflows. In this task, you will use Cloud Shell to search for resources by tag and perform bulk tag edits.
 
-### Open Cloud Shell
-
 1. In the OCI Console, click the **Cloud Shell** icon (terminal icon) in the top toolbar. Cloud Shell opens with the OCI CLI pre-configured for your tenancy.
 
-### Search for Resources by Defined Tag
-
-The `oci search resource structured-search` command uses the OCI Resource Query Service (RQS) to find resources across your tenancy using a structured query language.
+    > The `oci search resource structured-search` command uses the OCI Resource Query Service (RQS) to find resources across your tenancy using a structured query language.
 
 2. Search for all resources with a specific defined tag key and value. Replace the namespace, key, and value with your own:
 
     ```bash
+    <copy>
     oci search resource structured-search \
-      --query-text "query all resources where (definedTags.namespace = 'Operations' && definedTags.key = 'Environment' && definedTags.value = 'Development')" \
+      --query-text "query all resources where (definedTags.namespace = 'LLTagNamespace' && definedTags.key = 'Environment' && definedTags.value = 'Dev')" \
       --query 'data.items[*].{Name:"display-name", Type:"resource-type", State:"lifecycle-state", OCID:identifier}' \
       --output table
+    </copy>
     ```
 
-    This returns a table of all resources tagged with `Operations.Environment = Development`, showing their name, resource type, lifecycle state, and OCID.
+    This returns a table of all resources tagged with `LLTagNamespace.Environment = Devel`, showing their name, resource type, lifecycle state, and OCID.
+
+    ```text
+    +-------------+-------------------------------------------------------------------------------------+-----------+----------+
+    | Name        | OCID                                                                                | State     | Type     |
+    +-------------+-------------------------------------------------------------------------------------+-----------+----------+
+    | LabVolume2  | ocid1.volume.oc1.phx.abyhzzzzxxxzjkq   | AVAILABLE | Volume   |
+    | LabVolume1  | ocid1.volume.oc1.phx.abyhzzzzzratybq   | AVAILABLE | Volume   |
+    | LabCompute1 | ocid1.instance.oc1.phx.anabcwxyzarhz   | RUNNING   | Instance |
+    +-------------+-------------------------------------------------------------------------------------+-----------+----------+
+    ```
 
 3. Search for all resources that have a specific tag key with *any* value (useful for auditing tag coverage):
 
     ```bash
+    <copy>
     oci search resource structured-search \
-      --query-text "query all resources where (definedTags.namespace = 'Operations' && definedTags.key = 'CostCenter')" \
+      --query-text "query all resources where (definedTags.namespace = 'LLTagNamespace' && definedTags.key = 'CostCenter')" \
       --query 'data.items[*].{Name:"display-name", Type:"resource-type", State:"lifecycle-state"}' \
       --output table
+    </copy>
     ```
 
 4. Search for running compute instances that do *not* have a specific tag. This query finds running instances and you can compare the results against a tagged query to identify gaps:
 
     ```bash
+    <copy>
     oci search resource structured-search \
       --query-text "query instance resources where lifecycleState = 'RUNNING'" \
       --query 'data.items[*].{Name:"display-name", OCID:identifier, Tags:"defined-tags"}' \
       --output json
+    </copy>
     ```
 
     Review the JSON output. Any instance where the `defined-tags` field does not contain your expected namespace and key is missing the tag.
@@ -154,63 +165,9 @@ The `oci search resource structured-search` command uses the OCI Resource Query 
       --output table
     ```
 
-### Bulk-Edit Tags with the CLI
+    > **Key Takeaway:** Recall that in Lab 2 you performed a bulk update of resources to add / alter tags. The combination of `structured-search` and `bulk-edit` gives you a scriptable, repeatable workflow: find resources by tag criteria, then update their tags in bulk. This pattern can be wrapped in a shell script and run on a schedule for ongoing maintenance.
 
-The `oci iam tag bulk-edit` command allows you to add, update, or remove defined tags across multiple resources in a single API call.
-
-6. First, identify the resources you want to update. Use one of the search queries above to collect the OCIDs of target resources. For this example, assume you want to add the tag `Operations.ReviewStatus = Pending` to two compute instances.
-
-7. Create a JSON file that describes the bulk edit operation. In Cloud Shell, create the file:
-
-    ```bash
-    cat > bulk-edit.json << 'EOF'
-    {
-      "bulkEditOperations": [
-        {
-          "operationType": "ADD_OR_SET",
-          "definedTags": {
-            "Operations": {
-              "ReviewStatus": "Pending"
-            }
-          }
-        }
-      ],
-      "resources": [
-        {
-          "id": "<instance_ocid_1>",
-          "resourceType": "instance"
-        },
-        {
-          "id": "<instance_ocid_2>",
-          "resourceType": "instance"
-        }
-      ],
-      "compartmentId": "<your_compartment_ocid>"
-    }
-    EOF
-    ```
-
-    Replace the placeholder OCIDs with real values from your search results.
-
-    > **Note:** The `operationType` can be `ADD_OR_SET` (adds the tag if it doesn't exist, updates it if it does), `SET` (updates only if the tag already exists), or `REMOVE` (removes the tag).
-
-8. Execute the bulk edit:
-
-    ```bash
-    oci iam tag bulk-edit --from-json file://bulk-edit.json
-    ```
-
-9. OCI returns a work request ID. You can check the status:
-
-    ```bash
-    oci iam tagging-work-request get --work-request-id <work_request_ocid>
-    ```
-
-10. After the work request completes, verify the tags were applied by re-running the search query from step 2, or by inspecting the resource in the Console.
-
-    > **Key Takeaway:** The combination of `structured-search` and `bulk-edit` gives you a scriptable, repeatable workflow: find resources by tag criteria, then update their tags in bulk. This pattern can be wrapped in a shell script and run on a schedule for ongoing maintenance.
-
-## Task 3: Create an Auto-Updating Tag Default
+## Task 3: Prep to Create an Auto-Updating Tag Default
 
 In Tasks 1 and 2, you performed tag updates manually — either through the Console or the CLI. This works well for one-time corrections, but some tags need to be updated continuously. The most common example is an **expiration date tag**: a tag default that stamps every new resource with a date 90 days in the future, indicating when the resource should be reviewed or cleaned up.
 
@@ -220,13 +177,13 @@ The solution is to automatically update the tag default value every day using an
 
 ### Create the Tag and Tag Default
 
-1. If you do not already have an expiration date tag, create one. Navigate to **Identity & Security > Tag Namespaces**, select your workshop namespace (e.g., `Operations`), and click **Create Tag Key Definition**:
+1. If you do not already have an expiration date tag, create one. Navigate to **Governance & Administration > Tag Namespaces**, select your workshop namespace (e.g., `LLTagNamespace`), and click **Create Tag Key Definition**:
 
     - **Tag Key:** `ExpirationDate`
     - **Description:** `Date by which the resource should be reviewed or decommissioned`
     - **Type:** Leave as free-form (any string value).
 
-2. Next, create a tag default so this tag is automatically applied to new resources. Navigate to **Identity & Security > Tag Defaults** and click **Create Tag Default**:
+2. Next, create a tag default so this tag is automatically applied to new resources. Navigate to **Identity & Security > Compartments**, select the compartment being usedfor this workshop, switch to the **Tag Defaults** tab, and click **Create Tag Default**:
 
     - **Compartment:** Select your workshop compartment.
     - **Tag Namespace:** Select your workshop namespace.
@@ -240,53 +197,158 @@ The solution is to automatically update the tag default value every day using an
 
 4. Navigate to **Identity & Security > Dynamic Groups** and click **Create Dynamic Group**:
 
-    - **Name:** `FunctionsTagUpdate`
-    - **Description:** `Dynamic group for tag auto-update function`
-    - **Matching Rule:**
+    - **Name:** `FunctionsTagManagement`
+    - **Description:** `Dynamic group for tag management function(s)`
+    - **Matching Rule:** Enter the following rule, replacing `<compartment_ocid>` with the OCID of your workshop compartment:
 
     ```
+    <copy>
     ALL {resource.type = 'fnfunc', resource.compartment.id = '<your_compartment_ocid>'}
+    </copy>
     ```
 
 5. Navigate to **Identity & Security > Policies** and click **Create Policy**:
 
-    - **Name:** `TagAutoUpdatePolicy`
-    - **Description:** `Allows tag update function to manage tag defaults`
+    - **Name:** `TagManagementPolicy`
+    - **Description:** `Allows Serverless functions to perform tag-related activities`
     - **Compartment:** Select your root compartment (tag defaults require tenancy-level permissions).
 
 6. Add the following policy statements:
 
     ```
-    Allow dynamic-group FunctionsTagUpdate to manage tag-defaults in tenancy
-    Allow dynamic-group FunctionsTagUpdate to use tag-namespaces in tenancy
+    <copy>
+    Allow dynamic-group FunctionsTagManagement to manage tag-defaults in tenancy
+    Allow dynamic-group FunctionsTagManagement to use tag-namespaces in tenancy
+    Allow service cloudEvents to use functions-family in compartment <your_compartment_name>
     Allow any-user to manage functions-family in compartment <your_compartment_name> where all {request.principal.type='resourceschedule'}
+    </copy>
     ```
 
     The first two statements allow the function to read and update tag defaults. The third allows Resource Scheduler to invoke the function.
 
     > **Note:** The Resource Scheduler policy uses `any-user` with a condition restricting it to the `resourceschedule` principal type. You can further narrow this with the specific scheduler OCID once created. See the Learn More section for details.
 
-## Task 4: Deploy the Tag Update Function
+## Task 4: Create and Deploy the Tag Update Function
+
+### Complete the pre-requisites
+
+1. Before we can get started, you'll need a few things. From the command line in Cloud Shell:
+
+    * Create an auth token; be sure to copy and paste the output to a text file just for good measure.
+
+    ```bash
+    <copy>
+    ## Snag your user OCID - make sure to enter your actual user name
+    user_ocid=$(oci iam user list --query "data[?name=='<your username here>'].id | [0]" --raw-output)
+
+    ## Generate the auth token
+    auth_token=$(oci iam auth-token create \
+        --description "OCIR Login for Functions - Tagging HOL" \
+        --user-id $user_ocid \
+        --query "data.token" \
+        --raw-output)
+
+    echo $auth_token
+    </copy>
+    ```
+
+    * Snag the tenancy namespace and tag default OCID from these commands
+    
+    ```bash
+    <copy>
+    tenancy_ns=$(oci os ns get --query "data" --raw-output)
+    echo $tenancy_ns
+
+    tag_default_ocid=$( oci iam tag-default list --compartment-id \
+    $compartment_ocid --query 'data[?"tag-definition-name"==`ExpirationDate`].id | [0]' \
+    --raw-output)
+    echo $tag_default_ocid
+    </copy>
+    ```
+
+    > NOTE: Your username for the next step is <namespace>/<username>
+
+    * Verify login to OCI Container Registry (OCIR)
+
+    ```bash
+    <copy>
+    # replace <region-key> with the 3-letter abbreviation for select region
+    docker login <region-key>.ocir.io
+    </copy>
+    ```
+
+    ```text
+    ## EXAMPLE: 
+    docker login phx.ocir.io
+    username: afoie1cs3t/first.last@domain.com
+    password: ##nothing displayed when entering password
+    Login Succeeded!
+    ```
+
+### Configure the Functions context
+
+2. List, select, and update the required context
+
+    * List context
+
+    ```bash
+    <copy>fn list context</copy>
+    ```
+
+    ```text
+    # Output should look something like: 
+    CURRENT NAME            PROVIDER        API URL                                 REGISTRY
+    *       default         oracle-cs
+            us-phoenix-1    oracle-cs       https://functions.us-phoenix-1.oci.oraclecloud.com
+    ```
+
+    * Select context associated with your region and update
+
+    ```bash
+    <copy>
+    fn use context <region full identifier>
+    fn update context oracle.compartment-id $compartment_ocid
+    fn update context registry <region 3-letter identifer>.ocir.io/$tenancy_ns/auto-tag-project
+    </copy>
+    ```
+
+    ```text
+    # Example output:
+    zzz@cloudshell:tag-update (us-phoenix-1)$ fn use context us-phoenix-1
+
+    Fn: Context us-phoenix-1 currently in use
+
+    See 'fn <command> --help' for more information. Client version: 0.6.41
+    zzz@cloudshell:tag-update (us-phoenix-1)$ fn update context oracle.compartment-id $compartment_ocid 
+    Current context updated oracle.compartment-id with ocid1.compartment.oc1........
+    zzz@cloudshell:tag-update (us-phoenix-1)$ fn update context registry phx.ocir.io/$tenancy_ns/auto-tag-project
+    Current context updated registry with phx.ocir.io/izzzzzzzzzi/auto-tag-project
+
 
 ### Create the Function
 
-1. In Cloud Shell or your local terminal, create a new function:
+2. In Cloud Shell or your local terminal, create a new function:
 
     ```bash
+    <copy>
     fn init --runtime python tag-update
     cd tag-update
+    </copy>
     ```
 
-2. Replace the contents of `requirements.txt`:
+3. Replace the contents of `requirements.txt`:
 
     ```
-    fdk>=0.1.74
+    <copy>
+    fdk>=0.1.105
     oci>=2.110.0
+    </copy>
     ```
 
 3. Replace the contents of `func.yaml`:
 
     ```yaml
+    <copy>
     schema_version: 20180708
     name: tag-update
     version: 0.0.1
@@ -296,11 +358,13 @@ The solution is to automatically update the tag default value every day using an
     entrypoint: /python/bin/fdk /function/func.py handler
     memory: 256
     timeout: 60
+    </copy>
     ```
 
 4. Replace the contents of `func.py` with the following code:
 
     ```python
+    <copy>
     import io
     import json
     import datetime
@@ -316,7 +380,6 @@ The solution is to automatically update the tag default value every day using an
     # Default number of days from today for the expiration date
     DEFAULT_DAYS_OFFSET = 90
 
-
     def get_signer():
         """Authenticate using Resource Principals."""
         try:
@@ -325,7 +388,6 @@ The solution is to automatically update the tag default value every day using an
         except Exception as e:
             logger.error("Failed to get resource principals signer: %s", e)
             raise
-
 
     def get_config(ctx):
         """
@@ -374,7 +436,7 @@ The solution is to automatically update the tag default value every day using an
         """
         details = oci.identity.models.UpdateTagDefaultDetails(
             value=new_value,
-            is_required=True
+            is_required=False
         )
 
         resp = identity_client.update_tag_default(tag_default_ocid, details)
@@ -440,6 +502,7 @@ The solution is to automatically update the tag default value every day using an
             response_data=json.dumps(result),
             headers={"Content-Type": "application/json"}
         )
+    </copy>
     ```
 
 ### Deploy the Function
@@ -447,7 +510,10 @@ The solution is to automatically update the tag default value every day using an
 5. If you do not already have a Functions application, create one (if you completed Lab 6, you can reuse `tag-enforcement-app`). Otherwise, create a new one:
 
     ```bash
-    fn create app tag-update-app --annotation oracle.com/oci/subnetIds='["<your_subnet_ocid>"]'
+    </copy>
+    fn create app tag-update-app \
+        --annotation oracle.com/oci/subnetIds='["'$subnet_ocid'"]'
+    </copy>
     ```
 
     Or create the application from the Console under **Developer Services > Functions > Create Application**.
@@ -455,7 +521,9 @@ The solution is to automatically update the tag default value every day using an
 6. Deploy the function:
 
     ```bash
+    <copy>
     fn deploy --app tag-update-app
+    </copy>
     ```
 
 7. Set the required configuration variable. Navigate to the **Functions Application** in the Console, select the **Configuration** tab, and add:
@@ -465,12 +533,18 @@ The solution is to automatically update the tag default value every day using an
     | `TAG_DEFAULT_OCID` | The OCID of the tag default you created in Task 3, step 2 |
     | `DAYS_OFFSET` | `90` (or your preferred number of days) |
 
+    ![Screenshot showing manage configuration in Functions console](images/05-functions-app-manage-config.png)
+
+    * Click **[Save chagnes]**
+
 ### Test the Function
 
 8. Invoke the function manually to verify it works:
 
     ```bash
+    <copy>
     fn invoke tag-update-app tag-update
+    </copy>
     ```
 
     You should see a JSON response confirming the tag default was updated:
@@ -484,7 +558,7 @@ The solution is to automatically update the tag default value every day using an
     }
     ```
 
-9. Verify in the Console. Navigate to **Identity & Security > Tag Defaults**, find your `ExpirationDate` default, and confirm the value has been updated to today + 90 days.
+9. Verify in the Console. Navigate to **Identity & Security > Compartments > <<Your Compartment>> > Tag Defaults**, find your `ExpirationDate` default, and confirm the value has been updated to today + 90 days.
 
 10. Create a test resource (for example, a small compute instance) in your workshop compartment. After creation, inspect the resource's tags. The `ExpirationDate` tag should be present with the value your function just set.
 
@@ -532,7 +606,9 @@ Let's confirm the entire workflow operates correctly.
 2. **Invoke the function manually** (or wait for the scheduled run):
 
     ```bash
+    <copy>
     fn invoke tag-update-app tag-update
+    </copy>
     ```
 
 3. **Verify the tag default updated.** Refresh the Tag Defaults page in the Console. The value should now reflect today + 90 days (or whatever offset you configured).
@@ -541,9 +617,11 @@ Let's confirm the entire workflow operates correctly.
 
 5. **Search for resources by expiration date.** Use the CLI to find all resources with a specific expiration date:
 
+    > **NOTE** Make sure to change the <<enter date + 90 days value here>> to a value that will match with the tags assigned.
+
     ```bash
     oci search resource structured-search \
-      --query-text "query all resources where (definedTags.namespace = 'Operations' && definedTags.key = 'ExpirationDate' && definedTags.value = '2026-06-02')" \
+      --query-text "query all resources where (definedTags.namespace = 'LLTagNamespace' && definedTags.key = 'ExpirationDate' && definedTags.value = '<<enter date + 90 days value here>>')" \
       --query 'data.items[*].{Name:"display-name", Type:"resource-type", OCID:identifier}' \
       --output table
     ```
@@ -575,6 +653,6 @@ You may now proceed to the next lab.
 
 ## Acknowledgements
 
-- **Author** - KC Flynn, Eli Schilling
-- **Contributors** - Daniel Hart, Deion Locklear, Wynne Yang
+- **Author** - Daniel Hart
+- **Contributors** - Eli Schilling, Deion Locklear, Wynne Yang
 - **Last Updated By/Date** - Published February, 2026

@@ -35,15 +35,19 @@ This lab assumes you have:
 
 ## Task 1: Create a Dynamic Group and IAM Policies
 
+**Important** If you completed lab 5, you can skip directly to task 2!
+
+---
+
 Before your functions can interact with other OCI services — such as querying for compute instances or stopping them — you must authorize them using a Dynamic Group and IAM policies. A Dynamic Group allows you to treat functions as principals (similar to users) and grant them permissions through policy statements.
 
 1. Open the **Navigation Menu** in the OCI Console, navigate to **Identity & Security**, and select **Dynamic Groups**.
 
 2. Click **Create Dynamic Group** and enter the following:
 
-    - **Name:** `FunctionsTagEnforcement`
-    - **Description:** `Dynamic group for tag compliance enforcement functions`
-    - **Matching Rule:** Enter the following rule, replacing `<compartment_ocid>` with the OCID of your workshop compartment:
+    - **Name:** `FunctionsTagManagement`
+    - **Description:** `Dynamic group for tag management function(s)`
+    - **Matching Rule:** Enter the following rule, replacing `<compartment_ocid>` with the OCID of your workshop compartment
 
     ```
     ALL {resource.type = 'fnfunc', resource.compartment.id = '<compartment_ocid>'}
@@ -55,16 +59,19 @@ Before your functions can interact with other OCI services — such as querying 
 
 4. Next, navigate to **Identity & Security > Policies** and click **Create Policy**. Enter the following:
 
-    - **Name:** `TagEnforcementPolicy`
-    - **Description:** `Allows tag enforcement functions to manage resources`
+    - **Name:** `TagManagementPolicy`
+    - **Description:** `Allows Serverless functions to perform tag-related activities`
     - **Compartment:** Select your workshop compartment.
 
 5. Add the following policy statements (click **Show manual editor** to enter them):
 
     ```
-    Allow dynamic-group FunctionsTagEnforcement to manage instance-family in compartment <your_compartment_name>
-    Allow dynamic-group FunctionsTagEnforcement to read all-resources in compartment <your_compartment_name>
+    <copy>
+    Allow dynamic-group FunctionsTagManagement to manage instance-family in compartment <your_compartment_name>
+    Allow dynamic-group FunctionsTagManagement to read all-resources in compartment <your_compartment_name>
     Allow service cloudEvents to use functions-family in compartment <your_compartment_name>
+    Allow any-user to manage functions-family in compartment <your_compartment_name> where all {request.principal.type='resourceschedule'}
+    </copy>
     ```
 
     The first statement allows the functions to stop and terminate compute instances. The second allows them to search and read resource details. The third allows the Events service to invoke functions in your compartment.
@@ -99,7 +106,7 @@ A Functions application is a logical grouping of functions. It defines the netwo
     fn update context registry <region_code>.ocir.io/<tenancy_namespace>/tag-enforcement
     ```
 
-    > **Note:** If you are using Cloud Shell, the context is typically pre-configured. You may only need to set the compartment and registry.
+    > **Note:** If already completed lab 5, use the same Cloud Shell session. These paremeters are already set.
 
 ## Task 3: Deploy the Scheduled Compliance Scan Function
 
@@ -109,6 +116,8 @@ This function is designed to be invoked on a schedule (for example, using the OC
 
 1. In Cloud Shell or your local terminal, create a new function boilerplate:
 
+    >Note: If you are still in the *`tag-update`* folder inside Cloud Shell, type `cd ..` to move up one directory before you continue.
+
     ```bash
     fn init --runtime python scheduled-tag-scan
     cd scheduled-tag-scan
@@ -117,7 +126,7 @@ This function is designed to be invoked on a schedule (for example, using the OC
 2. Open the `requirements.txt` file and replace its contents with:
 
     ```
-    fdk>=0.1.74
+    fdk>=0.1.105
     oci>=2.110.0
     ```
 
@@ -152,7 +161,7 @@ This function is designed to be invoked on a schedule (for example, using the OC
     # --- Configuration ---
     # These values can be overridden by setting application or function
     # configuration variables in the OCI Console.
-    DEFAULT_TAG_NAMESPACE = "Operations"
+    DEFAULT_TAG_NAMESPACE = "LLTagNamespace"
     DEFAULT_TAG_KEY = "CostCenter"
     DEFAULT_COMPLIANT_VALUE = None  # Set a value to require a specific tag value;
                                     # leave as None to only require the key exists.
@@ -320,7 +329,7 @@ This function is designed to be invoked on a schedule (for example, using the OC
     | Key | Value |
     |-----|-------|
     | `COMPARTMENT_OCID` | The OCID of your workshop compartment |
-    | `TAG_NAMESPACE` | The tag namespace you created in a previous lab (e.g., `Operations`) |
+    | `TAG_NAMESPACE` | The tag namespace you created in a previous lab (e.g., `LLTagNamespace`) |
     | `TAG_KEY` | The tag key to enforce (e.g., `CostCenter`) |
 
     > **Note:** Setting these values as application-level configuration variables allows you to change the enforcement criteria without redeploying the function code.
@@ -351,7 +360,7 @@ When the Events service detects that a compute instance has been created, it sen
 2. Replace the contents of `requirements.txt`:
 
     ```
-    fdk>=0.1.74
+    fdk>=0.1.105
     oci>=2.110.0
     ```
 
@@ -643,11 +652,11 @@ If you want to remove the resources created in this lab:
 
 1. Delete the Events rule (`enforce-tags-on-instance-launch`).
 2. Delete the functions and the application (`tag-enforcement-app`) from the Functions console.
-3. Delete the IAM policy (`TagEnforcementPolicy`).
-4. Delete the Dynamic Group (`FunctionsTagEnforcement`).
+3. Delete the IAM policy (`TagManagementPolicy`).
+4. Delete the Dynamic Group (`FunctionsTagManagement`).
 5. Terminate any test compute instances you created.
 
-You may now proceed to the next lab.
+Congratulations - you've completed the workshop!!
 
 ## Learn More
 
