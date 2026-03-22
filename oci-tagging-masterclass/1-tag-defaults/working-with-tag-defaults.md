@@ -11,7 +11,7 @@ You will create a tag namespace, define tag keys, assign tag defaults to a compa
 
 In this lab, you will:
 
-- Create a tag namespace
+- Create a tag namespace **`LLTagNamespace`**
 - Create tag key definitions (static and list-based values)
 - Review OCI Tag Namespace templates
 - Assign Tag Defaults to a compartment
@@ -23,13 +23,11 @@ This lab assumes you have:
 
 - Completed previous labs
 - Administrative access to IAM and compartments
-- OCI CLI installed and configured (optional for CLI steps)
+- Access to Cloud Shell or OCI CLI installed and configured (optional for CLI steps)
 
 ## Task 1: Create a Tag Namespace
 
 Tag namespaces logically group related tag keys. All defined tags must belong to a namespace.
-
-
 
 1. Open the OCI Console.
 
@@ -37,11 +35,11 @@ Tag namespaces logically group related tag keys. All defined tags must belong to
 
 3. Select **Tag Namespaces**.
 
-   ![Screenshot showing navigation to ADB](./screenshots/1.png)
+   ![Screenshot showing navigation tag namespaces](./images/1.png)
 
 4. Click **Create Tag Namespace**.
 
-   ![Screenshot showing navigation to ADB](./screenshots/2.png)
+   ![Screenshot showing create button](./images/2.png)
 
 5. Enter:
 
@@ -57,17 +55,17 @@ Tag namespaces logically group related tag keys. All defined tags must belong to
 
      ```text
     <copy>
-    Identifies the business cost center
+    Collection of pre-defined tags to assist with project and budget allocation of resources.
     </copy>
     ```
 
 6. Click **Create**.
 
-   ![Screenshot showing navigation to ADB](./screenshots/3.png)
+   ![Screenshot showing create tag namespace dialog](./images/3.png)
 
 7. Verify the namespace appears in the list.
 
-   ![Screenshot showing navigation to ADB](./screenshots/4.png)
+   ![Screenshot showing newly created tag namespace](./images/4.png)
 
 <details>
 <summary>CLI Method (Optional)</summary>
@@ -76,7 +74,7 @@ Tag namespaces logically group related tag keys. All defined tags must belong to
     <copy>
 oci iam tag-namespace create 
 –compartment-id <tenancy_ocid> 
-–name LiveLabTagNS 
+–name LLTagNamespace 
 –description “Namespace for LiveLab tagging exercises” 
 –is-retired false
 </copy>
@@ -95,7 +93,7 @@ A tag key is the actual label that gets attached to resources.
 
 In this task, you will create:
 
-- A general tag key called **CostCenter**
+- A general tag key called **CostCenter**, which also serves as a *Cost Tracking* tag.
 - A restricted tag key called **Environment**
 
 
@@ -106,19 +104,17 @@ Using list-based validation helps standardize tagging across teams.
 
 ## Task 2A: Create the CostCenter Tag
 
-This tag will represent which department or business unit owns a resource.
-
-
+This tag will represent which department or business unit owns a resource. It will also be a cost-tracking tag which helps to enable precise billing allocation, budget monitoring, and granular cost analysis. More on this in Lab 3.
 
 1. Navigate to **Governance & Administration → Tag Namespaces**.
 
 2. Select the namespace you created earlier (`LLTagNamespace`).
 
-   ![Screenshot showing navigation to ADB](./screenshots/4.png)
+   ![Screenshot showing list of tag namespaces](./images/4.png)
 
 3. Click **Create Tag Key Definition**.
 
-   ![Screenshot showing navigation to ADB](./screenshots/5.png)
+   ![Screenshot showing button to create tag key definition](./images/5.png)
 
 4. Enter the following:
 
@@ -134,13 +130,16 @@ This tag will represent which department or business unit owns a resource.
       Identifies the business cost center
       </copy>
       ```
+
+   > **IMPORTANT** Be sure to click the **`Cost-tracking`** slide button.
+
 5. Click **Create**.
 
-   ![Screenshot showing navigation to ADB](./screenshots/6.png)
+   ![Screenshot showing create tag definition dialog](./images/6.png)
 
 6. Validate the **CostCenter** Tag Key Definition appears in the list. 
 
-   ![Screenshot showing navigation to ADB](./screenshots/7.png)
+   ![Screenshot showing list of tag keys with CostCenter](./images/7.png)
 
 The CostCenter tag can accept any value when applied to a resource, such as:
 - Finance
@@ -168,11 +167,9 @@ oci iam tag create
 This tag will identify the lifecycle stage of a resource.
 To keep tagging consistent, you will restrict values to a predefined list.
 
+1. Still inside the **`LLTagNamespace`** namespace, click **Create Tag Key Definition** once more.
 
-
-1. Still inside the `LivelabTagNS` namespace, click **Create Tag Key Definition** once more.
-
-   ![Screenshot showing navigation to ADB](./screenshots/7.png)
+   ![Screenshot showing Create tag key definition button](./images/7.png)
 
 2. Enter:
 
@@ -196,7 +193,7 @@ To keep tagging consistent, you will restrict values to a predefined list.
 
 4. Make sure all the values are entered and click **Create**.
 
-   ![Screenshot showing navigation to ADB](./screenshots/8.png)
+   ![Screenshot showing create tag definition dialog](./images/8.png)
 
    When users apply this tag to a resource, they can only select Dev, Test and Prod. This ensures consistent tagging and supports future policy enforcement.
 
@@ -204,7 +201,7 @@ To keep tagging consistent, you will restrict values to a predefined list.
 
    At the end of this task, confirm that both **CostCenter** and **Environment** appear under your namespace.
 
-   ![Screenshot showing navigation to ADB](./screenshots/9.png)
+   ![Screenshot showing list of tag key definitions](./images/9.png)
 
    Tag keys define the structure for how resources are labeled.
    In a later task, you will use these tag keys to automatically apply tags using Tag Defaults.
@@ -230,8 +227,6 @@ oci iam tag create
 Now that you have created tag keys, you will configure a Tag Default.
 A Tag Default automatically applies a defined tag to all new resources created inside a specific compartment. This helps ensure consistent tagging without requiring users to manually tag every resource.
 
-`What Is a Tag Default?`
-
 **Without a Tag Default:**
 
 Users must manually apply tags.
@@ -245,20 +240,21 @@ Governance becomes easier and more reliable.
 
 1. Navigate to **Identity & Security → Compartments**.
 
-   ![Screenshot showing navigation to ADB](./screenshots/10.png)
+   ![Screenshot showing navigation to IAM Compartments](./images/10.png)
 
 2. Select the compartment where you want the tag applied automatically. 
-   Selecting the root compartment will allow the tag to be applied automatically to **all** resources created in the tenancy. 
+   
+   > Selecting the root compartment will allow the tag to be applied automatically to **all** resources created in the tenancy. 
 
-   ![Screenshot showing navigation to ADB](./screenshots/11.png)
+   ![Screenshot showing list of compartments in tenancy](./images/11.png)
 
 3. Navigate to **Tag Default**.
 
-   ![Screenshot showing navigation to ADB](./screenshots/12.png)
+   ![Screenshot showing compartment details](./images/12.png)
 
 4. Click **Create Tag Default**.
 
-   ![Screenshot showing navigation to ADB](./screenshots/13.png)
+   ![Screenshot showing tag defaults tab](./images/13.png)
 
 5. Choose:
 
@@ -268,61 +264,59 @@ Governance becomes easier and more reliable.
 
 6. Click **Create Tag Default**.
 
-   ![Screenshot showing navigation to ADB](./screenshots/14.png)
+   ![Screenshot showing create tag default dialog](./images/14.png)
 
 7. After assignment, confirm the Tag Default appears in the list for that compartment.
 
-   ![Screenshot showing navigation to ADB](./screenshots/15.png)
+   ![Screenshot showing newly created tag default](./images/15.png)
 
 <details>
 <summary>CLI Method (Optional)</summary>
 To create a tag default, you need the OCID of the tag key definition (Tag Definition OCID).
 
 1. Get your Object Storage namespace (you will use this later as well):
-```text
-<copy>
-oci os ns get
-</copy>
-```
+   ```text
+   <copy>
+   oci os ns get
+   </copy>
+   ```
 2. List namespaces to find your namespace OCID:
-```text
-<copy>
-oci iam tag-namespace list –compartment-id <tenancy_ocid>
-</copy>
-```
+   ```text
+   <copy>
+   oci iam tag-namespace list –compartment-id <tenancy_ocid>
+   </copy>
+   ```
 3. List tags under your namespace to find the tag definition OCID for `Environment`:
-```text
-<copy>
-oci iam tag list –tag-namespace-id <tag_namespace_ocid>
-</copy>
-```
+   ```text
+   <copy>
+   oci iam tag list –tag-namespace-id <tag_namespace_ocid>
+   </copy>
+   ```
 4. Create the tag default in the target compartment (example assigns `Prod`):
 
-```text
-<copy>
-oci iam tag-default create 
-–compartment-id <target_compartment_ocid> 
-–tag-definition-id <environment_tag_definition_ocid> 
-–value Prod
-</copy>
-```
+   ```text
+   <copy>
+   oci iam tag-default create 
+   –compartment-id <target_compartment_ocid> 
+   –tag-definition-id <environment_tag_definition_ocid> 
+   –value Prod
+   </copy>
+   ```
 5. Verify the tag default:
-```text
-<copy>
-oci iam tag-default list –compartment-id <target_compartment_ocid>
-</copy>
-```
+   ```text
+   <copy>
+   oci iam tag-default list –compartment-id <target_compartment_ocid>
+   </copy>
+   ```
 </details>
 
 ## Task 4: Validate Tag Default Enforcement
 Now you will confirm that your Tag Default is working as expected.
 You will create a new bucket in the compartment where you assigned the tag default, and then verify that the defined tag was applied automatically.
 
-
-
 1. Navigate to **Object Storage → Buckets**.
 
-   ![Screenshot showing navigation to ADB](./screenshots/21.png)
+   ![Screenshot showing navigation to object storage -> buckets](./images/21.png)
 
 2. Select the same compartment where you applied the Tag Default and click **Create Bucket**
 
@@ -334,15 +328,15 @@ You will create a new bucket in the compartment where you assigned the tag defau
       </copy>
       ```
 
-   ![Screenshot showing navigation to ADB](./screenshots/22.png)
+   ![Screenshot showing navigation create bucket dialog](./images/22.png)
 
-7. Open the bucket after it is created.
+4. Open the bucket after it is created.
 
-   ![Screenshot showing navigation to ADB](./screenshots/19.png)
+   ![Screenshot showing navigation bucket details](./images/19.png)
 
-8. Scroll to the **Tags** section and confirm the tag is present.
+5. Scroll to the **Tags** section and confirm the tag is present.
 
-   ![Screenshot showing navigation to ADB](./screenshots/20.png)
+   ![Screenshot showing navigation bucket tags](./images/20.png)
 
 <details>
  <summary>CLI Method (Optional)</summary>
@@ -358,7 +352,7 @@ oci os bucket get
 –bucket-name tag-test-bucket-cli 
 –namespace-name <object_storage_namespace>
 In the output, look for the `defined-tags` section and confirm it includes something similar to:
-- Namespace: `LivelabTagNS`
+- Namespace: `LLTagNamespace`
 - Key: `Environment`
 - Value: `Prod`
 

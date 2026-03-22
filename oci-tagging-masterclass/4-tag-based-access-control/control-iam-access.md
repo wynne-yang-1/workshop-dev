@@ -24,7 +24,7 @@ This lab assumes you have:
 - A defined tag key (`Environment`)
 - A bucket created in Lab 1 with the tag default applied
 - Administrative access to IAM
-- OCI CLI installed and configured (optional for CLI steps)
+- Access to Cloud Shell or OCI CLI installed and configured (optional for CLI steps)
 
 ## Task 1: Navigate to your Bucket
 
@@ -34,11 +34,11 @@ In **Lab 1**, you created a bucket to confirm that Tag Defaults automatically ap
 
 1. Navigate to **Object Storage → Buckets**.
 
-    ![Screenshot showing navigation to ADB](./screenshots/1.png)
+    ![Screenshot showing navigation to ADB](./images/1.png " ")
 
 2. Locate the bucket created in Lab 1.
 
-    ![Screenshot showing navigation to ADB](./screenshots/2.png)
+    ![Screenshot showing navigation to ADB](./images/2.png " ")
 
 3. Open the bucket. 
 
@@ -48,7 +48,7 @@ In **Lab 1**, you created a bucket to confirm that Tag Defaults automatically ap
 
     LLTagNamespace.Environment = Prod
 
-    ![Screenshot showing navigation to ADB](./screenshots/3.png)
+    ![Screenshot showing navigation to ADB](./images/3.png " ")
 
 <details>
 <summary>CLI Method (Optional)</summary>
@@ -70,15 +70,15 @@ Console Steps
 
 1. **Navigate to Identity & Security → Domains**.
 
-    ![Screenshot showing navigation to ADB](./screenshots/4.png)
+    ![Screenshot showing navigation to ADB](./images/4.png " ")
 
 2. Click on your Domain
 
-    ![Screenshot showing navigation to ADB](./screenshots/5.png)
+    ![Screenshot showing navigation to ADB](./images/5.png " ")
 
 3. Navigate to User Mangement. 
 
-    ![Screenshot showing navigation to ADB](./screenshots/6.png)
+    ![Screenshot showing navigation to ADB](./images/6.png " ")
 
 4. Scroll and click  **Create Group**.
 3. Enter
@@ -91,11 +91,11 @@ Console Steps
 
 4. Click **Create**.
 
-    ![Screenshot showing navigation to ADB](./screenshots/7.png)
+    ![Screenshot showing navigation to ADB](./images/7.png " ")
 
 5. Navigate to **Users** and click **Create**.
 
-    ![Screenshot showing navigation to ADB](./screenshots/13.png)
+    ![Screenshot showing navigation to ADB](./images/13.png " ")
 
 6. Enter **First Name**, **Last Name**, and an **Email** that is *not* currently assoicated with your cloud account.
 
@@ -103,11 +103,11 @@ Console Steps
 
 8. Click **Create**.
 
-    ![Screenshot showing navigation to ADB](./screenshots/14.png)
+    ![Screenshot showing navigation to ADB](./images/14.png " ")
 
 9. Confirm the user is in the group **TagTestUsers**.
 
-    ![Screenshot showing navigation to ADB](./screenshots/26.png)
+    ![Screenshot showing navigation to ADB](./images/26.png " ")
     
 
 <details>
@@ -145,11 +145,11 @@ This policy allows management of Object Storage resources, except those tagged w
 
 1. Navigate to **Identity & Security → Policies**.
 
-    ![Screenshot showing navigation to ADB](./screenshots/9.png)
+    ![Screenshot showing navigation to ADB](./images/9.png " ")
 
 2. Click **Create Policy**.
 
-    ![Screenshot showing navigation to ADB](./screenshots/10.png)
+    ![Screenshot showing navigation to ADB](./images/10.png " ")
 
 3. Enter **Name:**
     
@@ -184,7 +184,7 @@ This policy allows management of Object Storage resources, except those tagged w
     ```
 5. Click **Create**.
 
-    ![Screenshot showing navigation to ADB](./screenshots/11.png)
+    ![Screenshot showing navigation to ADB](./images/11.png " ")
 
 These policies mean:
 
@@ -200,7 +200,7 @@ The group can manage object storage resources, **except** those tagged as Produc
     –name TagDeleteRestrictionPolicy
     –description “Restrict delete if tagged Prod”
     –statements ‘[
-    “Allow group TagTestUsers to manage object-family in compartment <compartment_name> where target.resource.tag.LivelabTagNS.Environment != ‘Prod’”
+    “Allow group TagTestUsers to manage object-family in compartment <compartment_name> where target.resource.tag.LLTagNamespace.Environment != ‘Prod’”
     ]’
     </copy>
     ```
@@ -213,23 +213,23 @@ Now you will confirm that the policy is working.
 
 1. Sign out of the administrator account.
 
-    ![Screenshot showing navigation to ADB](./screenshots/18.png)
+    ![Screenshot showing navigation to ADB](./images/18.png " " " ")
 
 2. Sign in as **tagtestuser**.
 
-    ![Screenshot showing navigation to ADB](./screenshots/19.png)
+    ![Screenshot showing navigation to ADB](./images/19.png " ")
 
 3. Navigate to **Object Storage → Buckets**.
 
-    ![Screenshot showing navigation to ADB](./screenshots/1.png)
+    ![Screenshot showing navigation to ADB](./images/1.png " ")
 
 4. Attempt to **Delete prod-bucket**.
 
-    ![Screenshot showing navigation to ADB](./screenshots/21.png)
+    ![Screenshot showing navigation to ADB](./images/21.png " ")
 
 5. You should receive a permissions error.
 
-    ![Screenshot showing navigation to ADB](./screenshots/20.png)
+    ![Screenshot showing navigation to ADB](./images/20.png " ")
 
 
 This happens because the bucket is tagged as Prod, and the policy blocks deletion of Production resources.

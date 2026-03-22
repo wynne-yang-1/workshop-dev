@@ -1,25 +1,14 @@
 # Lab 5: Context Engineering & Web Integration
 
-### Objectives
-
-In this lab, you will:
-* TODO: Add objectives
-
-
-Estimated Time: TODO - x minutes
-
-
-Context Window Management, Summarization, and Tavily Search
-
-## Objective
+## Introduction
 
 While memory engineering focuses on *what to store and retrieve*, context engineering focuses on *how to manage what's in the context window right now*. In this activity, you'll build the techniques that keep Proteus's context lean and effective, plus integrate web search so Proteus can find information beyond the internal knowledge base.
 
 > **Context engineering** refers to the set of strategies for curating and maintaining the optimal set of tokens (information) during LLM inference, including all the other information that may land there outside of the prompts.
 
---------
+**Estimated Time:** 15 minutes
 
-### What This Activity Covers
+### Objectives
 
 | Task | Function | Purpose |
 |------|----------|---------|
@@ -29,7 +18,7 @@ While memory engineering focuses on *what to store and retrieve*, context engine
 | **4. Just-in-Time Retrieval** | `expand_summary()` tool | Let Proteus expand summaries on demand |
 | **5. Web Search** | `search_tavily()` tool | External retrieval with automatic knowledge base persistence |
 
-## The Context Management Flow
+* **The Context Management Flow**
 
     ```
     Context built → Check usage % → Proteus may compact (summarize) → Store summary with ID
@@ -39,9 +28,9 @@ While memory engineering focuses on *what to store and retrieve*, context engine
 
 This approach keeps the context lean while giving Proteus access to full details when required.
 
-### Just-in-Time (JIT) Retrieval
+* **Just-in-Time (JIT) Retrieval**
 
-**Just-In-Time retrieval** is the process of fetching only the information needed at the exact moment the agent requires it, based on the current task or reasoning step. Instead of loading everything upfront, the system dynamically retrieves the minimal, most relevant data on demand.
+This is the process of fetching only the information needed at the exact moment the agent requires it, based on the current task or reasoning step. Instead of loading everything upfront, the system dynamically retrieves the minimal, most relevant data on demand.
 
 In the context of agent memory, JIT is a retrieval-control strategy where memory access is triggered by the agent's current goal. Rather than preloading large histories or the full knowledge base, the system dynamically filters, ranks, and injects only the information that materially influences the next token. This reduces context saturation, improves attention allocation, and increases reasoning fidelity.
 
@@ -49,10 +38,6 @@ For Proteus, this means:
 - Summary pointers (ID + description) are always loaded — cheap, a few tokens each
 - Full summary content is only retrieved when Proteus decides it's relevant to the current research query
 - This avoids wasting thousands of context tokens on summaries of unrelated troubleshooting sessions
-
-## Introduction
-
-TODO: Add introduction text here.
 
 ## Task 1: Context Window Usage Calculator
 
