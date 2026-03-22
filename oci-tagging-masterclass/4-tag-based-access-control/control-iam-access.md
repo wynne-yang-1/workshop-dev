@@ -50,6 +50,7 @@ In **Lab 1**, you created a bucket to confirm that Tag Defaults automatically ap
 
     ![Screenshot showing bucket tags](./images/3.png " ")
 
+
 <details>
 <summary>CLI Method (Optional)</summary>
 
@@ -66,7 +67,7 @@ In **Lab 1**, you created a bucket to confirm that Tag Defaults automatically ap
     ```bash
     <copy>
     oci os bucket get test-tag-bucket --query 'data."defined-tags"'
-    <copy>
+    </copy>
     ```
 
     You'll notice in the output it only returns the contents of the defined tags JSON element:
@@ -78,7 +79,9 @@ In **Lab 1**, you created a bucket to confirm that Tag Defaults automatically ap
         }
     }
     ```
+
 </details>
+
 
 ## Task 2: Create a Test Group and User
 To validate tag-based access control, you will create a separate group and user.
