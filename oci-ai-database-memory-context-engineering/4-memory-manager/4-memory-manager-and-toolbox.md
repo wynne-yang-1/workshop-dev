@@ -825,7 +825,6 @@ This means a simple docstring like `"Search the web"` becomes a rich description
 ## Learn More
 
 
-
 ## Acknowledgements
 
 - **Author** - Richmond Alake
