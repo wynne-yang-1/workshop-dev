@@ -15,15 +15,15 @@
             "filename": "../../1-prepare/lab-1-prepare-environment.md"
         },
         {
-            "title": "Lab 2: Vector Search Foundations",
+            "title": "Lab 2: Build the memory Engine",
             "filename": "../../2-memory-engine/lab-2-build-memory-engine.md"
         },
         {
-            "title": "Lab 3: Designing the Memory Architecture",
+            "title": "Lab 3: Context Engineering",
             "filename": "../../3-context-engineering/lab-3-context-engineering.md"
         },
         {
-            "title": "Lab 4: Building Memory Manager and Toolbox",
+            "title": "Lab 4: Agent Execution and Evaluation",
             "filename": "../../4-agent-execution/lab-4-agent-execution.md"
         },
         {
