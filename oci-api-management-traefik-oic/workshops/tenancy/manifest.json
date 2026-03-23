@@ -4,7 +4,7 @@
     "tutorials": [
         {
             "title": "Overview and Highlights",
-            "filename": "../../0-overview-and-highlights/overview-and-highlights-tenancy.md"
+            "filename": "../../0-overview-and-highlights/0-introduction.md"
         },
         {
             "title": "Get Started",
@@ -12,35 +12,31 @@
         },
         {
             "title": "Lab 1: Initial setup",
-            "filename": "../../1-setup/setup.md"
+            "filename": "../../1-setup/1-deploy-oke-and-traefik.md"
         },
         {
-            "title": "Lab 2: Create your first API",
-            "filename": "../../2-create-sample-api/create-sample-api.md"
+            "title": "Lab 2: Create an API, Catalog, & Portal",
+            "filename": "../../2-sample-traefik-items/2-sample-api-catalog-portal.md"
         },
         {
-            "title": "Lab 3: Create a new OIC API",
-            "filename": "../../3-create-oic-api/create-oic-api.md"
+            "title": "Lab 3: Provision OIC API",
+            "filename": "../../3-provision-oic-api/3-import-oic-weather-api.md"
         },
         {
-            "title": "Lab 4: Configure OCI Integrated Authentication",
-            "filename": "../../4-configure-integrated-auth/configure-integrated-auth.md"
+            "title": "Lab 4: Combining Traefik with Integration Cloud",
+            "filename": "../../4-oic-with-traefik/4-expose-oic-api-traefik.md"
         },
         {
-            "title": "Lab 5: Expose the OIC API in Traefik",
-            "filename": "../../5-expose-oic-api/expose-oic-api.md"
+            "title": "Lab 5: Securing your APIs",
+            "filename": "../../5-securing-apis/5-secure-test-jwt-sso.md"
         },
         {
-            "title": "Lab 6: Test the solution",
-            "filename": "../../6-test-the-solution/test-the-solution.md"
+            "title": "Lab 6: Review Additional Traefik Features",
+            "filename": "../../6-traefik-features/6-plans-catalog-bundles.md"
         },
         {
-            "title": "Lab 7: [Optiona] Working with Traefik features",
-            "filename": "../../7-traefik-features/traefik-features.md"
-        },
-        {
-            "title": "Lab 8: Clean Up",
-            "filename": "../../8-cleanup/clean-up-resources.md"
+            "title": "Lab 7: Clean Up",
+            "filename": "../../7-cleanup/7-cleanup.md"
         },
         {
             "title": "Need Help?",
