@@ -1,0 +1,17 @@
+oracledb
+langchain-oracledb
+langchain
+langchain-openai
+langchain-huggingface
+langchain-community
+sentence-transformers
+openai
+tavily-python
+datasets
+numpy
+ipykernel
+jupyter
+ipywidgets
+streamlit
+matplotlib
+pydantic

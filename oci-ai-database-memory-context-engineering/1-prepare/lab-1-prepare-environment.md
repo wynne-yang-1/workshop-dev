@@ -103,7 +103,7 @@ This lab assumes you have:
 
 The subsequent labs in this workshop use a pre-built Python package called `proteus` that contains the memory engine, toolbox, context utilities, agent harness, and Streamlit chat UI. Labs 2-4 import from this package rather than defining code inline.
 
-1. [CLICK HERE](https://github.com/enschilling/workshop-dev/raw/refs/heads/main/oci-ai-database-memory-context-engineering/files/mem-workshop.zip) to download the `proteus-workshop` package from the workshop repository. Then unzip the package to your local filesystem.
+1. [CLICK HERE](https://github.com/enschilling/workshop-dev/raw/refs/heads/main/oci-ai-database-memory-context-engineering/files/proteus-workshop.zip) to download the `proteus-workshop` package from the workshop repository. Then unzip the package to your local filesystem.
 
 2. Verify the package structure:
 
