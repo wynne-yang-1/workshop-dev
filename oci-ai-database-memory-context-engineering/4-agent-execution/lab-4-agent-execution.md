@@ -522,13 +522,13 @@ The naive agent (`call_agent_naive`) deliberately removes the key optimizations:
 
 ## Task 4: Head-to-Head Comparison
 
-1. Run the comparison cell. Five progressive queries are sent to both agents:
+1. Run the comparison cell. Three progressive queries are sent to both agents with a 15-second pause between calls to stay within API rate limits:
 
     * "Search for recent papers on AI agent memory published in 2025 or 2026."
     * "Pick the most interesting paper and give me the key takeaways."
-    * "What other approaches might that paper have missed?"
     * "Summarize everything we've discussed so far."
-    * "What was the first question I asked?"
+
+    > **Note on rate limits:** The comparison uses `max_iterations=3` and a 15-second delay between calls to stay within OpenAI's token-per-minute limits. If you have a higher-tier API plan, you can reduce `DELAY_SECONDS` in the notebook cell.
 
 2. Run the visualization cell. The chart overlays both agents' context growth on the same axes.
 

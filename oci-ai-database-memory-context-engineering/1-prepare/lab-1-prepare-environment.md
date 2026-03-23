@@ -108,23 +108,23 @@ The subsequent labs in this workshop use a pre-built Python package called `prot
 2. Verify the package structure:
 
     ```
-    proteus-workshop/
+    proteus-workshop/              ← open this folder in VS Code
     ├── requirements.txt
-    ├── proteus/
-    │   ├── __init__.py
-    │   ├── config.py
-    │   ├── db.py
-    │   ├── vector_store.py
-    │   ├── memory_manager.py
-    │   ├── toolbox.py
-    │   ├── context.py
-    │   ├── tools.py
-    │   ├── agent.py
-    │   └── app.py
-    └── notebooks/
+    └── notebooks/                 ← all work happens here
         ├── lab-2-build-memory-engine.ipynb
         ├── lab-3-context-engineering.ipynb
-        └── lab-4-agent-execution.ipynb
+        ├── lab-4-agent-execution.ipynb
+        └── proteus/ 
+            ├── __init__.py
+            ├── agent.py
+            ├── app.py
+            ├── config.py
+            ├── context.py
+            ├── db.py
+            ├── memory_manager.py
+            ├── toolbox.py
+            ├── tools.py
+            └── vector_store.py
     ```
 
 3. Start Visual Studio Code and open the `proteus-workshop` folder. For the remaining labs, you'll open the corresponding `.ipynb` file from the `notebooks/` folder. But don't get ahead of yourself just yet!
