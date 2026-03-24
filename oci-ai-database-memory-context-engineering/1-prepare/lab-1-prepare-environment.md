@@ -30,7 +30,7 @@ This lab assumes you have:
 
 1. Click the **View Login Info** link to access account information.
 
-    ![LiveLabs - Account Info Link](images/02-view-login-info.png " ")
+    ![LiveLabs - Account Info Link](images/01-view-login-info.png " ")
 
 2. Locate and copy the Compartment OCID value. Store it in a text file to use in just a minute.
 
@@ -44,7 +44,7 @@ This lab assumes you have:
 
 1. Open Cloud Shell
 
-    ![Cloud shell button in UI](images/02-cloud-shell-button.png " ")
+    ![Cloud shell button in UI](images/03-cloud-shell-button.png " ")
 
 2. Copy the following command. Replace `<your-compartment-ocid>` with the value copied earlier.
 
@@ -71,31 +71,31 @@ This lab assumes you have:
 
 4. Use the navigation menu to visit the Autonomous AI Database service console.
 
-    ![Web UI Nav Menu showing Oracle AI Database](images/02-nav-adb.png " ")
+    ![Web UI Nav Menu showing Oracle AI Database](images/04-nav-adb.png " ")
 
 5. Once the *State* of the database is `Available`, click the name of the DB instance.
 
-    ![ADB Service Console showing DB instance](images/02-adb-service-console.png " ")
+    ![ADB Service Console showing DB instance](images/05-adb-service-console.png " ")
 
 6. Scroll down the page and locate the **Network** section.
 
-    ![ADB Instance details - Network section](images/02-adb-details-network.png " ")
+    ![ADB Instance details - Network section](images/06-adb-details-network.png " ")
 
 7. Click the **[Edit]** button next to **`Access control list`**.
 
 8. Click the *Add my IP address* toggle switch. The Values field will populate with the external IP of your current machine.
 
-    ![Network ACL - Add my IP](images/02-adb-network-acl.png " ")
+    ![Network ACL - Add my IP](images/07-adb-network-acl.png " ")
 
 9. Click **[Save]** and allow the database a minute or so to update. Once the **[Edit]** button next to *Mutual TLS (mTLS) authentication* is no longer grayed out, proceed to the next step.
 
 10. Click said **[Edit]** button next to the mTLS setting. Click the toggle switch to not require mTLS auth. Click **[Save]**.
 
-    ![Edit MTLS settings dialog](images/02-adb-network-mtls.png " ")
+    ![Edit MTLS settings dialog](images/08-adb-network-mtls.png " ")
 
 11. Scroll back to the top and click the **[Database connection]** button. Locate and copy the full **Connection string** for the TNS name that corresponds with `medium`. Paste it in a notepad for future reference.
 
-    ![Database connection details screen](images/02-adb-connection-details.png " ")
+    ![Database connection details screen](images/09-adb-connection-details.png " ")
 
 12. Time to retrieve the workshop artifacts.
 
@@ -273,7 +273,7 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
     * Your chosen VECTOR user password (recommended: MemoryContext_2026)
     * The DSN for your Autonomous DB _medium listener
 
-    ![VS Code prompt for input - DB Admin password](images/02-vscode-run-code-prompt.png " ")
+    ![VS Code prompt for input - DB Admin password](images/10-vscode-run-code-prompt.png " ")
 
     ```python
     <copy>
@@ -314,7 +314,7 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
     </copy>
     ```
 
-    ![Successful DB connection output in VS Code](images/02-vscode-db-connection-success.png " ")
+    ![Successful DB connection output in VS Code](images/11-vscode-db-connection-success.png " ")
 
 3. Create the VECTOR user.
 
@@ -449,7 +449,7 @@ For this lab, you will create a new `.ipynb` file and copy in the code to prep t
     <copy>
     ```
 
-    ![Notebook execution output - successfully created vector user](images/02-vscode-dbsetup-output.png " ")
+    ![Notebook execution output - successfully created vector user](images/12-vscode-dbsetup-output.png " ")
 
 You may now proceed to the next lab.
 

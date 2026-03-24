@@ -34,11 +34,11 @@ In **Lab 1**, you created a bucket to confirm that Tag Defaults automatically ap
 
 1. Navigate to **Object Storage → Buckets**.
 
-    ![Screenshot showing navigation to Object Storage - Buckets](./images/1.png " ")
+    ![Screenshot showing navigation to Object Storage - Buckets](./images/01-navigate-to-object-storage-buckets.png " ")
 
 2. Locate the bucket created in Lab 1.
 
-    ![Screenshot showing list of buckets](./images/2.png " ")
+    ![Screenshot showing list of buckets](./images/02-list-of-buckets.png " ")
 
 3. Open the bucket. 
 
@@ -48,7 +48,7 @@ In **Lab 1**, you created a bucket to confirm that Tag Defaults automatically ap
 
     LLTagNamespace.Environment = Prod
 
-    ![Screenshot showing bucket tags](./images/3.png " ")
+    ![Screenshot showing bucket tags](./images/03-bucket-tags-prod-environment.png " ")
 
 
 <details>
@@ -58,7 +58,7 @@ In **Lab 1**, you created a bucket to confirm that Tag Defaults automatically ap
 
     ```bash
     <copy>
-    oci os bucket get test-tag-bucket
+    oci os bucket get --bucket-name tag-test-bucket-cli --namespace-name <object_storage_namespace>
     </copy>
     ```
 
@@ -66,7 +66,7 @@ In **Lab 1**, you created a bucket to confirm that Tag Defaults automatically ap
 
     ```bash
     <copy>
-    oci os bucket get test-tag-bucket --query 'data."defined-tags"'
+    oci os bucket get --bucket-name tag-test-bucket-cli --namespace-name <object_storage_namespace> --query 'data."defined-tags"'
     </copy>
     ```
 
@@ -74,7 +74,7 @@ In **Lab 1**, you created a bucket to confirm that Tag Defaults automatically ap
 
     ```text
     {
-        "LLTagNameSpace": {
+        "LLTagNamespace": {
             "Environment": "Prod"
         }
     }
@@ -90,15 +90,15 @@ Console Steps
 
 1. **Navigate to Identity & Security → Domains**.
 
-    ![Screenshot showing navigation to IAM Domains](./images/4.png " ")
+    ![Screenshot showing navigation to IAM Domains](./images/04-navigate-to-iam-domains.png " ")
 
 2. Click on your Domain
 
-    ![Screenshot showing default domain](./images/5.png " ")
+    ![Screenshot showing default domain](./images/05-select-default-domain.png " ")
 
 3. Navigate to User Mangement. 
 
-    ![Screenshot showing Domain Groups](./images/6.png " ")
+    ![Screenshot showing Domain Groups](./images/06-domain-groups-page.png " ")
 
 4. Scroll and click  **Create Group**.
 5. Enter
@@ -111,11 +111,11 @@ Console Steps
 
 6. Click **Create**.
 
-    ![Screenshot showing create group dialog](./images/7.png " ")
+    ![Screenshot showing create group dialog](./images/07-create-group-dialog.png " ")
 
 7. Navigate to **Users** and click **Create**.
 
-    ![Screenshot showing create users tab](./images/13.png " ")
+    ![Screenshot showing create users tab](./images/08-users-tab-create-user.png " ")
 
 8. Enter **First Name**, **Last Name**, and an **Email** that is *not* currently assoicated with your cloud account.
 
@@ -123,11 +123,11 @@ Console Steps
 
 8. Click **Create**.
 
-    ![Screenshot showing create user dialog](./images/14.png " ")
+    ![Screenshot showing create user dialog](./images/09-create-user-dialog.png " ")
 
 9. Confirm the user is in the group **TagTestUsers**.
 
-    ![Screenshot showing new user details and group membership](./images/26.png " ")
+    ![Screenshot showing new user details and group membership](./images/10-user-details-group-membership.png " ")
     
 
 <details>
@@ -137,8 +137,9 @@ Console Steps
 
     ```bash
     <copy>
-    oci iam group create
-    --name TagTestUsers
+    oci iam group create \
+    --compartment-id <tenancy_ocid> \
+    --name TagTestUsers \
     --description "Tag testing group"
     </copy>
     ```
@@ -147,8 +148,9 @@ Console Steps
 
     ```bash
     <copy>
-    oci iam user create
-    --name tagtestuser
+    oci iam user create \
+    --compartment-id <tenancy_ocid> \
+    --name tagtestuser \
     --description "Tag policy test user"
     </copy>
     ```
@@ -157,33 +159,32 @@ Console Steps
 
     ```bash
     <copy>
-    oci iam group add-user
-    --group-id <group_ocid>
+    oci iam group add-user \
+    --group-id <group_ocid> \
     --user-id <user_ocid>
     </copy>
     ```
 
 </details>
 
-## Task 3: Create a Tag-Based IAM Policy
-Now you will create a policy that restricts deletion of resources tagged as Prod.
-This policy allows management of Object Storage resources, except those tagged with Environment = Prod.
+## Task 3: Create a Tag-Based Deny Policy
+Now you will create a **deny policy** that blocks deletion of resources tagged as Prod.
 
 ### Console Steps
 
 1. Navigate to **Identity & Security → Policies**.
 
-    ![Screenshot showing navigation to IAM Policies](./images/9.png " ")
+    ![Screenshot showing navigation to IAM Policies](./images/11-navigate-to-iam-policies.png " ")
 
 2. Click **Create Policy**.
 
-    ![Screenshot showing list of policies](./images/10.png " ")
+    ![Screenshot showing list of policies](./images/12-list-of-policies-page.png " ")
 
 3. Enter **Name:**
     
      ```text
         <copy>
-        TagDeleteRestrictionPolicy
+        TagDeleteRestrictionDenyPolicy
         </copy>
         ```
 
@@ -191,48 +192,42 @@ This policy allows management of Object Storage resources, except those tagged w
 
     ```text
        <copy>
-       Test Tag Deletion Restriction
+       Deny delete of Prod-tagged resources for TagTestUsers
        </copy>
     ```
 
-4. We'll need two policies. In the **policy statement field**, enter:
+5. In the **policy statement field**, enter:
 
     ```text
     <copy>
-    Allow group TagTestUsers to manage object-family in tenancy where target.resource.tag.LLTagNamespace.Environment != Prod
+    Deny group TagTestUsers to manage buckets in tenancy where target.resource.tag.LLTagNamespace.Environment = 'Prod'
     </copy>
     ```
+6. Click **Create**.
 
-    **AND**
+    ![Screenshot showing policy creation confirmation](./images/13-create-policy-confirmation.png " ")
 
-     ```text
-    <copy>
-    Allow group TagTestUsers to use all-resources in tenancy
-    </copy>
-    ```
-5. Click **Create**.
+This policy means:
 
-    ![Screenshot showing navigation to ADB](./images/11.png " ")
-
-These policies mean:
-
-The group can manage object storage resources, **except** those tagged as Production
+Members of **TagTestUsers** are explicitly denied bucket management actions (including delete) when the bucket tag is `LLTagNamespace.Environment = Prod`.
 
 <details>
 <summary>CLI Method (Optional)</summary>
 
-    ```text
-    <copy>
-    oci iam policy create \
-        --compartment-id <tenancy_ocid> \
-        --name TagDeleteRestrictionPolicy \
-        --description "Restrict delete if tagged Prod" \
-        --statements '[
-            "Allow group TagTestUsers to manage object-family in compartment <compartment_name> where target.resource.tag.LLTagNamespace.Environment != '\''Prod'\''
-        ]’
-    </copy>
-    ```
+```text
+<copy>
+oci iam policy create \
+  --compartment-id <tenancy_ocid> \
+  --name TagDeleteRestrictionDenyPolicy \
+  --description "Deny delete of Prod-tagged resources for TagTestUsers" \
+  --statements '[
+    "Deny group TagTestUsers to manage buckets in tenancy where target.resource.tag.LLTagNamespace.Environment = '\''Prod'\''"
+  ]'
+</copy>
+```
 </details>
+
+> **Important:** IAM deny policies are an opt-in tenancy feature and must be enabled before creating deny statements.
 
 ## Task 4: Validate Tag-Based Access Control
 Now you will confirm that the policy is working.
@@ -241,26 +236,26 @@ Now you will confirm that the policy is working.
 
 1. Sign out of the administrator account.
 
-    ![Screenshot showing log out with existing user](./images/18.png " ")
+    ![Screenshot showing log out with existing user](./images/14-logout-admin-user-menu.png " ")
 
 2. Sign in as **tagtestuser**.
 
-    ![Screenshot showing log in with tag user](./images/19.png " ")
+    ![Screenshot showing log in with tag user](./images/15-login-tagtestuser-screen.png " ")
 
 3. Navigate to **Object Storage → Buckets**.
 
-    ![Screenshot showing navigation to Object Storage](./images/1.png " ")
+    ![Screenshot showing navigation to Object Storage](./images/01-navigate-to-object-storage-buckets.png " ")
 
 4. Attempt to **Delete prod-bucket**.
 
-    ![Screenshot showing attempt to delete bucket](./images/21.png " ")
+    ![Screenshot showing attempt to delete bucket](./images/16-attempt-delete-bucket.png " ")
 
 5. You should receive a permissions error.
 
-    ![Screenshot showing permissions error](./images/20.png " ")
+    ![Screenshot showing permissions error](./images/17-delete-bucket-permission-error.png " ")
 
 
-This happens because the bucket is tagged as Prod, and the policy blocks deletion of Production resources.
+This happens because the bucket is tagged as Prod, and the deny policy explicitly blocks deletion (a manage-level action) for that tag value.
 
 <details>
 <summary>CLI Validation (Optional)</summary>
@@ -269,7 +264,7 @@ Using Cloud Shell (or configured CLI profile for tagtestuser):
 
     ```bash
     <copy>
-    oci os bucket delete --name test-tag-bucket
+    oci os bucket delete --bucket-name tag-test-bucket-cli --namespace-name <object_storage_namespace> --force
     </copy>
     ```
 You should receive a "Not authorized" error.
