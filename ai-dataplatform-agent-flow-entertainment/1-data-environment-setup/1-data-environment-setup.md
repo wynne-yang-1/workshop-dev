@@ -24,9 +24,34 @@ This lab assumes you have:
 * Reviewed the Workshop Introduction and Overview
 * Access to the AIDP Workbench instance provisioned for this workshop
 
-## Task 1: Create the Catalog
+## Task 1: Create the (External) Database Catalog
 
-A standard catalog in AIDP stores AI-related artifacts — volumes, tables, schemas, and knowledge bases. For this workshop, you'll start by creating a new standard catalog.
+An external catalog in AIDP is used to connect to an Autonomous Lakehouse (ALH) database. For this workshop, you'll be creating a new external catalog.
+
+1. From the AIDP Workbench Home Page, click on **Master Catalog**.
+
+2. Click **[Create catalog]** in the upper right coner. Provide a catalog name **`AiDatabase`** and a description **`a catalog that connects to the Autonomous AI Lakehouse database.`**, then select **Catalog type** -> **External catalog**.
+
+3. For **External source method** select **Choose ALH instance**.
+
+4. Several fields should auto-populate. Move to the **ALH instance** drop down and locate the **hol-entertainment-dev-zzz** instance. The last 8 characters will be a random string.
+
+5. From the **Service** dropdown, select the label that ends with **_high** to choose the high priority DSN.
+
+6. Enter authentication details:
+
+    - **Wallet password (optional)**: You may choose your own password, or leave this field blank and allow AIDP to manage the wallet password.
+    - **Username**: ENTERTAINMENT
+    - **Password**: This is retrieved from the ORM stack State 
+    TODO: need to make it easier to retrieve this password.
+
+7. Click **[Test connection]** - confirm that the connection is successful.
+
+8. Click **[Create]**.
+ 
+## Task 1: Create the (Standard) Entertainment Analyst Catalog
+
+A standard catalog in AIDP stores AI-related artifacts — volumes, tables, schemas, and knowledge bases. For this workshop, you'll be creating a new standard catalog.
 
 1. From the AIDP Workbench Home Page, click on **Master Catalog**.
 
@@ -67,7 +92,7 @@ A volume stores unstructured data — files, documents, images — within a cata
 
 6. Click the volume name **`entertainment_analyst`** then click the **+** button to the right of the Filter field. Click to browse or drag-and-drop the three `.docx` files from the Zip archive you downloaded earlier.
 
-    ![Upload files itnerface](images/01-catalog-volume-upload-files.png " ")
+    ![Upload files interface](images/01-catalog-volume-upload-files.png " ")
 
     
 .7 Click **[Upload]**, then review the files. You should see the following internal documents:
