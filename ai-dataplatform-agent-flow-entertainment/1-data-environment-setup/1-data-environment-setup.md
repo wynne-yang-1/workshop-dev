@@ -12,10 +12,11 @@ By the end of this lab, all the data assets — structured (database tables) and
 
 In this lab you will:
 
-1. Create a new standard catalog (`entertainment_analyst`) and managed volume (`entertainment_analyst`) where you'll upload release playbooks and strategy documents
-2. Create a Knowledge Base and an associated data source that consumes the documents from the managed volume
-3. Verify the Oracle AI Database tables that contain box office, streaming, and marketing data
-4. Understand how the structured (SQL) and unstructured (RAG) data assets connect to the agent you'll build
+1. Create the AI Compute instance used by the Agent (created in Lab 2)
+2. Create a new standard catalog (`entertainment_analyst`) and managed volume (`entertainment_analyst`) where you'll upload release playbooks and strategy documents
+3. Create a Knowledge Base and an associated data source that consumes the documents from the managed volume
+4. Verify the Oracle AI Database tables that contain box office, streaming, and marketing data
+5. Understand how the structured (SQL) and unstructured (RAG) data assets connect to the agent you'll build
 
 ### Prerequisites
 
@@ -24,30 +25,93 @@ This lab assumes you have:
 * Reviewed the Workshop Introduction and Overview
 * Access to the AIDP Workbench instance provisioned for this workshop
 
-## Task 1: Create the (External) Database Catalog
+## Task 1: Create the AI Compute Instance
 
-An external catalog in AIDP is used to connect to an Autonomous Lakehouse (ALH) database. For this workshop, you'll be creating a new external catalog.
+An AI Compute hosts your agent flows. You need an active AI Compute to test agent flows and deploy them. Think of it as the runtime engine for your agent.
+
+1. Log into the OCI Console if you've not alrady done so (See **Getting Started** link in the left nav) and click the navigation menu in the top left corner.
+
+    ![Screenshot of main navigation menu](images/01-navigate-nav-menu.png " ")
+
+2. Naviate **Analytics & AI** --> **AI Data Platform Workbench**.
+
+    ![Screenshot of link to AI Data Platform menu item](images/01-navigate-ai-data-platform.png " ")
+
+3. From the *List scope* menu on the left side of the page, click the drop-down and locate the *Compartment* assigned by the LiveLabs environment.
+
+    ![Screenshot of AIDP console - compartment select](images/01-aidp-console-compartment.png " ")
+
+4. Click the name of the AIDP Instance to open the Workbench. The workbench will open in a new tab.
+
+5. From the AIDP Workbench Home Page, select your workspace from the drop-down menu listing all workspaces.
+
+    ![Use the drop-down menu to select your workspace](images/01-select-workspace.png " ")
+
+6. Click on **Compute** under the selected workspace.
+
+7. In the Compute page, click on the **AI Compute** tab.
+
+8. Click the **+** button to add an AI Compute.
+
+    ![Screenshot of the AI compute tab and plus button](images/01-aidp-create-compute.png)
+
+9. Enter a name and description:
+
+    ```
+    Name: entertainment_analyst_compute
+    Description: AI Compute for the Entertainment Release & Performance Analyst agent
+    ```
+
+10. Use the default size of **1 OCPU** and **16 GB of RAM**.
+
+11. Click **Create**..
+
+    ![Create new AI compute dialog window](images/01-compute-create-instance.png " ")
+    
+    > **Note**: It may take 3-5 minutes to provision this resource. The AI Compute instance is where your agent flow executes. Once attached, any changes you make to the agent flow are automatically propagated to the AI Compute instance — meaning you can edit and test quasi-simultaneously.
+
+12. There's no need wait for the **`entertainment_analyst_compute`** resource to finish provisioning right now. You can move to the next task. The instance should be ready to go by the time it's needed in Lab 2.
+
+## Task 2: Create the (External) Database Catalog
+
+An external catalog in AIDP enables you to connect to an Autonomous Lakehouse (ALH) database. In a production setting, that means you aren't moving data around to facilicate your AI solutions. Rather, you're bringing AI right to your data.
+
+For this workshop, an ALH instance has been provisioned and loaded with sample data already. You'll be creating a new external catalog to leverage that dataset.
+
+> **Important** You'll need the **`Database Admin Password`** found in the **`View Login Info`** on the LiveLabs workshop page (covered in the **Getting Started** section)
+
+![Screenshot of ADB admin password location](/images/01-datbase-retrieve-password.png " ")
 
 1. From the AIDP Workbench Home Page, click on **Master Catalog**.
 
-2. Click **[Create catalog]** in the upper right coner. Provide a catalog name **`AiDatabase`** and a description **`A catalog that connects to the Autonomous AI Lakehouse database.`**, then select **Catalog type** -> **External catalog**.
+    ![Screenshot of AIDP workbench home page](images/01-aidp-master-catalog.png " ")
 
-3. For **External source method** select **Choose ALH instance**.
+2. Click **[Create catalog]** in the upper right coner. 
 
-4. Several fields should auto-populate. Move to the **ALH instance** drop down and locate the **hol-entertainment-dev-zzz** instance. The last 8 characters will be a random string.
+    ![Screenshot of Create Catalog button](images/01-aidp-create-catalog.png " ")
 
-5. From the **Service** dropdown, select the label that ends with **_high** to choose the high priority DSN.
+3. Enter the following details, then select **Catalog type** -> **External catalog**.
 
-6. Enter authentication details:
+| Catalog name | ```<copy>aidatabase</copy>``` |
+| Description | ```<copy>A catalog that connects to the Autonomous AI Lakehouse database.</copy>``` |
+
+4. For **External source method** select **Choose ALH instance**.
+
+5. Several fields should auto-populate. If the **Compartment** drop-down does not show your assigned workshop compartment, go ahead and locate / select your designated compartment.
+
+6. Move to the **ALH instance** drop down and locate the **hol-entertainment-dev-zzz** instance. The last 8 characters will be a random string.
+
+7. From the **Service** dropdown, select the label that ends with **_high** to choose the high priority DSN.
+
+8. Enter authentication details:
 
     - **Wallet password (optional)**: You may choose your own password, or leave this field blank and allow AIDP to manage the wallet password.
     - **Username**: ENTERTAINMENT
-    - **Password**: This is retrieved from the ORM stack State 
-    TODO: need to make it easier to retrieve this password.
+    - **Password**: This was retrieved earlier from the LiveLabs Login Info dialog. 
 
-7. Click **[Test connection]** - confirm that the connection is successful.
+9. Click **[Test connection]** - confirm that the connection is successful.
 
-8. Click **[Create]**.
+10. Click **[Create]**.
 
     ![Screenshot of the create catalog dialog](images/01-catalog-add-external.png)
  
@@ -75,7 +139,7 @@ A volume stores unstructured data — files, documents, images — within a cata
 
 1. First off, [Click Here](https://github.com/enschilling/workshop-dev/raw/refs/heads/main/ai-dataplatform-agent-flow-entertainment/files/kb_documents.zip) to download the Zip file containing all the sample docs required for this workshop.
 
-2. Unzip the file; you should have 3 `.docx` and 3 `.txt` files pertaining to the Knowledge Base components, and 1 `agent_instructions.txt` file that you'll use in Lab 2.
+2. Unzip the file; you should have 3 `.docx` files pertaining to the Knowledge Base components, and 1 `agent_instructions.txt` file that you'll use in Lab 2.
 
     - **Content Strategy & Release Operations Playbook** — Defines release windows, territory prioritization, green/yellow/red performance signals, and decision frameworks
     - **Marketing Measurement & Attribution Guidelines** — Defines metric definitions (e.g., completion rate, ROI), attribution logic, and interpretation rules
@@ -96,10 +160,9 @@ A volume stores unstructured data — files, documents, images — within a cata
 
     ![Upload files interface](images/01-catalog-volume-upload-files.png " ")
 
-    
-.7 Click **[Upload]**, then review the files. You should see the following internal documents:
+7. Click **[Upload]**, then review the files. You should see the following internal documents:
 
-4. These are the documents that the AI agent will search via RAG when users ask questions about definitions, policies, thresholds, or interpretation rules. For example, when a user asks *"What does our playbook say about territory priorities for releases?"*, the agent will retrieve relevant passages from these documents.
+8. These are the documents that the AI agent will search via RAG when users ask questions about definitions, policies, thresholds, or interpretation rules. For example, when a user asks *"What does our playbook say about territory priorities for releases?"*, the agent will retrieve relevant passages from these documents.
 
 ## Task 4: Create a Knowledge Base
 
@@ -122,7 +185,7 @@ Now we'll create the key asset that enables RAG. A Knowledge Base creates vector
 
 5. Leave the **Advanced Settings** as-is for now. These settings control the embedding model, chunk size, and chunk overlap. The defaults are appropriate for this workshop.
 
-6. Click **Create**. The Knowledge Base will take a few seconds to become Active.
+6. Click **Create**. The Knowledge Base will take a few moments to become Active.
 
 7. Once the Knowledge Base shows status **Active**, click on it to open the details.
 
@@ -148,15 +211,21 @@ Now we'll create the key asset that enables RAG. A Knowledge Base creates vector
 
 The agent's SQL tools query structured data from an Oracle AI Database. For this workshop, the following tables have been pre-ingested with entertainment performance data.
 
-1. Log into the OCI Console (See *Get Started* in left nav menu for more details).
+1. Return to the OCI console tab in your browser.
 
 2. Use the navigation menu to open the Autonomous AI Database Console.
 
-    ![OCI Nav menu - Autonomous AI Database console](images/01-navigate-autonomous-ai-database.png)
+    ![OCI Nav menu - Autonomous AI Database console](images/01-navigate-autonomous-ai-database.png " ")
 
-3. Click the name of the autonmous database to view details. When the page loads, click **[Database actions]** and select **SQL**.  This will open the SQL Workbench in a new brower tab.
+3. Make sure the **Applied filters** matches your assigned compartment.
 
-4. In the *Navigator* on the left, click the first drop-down menu and locate the **Entertainment** schema. 
+    ![Screenshot of the AI database console page](images/01-database-console.png " ")
+
+4. You should see two database instances here. Click the name of the autonomous database that starts with **hol-entertainment-** to view details. 
+
+5. When the page loads, click **[Database actions]** and select **SQL**.  This will open the SQL Workbench in a new brower tab.
+
+6. In the *Navigator* on the left, click the first drop-down menu and locate the **Entertainment** schema. 
 
     * You should see the following tables populate below.
 
