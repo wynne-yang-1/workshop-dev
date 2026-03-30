@@ -2,7 +2,7 @@
 
 ## Introduction
 
-In this lab, we are going to explain how to use cost-tracking tags, create a budget and budget alert rule, build and export a cost analysis report, and explain what FOCUS cost reports cover. 
+In this lab, we are going to explain how to use cost-tracking tags, create a budget and budget alert rule, build and export a cost analysis report, and explain what FOCUS cost reports cover.
 
 **Estimated Time:** 20 minutes
 
@@ -22,7 +22,7 @@ This lab assumes you have:
 - permissions to interact with tools through Identity and Access Management policies
 
 ## Task 1: Ensure you have created a cost-tracking tag
-In this task, we are readdressing cost tracking tags. Please refer to the cost-tracking tag previously created in Lab 1. This cost-tracking tag is used for tracking resource costs that span multiple compartments or belong to different Cost Centers. Cost-tracking tags are also used for billing purposes. However, you can use *any defined tag* as a scope for your budgets, Cost Analysis, and Cost Reports. 
+In this task, we are readdressing cost tracking tags. Please refer to the cost-tracking tag previously created in Lab 1. This cost-tracking tag is used for tracking resource costs that span multiple compartments or belong to different Cost Centers. Cost-tracking tags are also used for billing purposes. However, you can use *any defined tag* as a scope for your budgets, Cost Analysis, and Cost Reports.
 
 
 ## Task 2a: Budgets using OCI Console
@@ -97,19 +97,39 @@ We have included an example of what a budget alert notification would look like 
 
 You have now created your first budget and budget alert rule. 
 
-You may now proceed to the next lab.
+You may now proceed to the next task.
 
 ## Task 2b (Optional): Budgets using OCI CLI 
 
 You can also use OCI CLI to compose commands to take action in your tenancy.
-This is the CLI command for creating a budget:
+
+This is the CLI command for creating a monthly budget on a compartment:
 
  ```text
     <copy>
-oci budgets budget create 
---compartment-id <compartment_ocid> 
---amount amount 
---reset-period reset_period [OPTIONS]
+oci budgets budget create \
+  --compartment-id <compartment_ocid> \
+  --target-type COMPARTMENT \
+  --targets '["<target_compartment_ocid>"]' \
+  --amount <budget_amount> \
+  --reset-period MONTHLY \
+  --display-name "<budget_display_name>" \
+  --description "<budget_description>"
+</copy>
+```
+> **Note:** compartment-id is the compartment where the budget resource is created in.
+
+
+This is the CLI command for creating a monthly budget on a cost-tracking tag:
+ ```text
+    <copy>
+oci budgets budget create \
+  --compartment-id <compartment_ocid> \
+  --target-type TAG \
+  --targets '["<tag_key_name>=<tag_key_value>"]' \
+  --amount <budget_amount> \
+  --reset-period MONTHLY \
+  --display-name "<budget_display_name>"
 </copy>
 ```
 
@@ -117,18 +137,21 @@ This is the CLI command for creating a budget alert rule:
 
  ```text
     <copy>
-oci budgets alert-rule create 
---budget-id budget_ocid 
---threshold threshold 
-threshold-type --threshold_type 
---type type [OPTIONS]
+oci budgets alert-rule create \
+--budget-id <budget_ocid> \
+--threshold <threshold_amount> \
+--threshold-type ABSOLUTE or PERCENTAGE \
+--type ACTUAL or FORECAST \
+--message "message_for_recipients" \
+--recipients '["<email_address>"]' \
+--display name "<name_of_budget_alert_rule>" 
 </copy>
 ```
 
 
 You have now created your first budget and budget alert rule. 
 
-You may now proceed to the next lab.
+You may now proceed to the next task.
 
 
 ## Task 3a: Cost Analysis & Reports using OCI Console 
@@ -160,7 +183,7 @@ In this task, we are going to generate a cost analysis report using filters and 
 
      You should see the generated cost analysis based on your filter and grouping dimension selections.
 
-7. Click on Bars to change the visualization to Lines. 
+7. Click on Bars to change the visualization to Lines.
 
      ![Screenshot showing how to change visualization from bars to lines](./images/cost-analysis-bars.png)
 
@@ -178,38 +201,41 @@ In this task, we are going to generate a cost analysis report using filters and 
 
      ![Screenshot showing how to view FOCUS Reports](./images/cost-report-page.png)
 
-> **Note:** FOCUS Reports are organized by year, month, day, and multiple time stamps during the day. 
+> **Note:** FOCUS Reports are organized by year, month, day, and multiple time stamps during the day.
 
-     ![Screenshot showing how to expand FOCUS reports](./images/cost-report-FOCUS.png)
+![Screenshot showing how to expand FOCUS reports](./images/cost-report-FOCUS.png)
 
 11. Once you have decided on a FOCUS cost report to download, click on the 3 dots to the right side of the report. Click Download Report to download your FOCUS cost report to your local machine.
 
      ![Screenshot showing how to download FOCUS reports](./images/cost-report-download.png)
 
-12. Open the FOCUS cost report file you just downloaded. 
+12. Open the FOCUS cost report file you just downloaded.
 
 The FOCUS report contains data on resource usage and consumption costs in your tenancy. This data is stored in OCI Object Storage and can easily be used to build visual dashboards in Oracle native services such as Oracle Analytics Cloud. You can also import FOCUS cost reports to third party tools to digest and analyze data contents.
 
-> **Note:** Your tenancy may not have generated any FOCUS cost reports yet. 
+> **Note:** Your tenancy may not have generated any FOCUS cost reports yet.
 
 We have included an example of a FOCUS cost report would look like for an OCI tenancy. The FOCUS cost report has many columns but here are some important ones to note: UsageQuantity, Tags, PricingUnit, ListUnitPrice, BilledCost.
 
    ![Screenshot showing an example of a FOCUS report](./images/FOCUS-report-example-final.png)
 
-You have now generated your first cost analysis report and downloaded a FOCUS cost report. 
+You have now generated your first cost analysis report and downloaded a FOCUS cost report.
+
+You may now proceed to the next task.
 
 ## Task 3b (Optional): Cost Reports using OCI CLI
 
 You can also use OCI CLI to compose commands to take action in your tenancy.
+
 This is the CLI command for downloading a cost report.
 
  ```text
     <copy>
-oci budgets alert-rule create
---budget-id budget_ocid
---threshold threshold
-threshold-type --threshold_type
---type type [OPTIONS]
+oci os object get \
+  --namespace-name bling \
+  --bucket-name "<your_tenancy_ocid>" \
+  --name "reports/cost-csv/<report_name>.csv.gz" \
+ --file "<local_report_name>.csv.gz"
 </copy>
 ```
 

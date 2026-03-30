@@ -24,7 +24,7 @@ This lab assumes you have:
 - Completed the previous labs.
 - Have access to Cloud Shell and Code editor
 
-## Task 1: Create a VCN using the Wizard
+## Task 1: Create a VCN
 
 Use the OCI UI to create a VCN.
 
@@ -127,7 +127,7 @@ Use the OCI UI to create a VCN.
 
 ## Task 3: Launch a Compute Instance
 
-Use the OCI CLI to launch a compute instance. You must specify the compartment, subnet, image, and shape.
+Use the OCI CLI to launch a compute instance. To do so, we will need to collect the Compartment OCID, Availability Domain, Image OCID, and Subnet OCID. We will use this created compute instance to show how to bulk tag resources in a compartment.
 
 1. Collect the Compartment OCID.
 
@@ -171,7 +171,7 @@ Use the OCI CLI to launch a compute instance. You must specify the compartment, 
 
     ## retrieve the OCID for your public subnet
     subnet_ocid=$(oci network subnet list --compartment-id $compartment_ocid \
-    --vcn-id $vcn_ocid --query 'data[?contains("display-name", `public subnet`)].id | [0]' \
+    --vcn-id $vcn_ocid --query 'data[?contains("display-name", `Public-Subnet`)].id | [0]' \
     --raw-output)
     </copy>
     ```
@@ -205,10 +205,10 @@ Use the OCI CLI to launch a compute instance. You must specify the compartment, 
 
 ## Task 4: Create Block Volumes and Object Storage Bucket
 
-Create two block volumes using the OCI CLI. One will be attached to the compute instance.
+Create two block volumes using the OCI CLI. One will be attached to the compute instance. We will use these created block volumes to show how to bulk tag resources in a compartment.
 
 1. Enter the following commands to create each block volume, and save their OCID.
-    
+
     ```bash
     <copy>
     oci bv volume create \
@@ -304,15 +304,15 @@ Create a `resources.json` file with all resource OCIDs and types.
     <copy>
     [
       {
-          "resourceId": "instance_ocid",
+          "id": "instance_ocid",
           "resourceType": "Instance"
       },
       {
-          "resourceId": "bv_1_ocid",
+          "id": "bv_1_ocid",
           "resourceType": "Volume"
       },
       {
-          "resourceId": "bv_2_ocid",
+          "id": "bv_2_ocid",
           "resourceType": "Volume"
       }
     ]
@@ -335,7 +335,7 @@ Create a `resources.json` file with all resource OCIDs and types.
     [
         {
           "definedTags": {
-            "LLTagNameSpace": {
+            "LLTagNamespace": {
               "Environment": "Dev",
               "CostCenter": "8675309"
             }
@@ -379,7 +379,7 @@ Create a `resources.json` file with all resource OCIDs and types.
     ```bash
     <copy>
     for ocid in $(oci bv volume list -c $compartment_ocid \
-    --query 'data[?"defined-tags"."LLTagNameSpace"."Environment" == `Dev`].id' --raw-output | jq -r '.[]'); do
+    --query 'data[?"defined-tags"."LLTagNamespace"."Environment" == `Dev`].id' --raw-output | jq -r '.[]'); do
     echo "Resizing volume: $ocid"
     oci bv volume update --volume-id $ocid
     done

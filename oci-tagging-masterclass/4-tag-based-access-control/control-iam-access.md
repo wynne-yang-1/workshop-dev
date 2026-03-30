@@ -96,7 +96,7 @@ Console Steps
 
     ![Screenshot showing default domain](./images/05-select-default-domain.png " ")
 
-3. Navigate to User Mangement. 
+3. Navigate to User Management.
 
     ![Screenshot showing Domain Groups](./images/06-domain-groups-page.png " ")
 
@@ -119,7 +119,7 @@ Console Steps
 
 8. Enter **First Name**, **Last Name**, and an **Email** that is *not* currently assoicated with your cloud account.
 
-7. Add the user to the **TagTestUsers** group.    
+7. Add the user to the **TagTestUsers** group.
 
 8. Click **Create**.
 
@@ -128,7 +128,7 @@ Console Steps
 9. Confirm the user is in the group **TagTestUsers**.
 
     ![Screenshot showing new user details and group membership](./images/10-user-details-group-membership.png " ")
-    
+
 
 <details>
 <summary>CLI Method (Optional)</summary>
@@ -181,7 +181,7 @@ Now you will create a **deny policy** that blocks deletion of resources tagged a
     ![Screenshot showing list of policies](./images/12-list-of-policies-page.png " ")
 
 3. Enter **Name:**
-    
+
      ```text
         <copy>
         TagDeleteRestrictionDenyPolicy
@@ -196,14 +196,19 @@ Now you will create a **deny policy** that blocks deletion of resources tagged a
        </copy>
     ```
 
-5. In the **policy statement field**, enter:
+5. Toggle on Show Manual Editor.
+
+6. In the **policy statement field**, enter:
 
     ```text
     <copy>
     Deny group TagTestUsers to manage buckets in tenancy where target.resource.tag.LLTagNamespace.Environment = 'Prod'
     </copy>
     ```
-6. Click **Create**.
+
+> **Important:** IAM deny policies are an opt-in tenancy feature and must be enabled before creating deny statements.
+
+7. Click **Create**.
 
     ![Screenshot showing policy creation confirmation](./images/13-create-policy-confirmation.png " ")
 
@@ -227,8 +232,6 @@ oci iam policy create \
 ```
 </details>
 
-> **Important:** IAM deny policies are an opt-in tenancy feature and must be enabled before creating deny statements.
-
 ## Task 4: Validate Tag-Based Access Control
 Now you will confirm that the policy is working.
 
@@ -246,7 +249,7 @@ Now you will confirm that the policy is working.
 
     ![Screenshot showing navigation to Object Storage](./images/01-navigate-to-object-storage-buckets.png " ")
 
-4. Attempt to **Delete prod-bucket**.
+4. Attempt to **Delete tag-test-bucket**.
 
     ![Screenshot showing attempt to delete bucket](./images/16-attempt-delete-bucket.png " ")
 
