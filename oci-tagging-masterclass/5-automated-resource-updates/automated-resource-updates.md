@@ -253,7 +253,7 @@ The solution is to automatically update the tag default value every day using an
     ```
 
     * Snag the tenancy namespace and tag default OCID from these commands
-    
+
     ```bash
     <copy>
     tenancy_ns=$(oci os ns get --query "data" --raw-output)
@@ -266,7 +266,7 @@ The solution is to automatically update the tag default value every day using an
     </copy>
     ```
 
-    > NOTE: Your username for the next step is <namespace>/<username>
+    > NOTE: Your username for the next step is namespace/username
 
     * Verify login to OCI Container Registry (OCIR)
 
@@ -278,7 +278,7 @@ The solution is to automatically update the tag default value every day using an
     ```
 
     ```text
-    ## EXAMPLE: 
+    ## EXAMPLE:
     docker login phx.ocir.io
     username: afoie1cs3t/first.last@domain.com
     password: ##nothing displayed when entering password
@@ -292,11 +292,13 @@ The solution is to automatically update the tag default value every day using an
     * List context
 
     ```bash
-    <copy>fn list context</copy>
+    <copy>
+    fn list context
+    </copy>
     ```
 
     ```text
-    # Output should look something like: 
+    # Output should look something like:
     CURRENT NAME            PROVIDER        API URL                                 REGISTRY
     *       default         oracle-cs
             us-phoenix-1    oracle-cs       https://functions.us-phoenix-1.oci.oraclecloud.com
@@ -323,7 +325,7 @@ The solution is to automatically update the tag default value every day using an
     Current context updated oracle.compartment-id with ocid1.compartment.oc1........
     zzz@cloudshell:tag-update (us-phoenix-1)$ fn update context registry phx.ocir.io/$tenancy_ns/auto-tag-project
     Current context updated registry with phx.ocir.io/izzzzzzzzzi/auto-tag-project
-
+    ```
 
 ### Create the Function
 

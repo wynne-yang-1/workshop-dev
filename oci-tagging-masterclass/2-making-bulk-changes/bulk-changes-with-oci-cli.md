@@ -265,7 +265,7 @@ Create two block volumes using the OCI CLI. One will be attached to the compute 
     oci os bucket create \
       --compartment-id $compartment_ocid \
       --name lab-tagging-bucket
-    
+
     bucket_ocid=$(oci os bucket get --bucket-name lab-tagging-bucket \
     --query 'data.id' --raw-output)
     </copy>
@@ -373,7 +373,7 @@ Create a `resources.json` file with all resource OCIDs and types.
     ```
 
 5.  Confirm that all resources show the updated defined tag values.
-    
+
 6. To modify resources in bulk using tags, run the following command in the **Cloud Shell**:
 
     ```bash
